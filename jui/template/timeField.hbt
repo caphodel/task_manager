@@ -1,0 +1,1 @@
+<label class="j-label">{{{label}}}</label>{{#isnt label ""}}: {{/isnt}}<input type="{{type}}" readonly></input> : <input type="{{type}}" readonly></input>

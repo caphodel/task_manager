@@ -1,0 +1,29 @@
+<table width="100%">
+	<tr>
+		<td>
+		Filter :<br />
+		<table class="j-table-filter-body">
+			<tbody>
+			</tbody>
+		</table><br/><br/>
+		<j-button class="j-table-filter-search" color="blue">Search</j-button>
+		<j-button class="j-table-filter-add-edit">Add/Edit Filter</j-button>
+		<j-button class="j-table-filter-clear">Clear</j-button>
+	</td>
+		<td style="float: right;vertical-align: top;">
+			<j-combofield class="j-table-filter-add">Add Filter
+				<j-table>
+					{{filterList}}
+				</j-table>
+			</j-combofield><br/>
+			<j-combofield class="j-table-filter-filter" pk="0">Filter Name
+				<j-table>
+					<j-loader src="{{filterSource}}"></j-loader>
+						[["", "", "Name", "", ""]]
+					<j-pagination>
+					</j-pagination>
+				</j-table>
+			</j-combofield>
+		</td>
+	</tr>
+</table>

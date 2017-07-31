@@ -1,0 +1,1 @@
+<label class="j-label">{{{label}}}</label>{{#isnt label ""}}: {{/isnt}}<input class="j-border1 j-input-field j-transition1 j-focus-highlight1" type="{{type}}"></input>

@@ -1,0 +1,13 @@
+<div class="j-table-body">
+	<table class="j-border-collapse">
+		<tbody>
+			{{#each data}}
+			<tr>
+				{{#each this}}
+				<td><div class="j-pad1">{{{this}}}</div></td>
+				{{/each}}
+			</tr>
+			{{/each}}
+		</tbody>
+	</table>
+</div>
