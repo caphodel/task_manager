@@ -1,0 +1,14 @@
+<table style="width: 100px !important">
+	<tr>
+		<td><i class="fa fa-angle-up"/></td>
+		<td><i class="fa fa-angle-up"/></td>
+	</tr>
+	<tr>
+		<td><input type="text" class="j-border1 j-input-field j-transition1 j-focus-highlight1 j-datetime-hour" value="{{hour}}" style="width: 30px !important;"></td>
+		<td><input type="text" class="j-border1 j-input-field j-transition1 j-focus-highlight1 j-datetime-minute" value="{{minute}}" style="width: 30px !important;"></td>
+	</tr>
+	<tr>
+		<td><i class="fa fa-angle-down"/></td>
+		<td><i class="fa fa-angle-down"/></td>
+	</tr>
+</table>

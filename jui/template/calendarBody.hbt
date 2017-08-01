@@ -1,0 +1,7 @@
+{{#each date}}
+<tr>
+	{{#each this}}
+	<td class="{{this.class}}" style="position: relative">{{this.date}}</td>
+	{{/each}}
+</tr>
+{{/each}}

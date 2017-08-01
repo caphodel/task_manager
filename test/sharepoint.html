@@ -1,0 +1,78 @@
+<script type="text/javascript" src="../jui/lib/jquery-3.2.1_min.js"></script>
+<script type="text/javascript" src="sharepointplus-4.0.min.js"></script>
+<script type="text/javascript" src="pnp.min.js"></script>
+<script type="text/javascript" src="jquery.SPServices-2013.02a.min.js"></script>
+
+http://ggkdrsppap01/sites/electronic/_vti_bin/ListData.svc/AuditFiles
+
+var siteUrl = '/sites/electronic/AuditFiles/';
+
+function retrieveAllListProperties() {
+
+    var clientContext = new SP.ClientContext(siteUrl);
+    var oWebsite = clientContext.get_web();
+    this.collList = oWebsite.get_lists();
+ 
+    clientContext.load(collList);
+
+    clientContext.executeQueryAsync(Function.createDelegate(this, this.onQuerySucceeded), Function.createDelegate(this, this.onQueryFailed));
+}
+
+function onQuerySucceeded() {
+
+    var listInfo = '';
+
+    var listEnumerator = collList.getEnumerator();
+
+    while (listEnumerator.moveNext()) {
+        var oList = listEnumerator.get_current();
+        listInfo += 'Title: ' + oList.get_title() + ' Created: ' + oList.get_created().toString() + '\n';
+    }
+    console.log(listInfo);
+}
+
+function onQueryFailed(sender, args) {
+    alert('Request failed. ' + args.get_message() + '\n' + args.get_stackTrace());
+}
+
+retrieveAllListProperties()
+var siteUrl = '/sites/electronic/AuditFiles/';
+
+function retrieveListItems() {
+
+    var clientContext = new SP.ClientContext(siteUrl);
+    var oList = clientContext.get_web().get_lists().getByTitle('Announcements');
+        
+    var camlQuery = new SP.CamlQuery();
+    camlQuery.set_viewXml('<View><Query><Where><Geq><FieldRef Name=\'ID\'/>' + 
+        '<Value Type=\'Number\'>1</Value></Geq></Where></Query><RowLimit>10</RowLimit></View>');
+    this.collListItem = oList.getItems(camlQuery);
+        
+    clientContext.load(collListItem);
+        
+    clientContext.executeQueryAsync(Function.createDelegate(this, this.onQuerySucceeded), Function.createDelegate(this, this.onQueryFailed));        
+        
+}
+
+function onQuerySucceeded(sender, args) {
+
+    var listItemInfo = '';
+
+    var listItemEnumerator = collListItem.getEnumerator();
+        
+    while (listItemEnumerator.moveNext()) {
+        var oListItem = listItemEnumerator.get_current();
+        listItemInfo += '\nID: ' + oListItem.get_id() + 
+            '\nTitle: ' + oListItem.get_item('Title') + 
+            '\nBody: ' + oListItem.get_item('Body');
+    }
+
+    console.log(listItemInfo.toString());
+}
+
+function onQueryFailed(sender, args) {
+
+    alert('Request failed. ' + args.get_message() + '\n' + args.get_stackTrace());
+}
+
+retrieveListItems()
