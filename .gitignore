@@ -28,4 +28,5 @@ user_guide_src/cilexer/pycilexer.egg-info/*
 *.sublime-workspace
 *.sublime-project
 jui/node_modules
+node/node_modules
 user_guide

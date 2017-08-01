@@ -1,0 +1,18 @@
+{
+  "name": "tame_server",
+  "version": "1.0.0",
+  "description": "node server for task management",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Deddy Lasmono Putro",
+  "license": "MIT",
+  "dependencies": {
+    "body-parser": "^1.17.2",
+    "express": "^4.15.3",
+    "md5": "^2.2.1",
+    "mysql2": "^1.3.6",
+    "sequelize": "^4.4.2"
+  }
+}
