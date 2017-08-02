@@ -15,7 +15,8 @@ var sequelize = new Sequelize('tame', 'root', 'asdfghjkl', {
 	},
 	define: {
 		timestamps: false
-	}
+	},
+	logging: false
 })
 
 app.set("db", sequelize);
@@ -31,7 +32,7 @@ app.use('/api', jwt({
 	secret: app.get("salt"),
 	getToken: function fromHeaderOrQuerystring(req) {
 		var token = req.cookies && req.cookies.access_token || req.body.access_token || req.query.access_token || req.headers['x-access-token'];
-		console.log("aaa", token)
+		
 		if (token) {
 			return token;
 		}
@@ -63,3 +64,5 @@ app.use(function (err, req, res, next) {
 app.listen(8080, function () {
 	console.log('Server running on port 8080!')
 })
+
+module.exports = app;
