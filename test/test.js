@@ -47,7 +47,7 @@ describe('Users', () => {
 					res.body.id.should.exist;
 					res.body.should.be.a('object');
 					done();
-					console.log("User \""+res.body.login+"\" created with id of "+res.body.id)
+					//console.log("User \""+res.body.login+"\" created with id of "+res.body.id)
 					user_id = res.body.id
 				});
 		});
@@ -79,6 +79,25 @@ describe('Users', () => {
 					res.should.have.status(200);
 					res.body.should.be.a('array');
 					res.body.length.should.be.equal(1);
+					done();
+				});
+		});
+	});
+
+	describe('/POST api/user', () => {
+		it('it should POST a change to user firstname', (done) => {
+			chai.request(server)
+				.post('/api/user')
+				.set("x-access-token", token)
+				.send({
+					'id': user_id,
+					'firstname': 'user change'
+				})
+				.end((err, res) => {
+					//console.log(res.body)
+					/*res.should.have.status(200);
+					res.body.should.be.a('array');
+					res.body.length.should.be.eql(1);*/
 					done();
 				});
 		});
