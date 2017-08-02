@@ -45,6 +45,14 @@ router.put('/', function (req, res) {
 	});
 });
 
+/**
+ * @api {delete} /api/users Delete user
+ * @apiName DeleteUser
+ * @apiGroup User
+ *
+ * @apiParam {Number} id Users unique ID.
+ */
+
 router.delete('/', function (req, res) {
 	var db = req.app.get("db");
 
