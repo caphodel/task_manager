@@ -9,6 +9,7 @@
 	<script src="assets/js/jui2.lib.js"></script>
 	<script src="assets/js/jui2.tmp.min.js"></script>
 	<script src="assets/js/jui2.ui.js"></script>
+	<title>Task Manager</title>
 	<style>
 		* {
 			color: #1c2022;
@@ -425,7 +426,7 @@
 				})
 		})
 
-		redDomain = window.location + "/index.php";
+		var redDomain = window.location + "/index.php", red_token = "";
 
 		function redAppend(url, el) {
 			$.ajax({

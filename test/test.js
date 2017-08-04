@@ -121,3 +121,78 @@ describe('Users', () => {
 		});
 	});
 });
+
+/*var client = require('webdriverio').remote({
+    desiredCapabilities: {
+        browserName: 'firefox'
+    }
+});
+
+var chaiAsPromised = require('chai-as-promised');
+chai.use(chaiAsPromised);
+chaiAsPromised.transferPromiseness = client.transferPromiseness;*/
+
+/* UI testing */
+let WebDriverIO = require('webdriverio');
+let browser = WebDriverIO.remote({
+	baseUrl: 'https://127.0.0.1', // Or other url, e.g. localhost:3000
+	host: 'localhost', // Or any other IP for Selenium Standalone
+	port: 4444,
+	waitforTimeout: 120 * 1000,
+	logLevel: 'silent',
+	screenshotPath: `${__dirname}/../screenshots/`,
+	desiredCapabilities: {
+		browserName: /*process.env.SELENIUM_BROWSER || */ 'firefox',
+	},
+});
+
+/*var chaiAsPromised = require('chai-as-promised');
+chai.use(chaiAsPromised);
+
+chaiAsPromised.transferPromiseness = browser.transferPromiseness;*/
+
+describe('Load main page', function () {
+
+	before(function () {
+		return browser.init().url('http://localhost/task_manager/')
+	});
+
+	it('Load main page', function () {
+		return browser.getTitle().then(function (title) {
+			title.should.be.eql("Task Manager")
+			// outputs: "Title is: WebdriverIO (Software) at DuckDuckGo"
+		})
+		/*.click("#red-sign-in")
+					.waitForExist("#red-form-login", 5000)
+					.setValue('#red-form-login #username input', 'test')*/
+	});
+
+	it('Trying to login', function () {
+		return browser.click("#red-sign-in")
+			.waitForExist("#red-form-login", 5000)
+			.setValue('#red-form-login #username input', 'dlputro')
+			.setValue('#red-form-login #password input', 'dlputro123')
+			.click("#red-btn-login")
+			.waitUntil(function () {
+				return this.getText('#red-sign-in', function(err, text) {
+                        return text !== 'Sign In';
+                    });
+			}).then(function () {
+			})
+			.execute(function () {
+				return window.red_token;
+			})
+			.then(function (result) {
+				console.log(result)
+				result.should.not.eql("");
+			})
+			.end();
+	});
+
+	/*it('Check if login success', function () {
+		var token = "";
+		return browser.execute(function() {
+			
+		});
+	});*/
+});

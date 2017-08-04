@@ -3,7 +3,8 @@ var Sequelize = require("sequelize"),
 	bodyParser = require("body-parser"),
 	jwt = require('express-jwt'),
 	app = express(),
-	router = express.Router();
+	router = express.Router(),
+	cors = require('cors');
 
 var sequelize = new Sequelize('tame', 'root', 'asdfghjkl', {
 	host: 'localhost',
@@ -19,6 +20,7 @@ var sequelize = new Sequelize('tame', 'root', 'asdfghjkl', {
 	logging: false
 })
 
+app.use(cors());
 app.set("db", sequelize);
 app.set("salt", ":tame:");
 

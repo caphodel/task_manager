@@ -13,11 +13,9 @@
 	/** @constructor */
 	var proto = Object.create(HTMLElement.prototype)
 
-	proto.createdCallback = function(label, type) {
+	proto.createdCallback = function() {
 
 		jui2.ui.base.proto.createdCallback.call(this, jui2.ui.textField);
-
-		this.iconPosition = 'beforeend';
 
 		var label = label || '',
 		type = type || 'text', $self = $(this);
@@ -25,41 +23,17 @@
 		if(this.innerHTML.trim() == '')
 			this.innerHTML = label
 
-		var tmpValue = this.getAttribute('value') || '';
-
 		this.innerHTML = jui2.tmpl['textField']({label: this.innerHTML, type: type});
-
-		$self.addClass('j-input').children().eq(1).attr('value', tmpValue);
-
-		this.removeAttribute('value');
-
-		if(this.getAttribute('icon')){
-			this.insertAdjacentHTML( 'beforeend', '<i class="j-ui-icon fa '+this.getAttribute('icon')+'"></i>' );
-		}
-
+		
 		$self.children().eq(0).click(function(){
 			$(this).next().focus();
 		})
-
-		/* non jquery code */
-
-		/*if (document.addEventListener) {                // For all major browsers, except IE 8 and earlier
-			this.children[0].addEventListener("click", function(){
-				$(this).next().focus();
-			});
-		} else if (document.attachEvent) {              // For IE 8 and earlier versions
-			this.children[0].attachEvent("onclick", function(){
-				$(this).next().focus();
-			});
-		}*/
 
 		for(i in jui2.method){
 			this[i] = jui2.method[i];
 		}
 
 		this.attrChangedCb(['disabled', 'icon', 'placeholder', 'readonly', 'width', 'mandatory', 'autocomplete', 'autocompletefilter'])
-
-		$self.triggerHandler('afterdraw')
 
 		/**
 		 * Set and get widget value
@@ -73,6 +47,7 @@
 		 * @example <caption>nopreview</caption>
 		 * $('#myWidget').val('myValue') // will set widget's value to 'myValue'
 		 */
+		console.log(this)
 		Object.defineProperty(this.__proto__, 'value', {
 			configurable: true,
 			get: function(){
@@ -87,21 +62,6 @@
 				return $(this).children('input')[0].value
 			}
 		});
-
-		var extend = true;
-		if(this.noInherit)
-			if(this.noInherit.indexOf('value')!=-1)
-				extend = false;
-
-		if(this.value && extend){
-			var tmpValue = this.value
-			delete this.value;
-			$self.val(tmpValue);
-		}
-		else{
-			if(extend)
-				delete this.value;
-		}
 
 	};
 	
@@ -130,12 +90,28 @@
 			localStorage.setItem('jui2list'+$(this).attr('id'), JSON.stringify(db));
 		}
 	}
+	
+	proto.attachedCallback = function(){
+		for (i in this.attributes) {
+            var attrName = this.attributes[i].nodeName,
+                newVal = this.attributes[i].nodeValue;
+            if (jui2.attrChange[this.tagName.toLowerCase() + '_' + attrName])
+                jui2.attrChange[this.tagName.toLowerCase() + '_' + attrName](this, false, newVal);
+            else if (jui2.attrChange[attrName] && this.enabledAttrChange.indexOf(attrName) > -1)
+                jui2.attrChange[attrName](this, false, newVal);
+        }
+		$(this).triggerHandler('afterdraw')
+	}
 
 	proto.attributeChangedCallback = function(attrName, oldVal, newVal){
-		/*var enabledAttrChange = ['disabled', 'icon'];
-		if(jui2.attrChange[attrName] && enabledAttrChange.indexOf(attrName) > -1)
-			jui2.attrChange[attrName](this, oldVal, newVal);*/
-		this.attrChangedCb(false, attrName, oldVal, newVal)
+		for (i in this.attributes) {
+            var attrName = this.attributes[i].nodeName,
+                newVal = this.attributes[i].nodeValue;
+            if (jui2.attrChange[this.tagName.toLowerCase() + '_' + attrName])
+                jui2.attrChange[this.tagName.toLowerCase() + '_' + attrName](this, false, newVal);
+            else if (jui2.attrChange[attrName] && this.enabledAttrChange.indexOf(attrName) > -1)
+                jui2.attrChange[attrName](this, false, newVal);
+        }
 	}
 
 	jui2.ui.textField = {
