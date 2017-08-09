@@ -107,10 +107,29 @@
 			border-color: #e1e8ed;
 			border-image: none;
 			border-radius: 4px;
-			border-style: solid;
-			border-width: 1px;
+			/*border-style: solid;
+			border-width: 1px;*/
 			background: #fff;
 			margin: 2px;
+		}
+		j-card > *{
+			border-color: #5fa2dd;
+			border-left: 1px solid #5fa2dd;
+			border-right: 1px solid #5fa2dd;
+		}
+		j-card > *:first-child{
+			border-top: 1px solid #5fa2dd;
+			border-left: 1px solid #5fa2dd;
+			border-right: 1px solid #5fa2dd;
+			border-top-left-radius: 4px;
+			border-top-right-radius: 4px;
+		}
+		j-card > *:last-child{
+			border-bottom: 1px solid #5fa2dd;
+			border-left: 1px solid #5fa2dd;
+			border-right: 1px solid #5fa2dd;
+			border-bottom-left-radius: 4px;
+			border-bottom-right-radius: 4px;
 		}
 		
 		.info-task-completed>div {

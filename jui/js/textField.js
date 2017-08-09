@@ -17,8 +17,8 @@
 
 		jui2.ui.base.proto.createdCallback.call(this, jui2.ui.textField);
 
-		var label = label || '',
-		type = type || 'text', $self = $(this);
+		var $self = $(this), label = label || '',
+		type = $self.attr('type') || 'text';
 
 		if(this.innerHTML.trim() == '')
 			this.innerHTML = label
