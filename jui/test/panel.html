@@ -4,7 +4,7 @@
 		background: #5fa2dd;
 		color: #fff;
 	}
-	
+
 	.j-header,
 	.j-header>* {
 		font-family: "Lato", sans-serif;
@@ -12,51 +12,64 @@
 		font-weight: 600;
 		color: #fff;
 	}
-	
+
 	.j-header {
 		padding: 14px 20px;
 		display: flex;
 	}
-	
+
 	j-panel {
 		overflow: hidden;
 		position: relative;
 		background: #fff;
 		display: inline-block;
 		border: 1px solid #5fa2dd;
+		border-radius: 4px;
 	}
-	
+
 	.j-ui {
 		box-sizing: border-box;
 		position: relative;
 		display: inline-block;
 		vertical-align: top;
 	}
-	
+
 	j-spacer {
 		flex: 1 1 0;
 		-webkit-box-flex: 1;
 		-webkit-flex: 1;
 	}
-	
-	#accordion{
-		padding: 2px;
+
+	#accordion {
 		background: #E2E2E2;
-	}
-	
-	#accordion > j-panel{
-		margin-top: 1px;
-		margin-bottom: 1px;
-	}
-	
-	#accordion > j-panel:first-child{
-		margin-top: 0px;
-	}
-	
-	#accordion > j-panel:last-child{
-		margin-bottom: 0px;
+		border: 1px solid #5fa2dd;
+		border-radius: 4px;
 	}
 
+	#accordion>j-panel {
+		border-radius: 0px;
+		border: 0px;
+	}
+
+	#accordion>j-panel:first-child {
+		margin-top: 0px;
+		border-top-left-radius: 3px;
+		border-top-right-radius: 3px;
+	}
+
+	#accordion>j-panel:last-child {
+		margin-bottom: 0px;
+		border-bottom-left-radius: 3px;
+		border-bottom-right-radius: 3px;
+	}
+
+	#accordion>j-panel>.j-header{
+		border-bottom: 0px;
+	}
+
+	.j-content{
+		padding: 8px;
+	}
 </style>
 <link href="../../assets/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
 <script src="../../assets/js/jquery.min.js"></script>
@@ -64,7 +77,7 @@
 	<div class="j-header">
 		Login
 	</div>
-	<div class="j-ui">
+	<div class="j-ui j-content">
 		This is panel
 	</div>
 </j-panel>
@@ -73,18 +86,17 @@
 		Login
 		<j-spacer></j-spacer><i class="fa fa-arrow-down j-collapser"></i>
 	</div>
-	<div class="j-ui">
+	<div class="j-ui j-content">
 		This is panel<br/> This is panel<br/> This is panel<br/> This is panel<br/> This is panel<br/> This is panel
 	</div>
 </j-panel>
 <div id="accordion" style="width: 300px;">
-
 	<j-panel style="width:100%" class="j-ui">
 		<div class="j-header">
 			Login
 			<j-spacer></j-spacer><i class="fa fa-arrow-down j-collapser"></i>
 		</div>
-		<div class="j-ui">
+		<div class="j-ui j-content">
 			This is panel<br/> This is panel<br/> This is panel<br/> This is panel<br/> This is panel<br/> This is panel
 		</div>
 	</j-panel>
@@ -94,7 +106,7 @@
 			Login
 			<j-spacer></j-spacer><i class="fa fa-arrow-down j-collapser"></i>
 		</div>
-		<div class="j-ui">
+		<div class="j-ui j-content">
 			This is panel<br/> This is panel<br/> This is panel<br/> This is panel<br/> This is panel<br/> This is panel
 		</div>
 	</j-panel>
@@ -104,7 +116,7 @@
 			Login
 			<j-spacer></j-spacer><i class="fa fa-arrow-down j-collapser"></i>
 		</div>
-		<div class="j-ui">
+		<div class="j-ui j-content">
 			This is panel<br/> This is panel<br/> This is panel<br/> This is panel<br/> This is panel<br/> This is panel
 		</div>
 	</j-panel>
@@ -127,5 +139,4 @@
 			})
 		}
 	})
-
 </script>
