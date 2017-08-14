@@ -1,16 +1,28 @@
+<script src="../../assets/js/jquery.min.js"></script>
+<link href="../../assets/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
+<link href="../../assets/css/jui2.css" rel="stylesheet" type="text/css" />
+<script src="../lib/chance_min.js"></script>
+<script src="../lib/popper.js"></script>
 <style>
+	.j-ui {
+		box-sizing: border-box;
+		position: relative;
+		display: inline-block;
+		vertical-align: top;
+	}
+	
 	table {}
-
+	
 	tbody {
 		display: block;
 		overflow: auto;
 		height: 300px;
 	}
-
+	
 	thead {
 		background: #dedede;
 	}
-
+	
 	thead,
 	tbody tr {
 		display: table;
@@ -18,19 +30,8 @@
 		table-layout: fixed;
 	}
 
-	.j-header,
-	.j-header>* {
-		font-family: "Lato", sans-serif;
-		font-size: 16px;
-		font-weight: 600;
-		color: #525e61;
-	}
-
-	.j-header {
-		padding: 14px 20px;
-	}
 </style>
-<table>
+<table id="table1">
 	<thead>
 		<tr>
 			<td colspan="2">Name</td>
@@ -41,137 +42,41 @@
 		</tr>
 	</thead>
 	<tbody>
-		<tr>
-			<td>AAAA</td>
-			<td>323232</td>
-		</tr>
-		<tr>
-			<td>BBBBB</td>
-			<td>323232</td>
-		</tr>
-		<tr>
-			<td>CCCCC</td>
-			<td>3435656</td>
-		</tr>
-		<tr>
-			<td>AAAA</td>
-			<td>323232</td>
-		</tr>
-		<tr>
-			<td>BBBBB</td>
-			<td>323232</td>
-		</tr>
-		<tr>
-			<td>CCCCC</td>
-			<td>3435656</td>
-		</tr>
-		<tr>
-			<td>AAAA</td>
-			<td>323232</td>
-		</tr>
-		<tr>
-			<td>BBBBB</td>
-			<td>323232</td>
-		</tr>
-		<tr>
-			<td>CCCCC</td>
-			<td>3435656</td>
-		</tr>
-		<tr>
-			<td>AAAA</td>
-			<td>323232</td>
-		</tr>
-		<tr>
-			<td>BBBBB</td>
-			<td>323232</td>
-		</tr>
-		<tr>
-			<td>CCCCC</td>
-			<td>3435656</td>
-		</tr>
-		<tr>
-			<td>AAAA</td>
-			<td>323232</td>
-		</tr>
-		<tr>
-			<td>BBBBB</td>
-			<td>323232</td>
-		</tr>
-		<tr>
-			<td>CCCCC</td>
-			<td>3435656</td>
-		</tr>
-		<tr>
-			<td>AAAA</td>
-			<td>323232</td>
-		</tr>
-		<tr>
-			<td>BBBBB</td>
-			<td>323232</td>
-		</tr>
-		<tr>
-			<td>CCCCC</td>
-			<td>3435656</td>
-		</tr>
-		<tr>
-			<td>AAAA</td>
-			<td>323232</td>
-		</tr>
-		<tr>
-			<td>BBBBB</td>
-			<td>323232</td>
-		</tr>
-		<tr>
-			<td>CCCCC</td>
-			<td>3435656</td>
-		</tr>
-		<tr>
-			<td>AAAA</td>
-			<td>323232</td>
-		</tr>
-		<tr>
-			<td>BBBBB</td>
-			<td>323232</td>
-		</tr>
-		<tr>
-			<td>CCCCC</td>
-			<td>3435656</td>
-		</tr>
-		<tr>
-			<td>AAAA</td>
-			<td>323232</td>
-		</tr>
-		<tr>
-			<td>BBBBB</td>
-			<td>323232</td>
-		</tr>
-		<tr>
-			<td>CCCCC</td>
-			<td>3435656</td>
-		</tr>
+
 	</tbody>
 </table>
+<script>
+	i = 0
+	while (i < 20) {
+		$('#table1 tbody').append("<tr><td>" + chance.name() + "</td><td>" + chance.phone() + "</td></tr>")
+		i++;
+	}
 
+</script>
 <style>
-	#table {
+	/*	#table {
 		display: flex;
 		flex-direction: column;
 		color: #404040;
 		position: relative;
 	}
-
+	
 	#table-container>.j-header {
 		background: #5fa2dd;
 		color: #fff;
 		padding: 8px;
 		font-weight: normal;
 	}
-
+	
 	#table>.j-table-head {
 		background: #fff;
 		border-bottom: 2px solid #d0d0d0;
 	}
-
+	
+	#table>.j-table-head>div>div:not(:last-child) {
+		border-right: 1px solid #d0d0d0;
+	}
+	
 	#table>.j-table-head>div>div {
 		padding: 8px;
 		overflow: hidden;
@@ -181,15 +86,14 @@
 		white-space: nowrap;
 		position: relative;
 	}
-
+	
 	#table>.j-table-head>div>div:hover {
-		background: #f6f6f6;
 	}
-
+	
 	#table>.j-table-head>div>div:hover>.j-table-head-action {
 		display: block;
 	}
-
+	
 	#table>.j-table-head>div>div>.j-table-head-action {
 		display: none;
 		position: absolute;
@@ -198,18 +102,22 @@
 		height: 100%;
 		border-left: 1px solid #d0d0d0;
 		padding: 8px 8px;
-		background: #f6f6f6;
+		background: #fff;
 		cursor: pointer;
 	}
-
+	
 	#table>.j-table-body {
 		background: #fff;
 	}
-
+	
 	#table>.j-table-body>div {
 		border-bottom: 1px solid #d0d0d0;
 	}
-
+	
+	#table>.j-table-body>div>div:not(:last-child) {
+		border-right: 1px solid rgba(0, 0, 0, 0);
+	}
+	
 	#table>.j-table-body>div>div {
 		padding: 8px;
 		overflow: hidden;
@@ -218,11 +126,11 @@
 		text-overflow: ellipsis;
 		white-space: nowrap;
 	}
-
+	
 	#table>.j-table-body>div:nth-child(even) {
 		background: #f6f6f6;
 	}
-
+	
 	#table>.j-table-column-resizer {
 		background: rgba(0, 0, 0, 0);
 		width: 1px;
@@ -232,67 +140,202 @@
 		border-left: 5px solid rgba(0, 0, 0, 0);
 		border-right: 5px solid rgba(0, 0, 0, 0);
 		-moz-background-clip: content;
-		/* Firefox 3.6 */
 		-webkit-background-clip: content;
-		/* Safari 4? Chrome 6? */
 		background-clip: content-box;
-		/* Firefox 4, Safari 5, Opera 10, IE 9 */
 		display: inline-block;
-		cursor: pointer;
+		cursor: col-resize;
 	}
-
-	#table>.j-table-column-resizer:hover{
+	
+	#table>.j-table-column-resizer:active {
 		background: #000;
 		-moz-background-clip: content;
-		/* Firefox 3.6 */
 		-webkit-background-clip: content;
-		/* Safari 4? Chrome 6? */
 		background-clip: content-box;
-		/* Firefox 4, Safari 5, Opera 10, IE 9 */
+	}*/
+	
+	.j-pop {
+		padding: 8px 0;
+		background: #fff;
+		-webkit-box-shadow: 2px 2px 8px 0 rgba(0, 0, 0, 0.4);
+		box-shadow: 2px 2px 8px 0 rgba(0, 0, 0, 0.4);
+		display: none;
 	}
-</style>
-<div id="table-container">
-	<div class="j-header">Project</div>
+	
+	.j-menu-separator {
+		height: 1px;
+		border-width: 1px 0 0;
+		border-style: solid;
+		border-color: #e1e1e1;
+		margin: 8px 0;
+	}
 
-	<div id="table">
-		<div class="j-table-head">
-			<div style="display: flex;">
-				<div style="width: 20px">
-					<span>Project Number</span>
-					<div class="j-table-head-action">a</div>
+</style>
+<j-panel>
+	<div class="j-header">Project</div>
+	<j-table id="table-container">
+		<div id="table" class="j-table">
+			<div class="j-table-head">
+				<div class="j-table-head-row" style="display: flex;">
+					<div class="j-ui">
+						<span>Project Number</span>
+						<div class="j-table-head-action j-ui"><i class="fa fa-caret-down"></i></div>
+					</div>
+					<div class="j-ui">
+						<span>Name</span>
+						<div class="j-table-head-action j-ui"><i class="fa fa-caret-down"></i></div>
+					</div>
+					<div class="j-ui">
+						<span>Description</span>
+						<div class="j-table-head-action j-ui"><i class="fa fa-caret-down"></i></div>
+					</div>
 				</div>
-				<div>
-					<span>Name</span>
-				</div>
-				<div>
-					<span>Description</span>
+			</div>
+			<div class="j-table-body">
+			</div>
+			<div class="j-table-column-resizer"></div>
+		</div>
+		<div class="j-table-head-pop j-pop j-ui">
+			<div>
+				<i class="fa fa-long-arrow-up" style="width: 48px; text-align: center;"></i>
+				<div>Sort Ascending</div>
+				<i class="fa" style="width: 48px; text-align: center;"></i>
+			</div>
+			<div>
+				<i class="fa fa-long-arrow-down" style="width: 48px; text-align: center;"></i>
+				<div>Sort Descending</div>
+				<i class="fa" style="width: 48px; text-align: center;"></i>
+			</div>
+			<div class="j-menu-separator">
+			</div>
+			<div>
+				<i class="fa fa-ellipsis-h" style="width: 48px; text-align: center;"></i>
+				<div>Columns</div>
+				<i class="fa fa-angle-right" style="width: 48px; text-align: center;"></i>
+
+				<div class="j-pop-children j-pop j-ui">
+					<div>
+						<i class="fa" style="width: 48px; text-align: center;"></i>
+						<div>Project Number</div>
+						<i class="fa fa-angle-right" style="width: 48px; text-align: center;"></i>
+
+						<!--div class="j-pop-children j-pop j-ui">
+						<div>
+							<i class="fa" style="width: 48px; text-align: center;"></i>
+							<div>Project Number</div>
+							<i class="fa" style="width: 48px; text-align: center;"></i>
+						</div>
+						<div>
+							<i class="fa" style="width: 48px; text-align: center;"></i>
+							<div>Name</div>
+							<i class="fa" style="width: 48px; text-align: center;"></i>
+						</div>
+						<div>
+							<i class="fa" style="width: 48px; text-align: center;"></i>
+							<div>Description</div>
+							<i class="fa" style="width: 48px; text-align: center;"></i>
+						</div>
+					</div-->
+					</div>
+					<div>
+						<i class="fa" style="width: 48px; text-align: center;"></i>
+						<div>Name</div>
+						<i class="fa" style="width: 48px; text-align: center;"></i>
+					</div>
+					<div>
+						<i class="fa" style="width: 48px; text-align: center;"></i>
+						<div>Description</div>
+						<i class="fa" style="width: 48px; text-align: center;"></i>
+					</div>
 				</div>
 			</div>
 		</div>
-		<div class="j-table-body">
-			<div style="display: flex;">
-				<div style="width: 20px">
-					<span>Column 1</span>
-				</div>
-				<div>
-					<span>Column 1</span>
-				</div>
-				<div>
-					<span>Column 2</span>
-				</div>
-			</div>
-			<div style="display: flex;">
-				<div style="width: 20px">
-					<span>Column 1</span>
-				</div>
-				<div>
-					<span>Column 1</span>
-				</div>
-				<div>
-					<span>Column 2</span>
-				</div>
-			</div>
-		</div>
-		<div class="j-table-column-resizer"></div>
-	</div>
-</div>
+	</j-table>
+</j-panel>
+<style>
+
+</style>
+<script>
+	i = 0
+	while (i < 20) {
+		$('#table-container .j-table-body').append('<div style="display: flex;"><div style="width: 20px"><span>' + chance.google_analytics() + '</span></div><div><span>' + chance.sentence({
+			words: 3
+		}) + '</span></div><div><span>' + chance.paragraph() + '</span></div></div>');
+		i++;
+	}
+
+	var cellWidth = []
+
+	$('#table-container .j-table-head').children('.j-table-head-row').children().each(function(i, val) {
+		cellWidth[i] = $(val).outerWidth(true);
+	})
+
+	$.each(cellWidth, function(i, val) {
+		var width = Math.max.apply(null, $('#table-container .j-table-body > div > div:nth-child(' + (i + 1) + ')').map(function() {
+			return $(this).outerWidth(true);
+		}).get());
+		cellWidth[i] = width > cellWidth[i] ? width : cellWidth[i];
+	})
+
+	$.each(cellWidth, function(i, val) {
+		$('#table-container .j-table-head > div > div:nth-child(' + (i + 1) + ')').width(val)
+		$('#table-container .j-table-body > div > div:nth-child(' + (i + 1) + ')').width(val)
+	})
+
+	$('#table-container .j-table-body > div').click(function() {
+		$(this).parent().children().removeClass('selected-top-border')
+		$(this).addClass('selected').siblings().removeClass('selected')
+		$(this).addClass('selected').prev().addClass('selected-top-border')
+	})
+
+	$('#table > .j-table-body > div > div').css('white-space', 'normal')
+
+	$('body').click(function(e) {
+		if ($(e.target).parents('.j-table-head-action').length == 0 && e.target.className.match(/j-table-head-action/) == null && $(e.target).parents('.j-pop').length == 0) {
+			$('#table-container .j-table-head .j-table-head-action').css('display', '');
+			$('#table-container')[0].jui_popper_id = null;
+			$('.j-pop').hide()
+		}
+	})
+
+	$('#table-container .j-table-head .j-table-head-action').click(function() {
+		var el = $(this);
+		if ($('#table-container')[0].jui_popper_id != this) {
+			if ($('#table-container')[0].jui_popper)
+				$('#table-container')[0].jui_popper.destroy()
+			$('.j-pop').hide()
+			$('.j-table-head-pop').show()
+			el[0].jui_popper = new Popper(this, $('.j-table-head-pop')[0], {
+				placement: 'bottom-start',
+				onCreate: function(data) {
+					$('#table-container .j-table-head .j-table-head-action').css('display', '')
+					el.css('display', 'block')
+					$(data.instance.popper).find('.j-pop-children').hide()
+
+					$(data.instance.popper).find('.j-pop-children').each(function(i, val) {
+
+						$(val).parent().on('mouseover', function(e) {
+							var el = $(this)
+							if (el.children('.j-pop-children')[0].jui_popper)
+								el.children('.j-pop-children')[0].jui_popper.destroy()
+							el.children('.j-pop-children')[0].jui_popper = new Popper(el[0], el.children('.j-pop-children')[0], {
+								placement: 'right-start'
+							});
+
+							el.children('.j-pop-children').show();
+
+							el.siblings().on('mouseover', function(e) {
+								el.find('.j-pop-children').hide();
+								e.stopPropagation()
+							})
+							e.stopPropagation()
+						})
+					})
+				}
+			});
+		} else {
+			//$('.j-table-head-pop').is(':visible') ? ($('.j-table-head-pop').hide(), el.css('display', ''), $('.j-table-columns-pop').hide()) : ($('.j-table-head-pop').show(), //el.css('display', 'block'))
+		}
+		$('#table-container')[0].jui_popper_id = this;
+	})
+
+</script>

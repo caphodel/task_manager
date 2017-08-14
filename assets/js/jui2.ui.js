@@ -1472,7 +1472,7 @@ jui2.method = {
 			this.innerHTML = label
 
 		this.innerHTML = jui2.tmpl['textField']({label: this.innerHTML, type: type});
-		
+
 		$self.children().eq(0).click(function(){
 			$(this).next().focus();
 		})
@@ -1495,7 +1495,7 @@ jui2.method = {
 		 * @example <caption>nopreview</caption>
 		 * $('#myWidget').val('myValue') // will set widget's value to 'myValue'
 		 */
-		console.log(this)
+
 		Object.defineProperty(this.__proto__, 'value', {
 			configurable: true,
 			get: function(){
@@ -1512,7 +1512,7 @@ jui2.method = {
 		});
 
 	};
-	
+
 	proto.addAutocompleteList = function(txt){
 		var $el = $(this)
 		if (!localStorage.getItem('jui2list'+$(this).attr('id'))) localStorage.setItem('jui2list'+$(this).attr('id'), JSON.stringify([]));
@@ -1538,7 +1538,7 @@ jui2.method = {
 			localStorage.setItem('jui2list'+$(this).attr('id'), JSON.stringify(db));
 		}
 	}
-	
+
 	proto.attachedCallback = function(){
 		for (i in this.attributes) {
             var attrName = this.attributes[i].nodeName,

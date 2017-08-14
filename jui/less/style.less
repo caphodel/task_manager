@@ -1,15 +1,196 @@
-@colorPrimary: #5fa2dd;
-@colorPrimaryDark: #5fa2dd;
-@colorAccent: #dfe1e3;
-@colorAccentDark: #dfe1e3;
-@textColorPrimary: #1c2022;
-@textColorPrimaryDark: #5fa2dd;
+@colorPrimary: #f6f6f6;
+@colorPrimaryDark: #e9e9e9;
+@colorPrimaryDarker: #d0d0d0;
+@colorSecondary: #5fa2dd;
+@colorAccent: #ffefbb;
+@colorAccentDark: #f2e3b2;
+@textColorPrimary: #404040;
 @textColorAccent: #fff;
 @windowBackground: #fff;
+.j-ui {
+	box-sizing: border-box;
+	position: relative;
+	display: inline-block;
+	vertical-align: top;
+}
+
 j-panel {
 	overflow: hidden;
 	position: relative;
 	background: @windowBackground;
 	display: inline-block;
 	border: 1px solid @colorPrimary;
+}
+
+j-table>.j-table {
+	display: flex;
+	flex-direction: column;
+	color: @textColorPrimary;
+	position: relative;
+}
+
+.j-table>.j-table-head {
+	background: @windowBackground;
+	border-bottom: 2px solid @colorPrimaryDarker;
+}
+
+.j-table>.j-table-head>div>div:not(:last-child) {
+	border-right: 1px solid @colorPrimaryDark;
+}
+
+.j-table>.j-table-head>div>div {
+	padding: 8px;
+	overflow: hidden;
+	min-width: 43px;
+	box-sizing: border-box;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	position: relative;
+}
+
+.j-table>.j-table-head>div>div:hover>.j-table-head-action {
+	display: block;
+}
+
+.j-table>.j-table-head>div>div>.j-table-head-action {
+	display: none;
+	position: absolute;
+	right: 0px;
+	top: 0px;
+	height: 100%;
+	border-left: 1px solid @colorPrimaryDark;
+	padding: 8px 8px;
+	background: @windowBackground;
+	cursor: pointer;
+}
+
+.j-table>.j-table-body {
+	background: @windowBackground;
+}
+
+.j-table>.j-table-body>div {
+	border-bottom: 1px solid @colorPrimaryDark;
+}
+
+.j-table>.j-table-body>div.selected-top-border {
+	border-color: @colorAccentDark !important;
+}
+
+.j-table>.j-table-body>div.selected {
+	background: @colorAccent !important;
+	border-color: @colorAccentDark !important;
+}
+
+.j-table>.j-table-body>div:active+div {
+	border-top-width: 0;
+}
+
+.j-table>.j-table-body>div>div:not(:last-child) {
+	border-right: 1px solid rgba(0, 0, 0, 0);
+}
+
+.j-table>.j-table-body>div>div {
+	padding: 8px;
+	overflow: hidden;
+	min-width: 43px;
+	box-sizing: border-box;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.j-table>.j-table-body>div:nth-child(even) {
+	background: @colorPrimary;
+}
+
+.j-table>.j-table-column-resizer {
+	background: rgba(0, 0, 0, 0);
+	width: 1px;
+	position: absolute;
+	height: 100%;
+	top: 0px;
+	border-left: 5px solid rgba(0, 0, 0, 0);
+	border-right: 5px solid rgba(0, 0, 0, 0);
+	-moz-background-clip: content;
+	/* Firefox 3.6 */
+	-webkit-background-clip: content;
+	/* Safari 4? Chrome 6? */
+	background-clip: content-box;
+	/* Firefox 4, Safari 5, Opera 10, IE 9 */
+	display: inline-block;
+	cursor: col-resize;
+}
+
+.j-table>.j-table-column-resizer:active {
+	background: @colorPrimaryDark;
+	-moz-background-clip: content;
+	/* Firefox 3.6 */
+	-webkit-background-clip: content;
+	/* Safari 4? Chrome 6? */
+	background-clip: content-box;
+	/* Firefox 4, Safari 5, Opera 10, IE 9 */
+}
+
+.j-pop {
+	padding: 8px 0;
+	background: @windowBackground;
+	-webkit-box-shadow: 2px 2px 8px 0 rgba(0, 0, 0, 0.4);
+	box-shadow: 2px 2px 8px 0 rgba(0, 0, 0, 0.4);
+	display: none;
+}
+
+.j-pop>div:hover {
+	background: @colorPrimaryDark;
+}
+
+.j-pop>div:not(.j-menu-separator) {
+	cursor: pointer;
+	padding: 8px 0;
+	display: flex;
+}
+
+.j-pop>div>*:not(.j-pop-children) {
+	display: inline-block;
+	align-self: center;
+}
+
+.j-pop>div>div {
+	flex: 1 1 0;
+	-webkit-box-flex: 1;
+	-webkit-flex: 1;
+}
+
+.j-menu-separator {
+	height: 1px;
+	border-width: 1px 0 0;
+	border-style: solid;
+	border-color: @colorPrimaryDark;
+	margin: 8px 0;
+}
+
+.j-header {
+	border-bottom: 1px solid @colorPrimaryDark;
+	background: @colorSecondary;
+	color: @textColorAccent;
+}
+
+.j-header,
+.j-header>* {
+	font-family: "Lato", sans-serif;
+	font-size: 16px;
+	font-weight: 600;
+	color: @textColorAccent;
+}
+
+.j-header {
+	padding: 14px 20px;
+	display: flex;
+}
+
+j-panel {
+	overflow: hidden;
+	position: relative;
+	background: @windowBackground;
+	display: inline-block;
+	border: 1px solid @colorSecondary;
+	width: 100%;
 }
