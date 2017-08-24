@@ -1,7 +1,8 @@
-<thead>
-	<tr>
-		{{#each columns}}
-		<th class="j-border-bot2 j-bg1 j-no-wrap j-border-right1"><div class="j-pad1 j-wrap-hide">{{{this}}}<div class="j-table-sort j-table-left1 j-bg1"></div><j-resize drag="true" direction="horizontal"></j-resize></div></th>
-		{{/each}}
-	</tr>
-</thead>
+<div class="j-table-head-row" style="display: flex;">
+{{#each columns}}
+	<div class="j-ui">
+		<span>{{{this}}}</span>
+		<div class="j-table-head-action j-ui"><i class="fa fa-caret-down"></i></div>
+	</div>
+{{/each}}
+</div>

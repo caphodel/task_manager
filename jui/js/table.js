@@ -12,10 +12,20 @@
 
 		jui2.ui.base.proto.createdCallback.call(this, jui2.ui.table);
 
-		var $self = $(this)
+		var $self = $(this), regxp = /<(.|\n)*?>(.|\n)*?<\/(.|\n)*?>/ig, data = [];
 
-		if(this.innerHTML.trim() == '')
-			this.innerHTML = ''
+		var text = $('<div>' + this.innerHTML + '</div>');
+		text.children().remove()
+
+		if (text[0].innerHTML.trim().replace(regxp, '') == "")
+			data = [];
+		else
+			data = JSON.parse(text[0].innerHTML.replace(regxp, ''));
+
+		this.innerHTML = jui2.tmpl['tableBase']({
+			label: this.innerHTML,
+			type: type
+		});
 
 		this.attrChangedCb(['disabled', 'icon'])
 
@@ -23,6 +33,17 @@
 			this[i] = jui2.method[i];
 		}
 	};
+
+	proto.addHeader = function(arrHeader){
+		$el = $(this)
+
+
+	}
+
+	proto.getHeaderContainer = function(){
+		$el = $(this)
+		return $el.find('.j-table .j-table-head');
+	}
 
 	proto.attachedCallback = function() {
 		for (i in this.attributes) {
