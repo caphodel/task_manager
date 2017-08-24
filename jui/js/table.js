@@ -22,10 +22,7 @@
 		else
 			data = JSON.parse(text[0].innerHTML.replace(regxp, ''));
 
-		this.innerHTML = jui2.tmpl['tableBase']({
-			label: this.innerHTML,
-			type: type
-		});
+		this.innerHTML = jui2.tmpl['tableBase']();
 
 		this.attrChangedCb(['disabled', 'icon'])
 
@@ -35,13 +32,15 @@
 	};
 
 	proto.addHeader = function(arrHeader){
-		$el = $(this)
+		var $el = $(this), self = this, $headerContainer = self.getHeaderContainer(), header = jui2.tmpl['tableHeader']({columns: arrHeader});
 
+		$headerContainer.append(header);
 
+		return $(header);
 	}
 
 	proto.getHeaderContainer = function(){
-		$el = $(this)
+		var $el = $(this)
 		return $el.find('.j-table .j-table-head');
 	}
 
