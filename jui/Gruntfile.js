@@ -24,7 +24,10 @@ module.exports = function (grunt) {
 					'js/base.js',
 					'js/button.js',
 					'js/textField.js',
-					'js/progressBar.js'
+					'js/progressBar.js',
+					'js/table.js',
+					'js/panel.js',
+					'js/collapsible.js'
 				],
 				dest : '../assets/js/<%= pkg.name %>.ui.js'
 			},

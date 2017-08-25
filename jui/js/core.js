@@ -578,6 +578,33 @@ var jui2 = jui2 || {
 		}
 	};
 
+	$.max = function (array)
+	{
+	    var m = -Infinity, i = 0, n = array.length;
+
+	    for (; i != n; ++i) {
+	        if (array[i] > m) {
+	            m = array[i];
+	        }
+	    }
+
+	    return m;
+	}
+
+	$.maxKey = function (array)
+	{
+	    var m = -Infinity, i = 0, n = array.length, key = 0;
+
+	    for (; i != n; ++i) {
+	        if (array[i] > m) {
+	            m = array[i];
+				key = i
+	        }
+	    }
+
+	    return key;
+	}
+
 	/**
 	 * Get ideal color (black or white) for defined background color
 	 * @param  {string} bgColor Hex color

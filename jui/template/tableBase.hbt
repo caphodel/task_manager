@@ -3,4 +3,41 @@
 	</div>
 	<div class="j-table-body">
 	</div>
+	<div class="j-table-head-pop j-pop j-ui">
+		<div>
+			<i class="fa fa-long-arrow-up" style="width: 48px; text-align: center;"></i>
+			<div>Sort Ascending</div>
+			<i class="fa" style="width: 48px; text-align: center;"></i>
+		</div>
+		<div>
+			<i class="fa fa-long-arrow-down" style="width: 48px; text-align: center;"></i>
+			<div>Sort Descending</div>
+			<i class="fa" style="width: 48px; text-align: center;"></i>
+		</div>
+		<div class="j-menu-separator">
+		</div>
+		<!--div>
+			<i class="fa fa-ellipsis-h" style="width: 48px; text-align: center;"></i>
+			<div>Columns</div>
+			<i class="fa fa-angle-right" style="width: 48px; text-align: center;"></i>
+
+			<div class="j-pop-children j-pop j-ui">
+				<div>
+					<i class="fa" style="width: 48px; text-align: center;"></i>
+					<div>Project Number</div>
+					<i class="fa" style="width: 48px; text-align: center;"></i>
+				</div>
+				<div>
+					<i class="fa" style="width: 48px; text-align: center;"></i>
+					<div>Name</div>
+					<i class="fa" style="width: 48px; text-align: center;"></i>
+				</div>
+				<div>
+					<i class="fa" style="width: 48px; text-align: center;"></i>
+					<div>Description</div>
+					<i class="fa" style="width: 48px; text-align: center;"></i>
+				</div>
+			</div>
+		</div-->
+	</div>
 </div>

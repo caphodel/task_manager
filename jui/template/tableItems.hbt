@@ -1,0 +1,7 @@
+{{#each rows}}
+<div style="display: flex;">
+	{{#each this}}
+	<div><span>{{{this}}}</span></div>
+	{{/each}}
+</div>
+{{/each}}

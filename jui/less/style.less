@@ -7,6 +7,9 @@
 @textColorPrimary: #404040;
 @textColorAccent: #fff;
 @windowBackground: #fff;
+.fa {
+	font:normal normal normal 14px/1 FontAwesome !important;
+}
 .j-ui {
 	box-sizing: border-box;
 	position: relative;
@@ -186,6 +189,15 @@ j-table>.j-table {
 	display: flex;
 }
 
+*[collapsed] > .j-header {
+	border-bottom-width: 0px;
+}
+
+.j-collapser{
+	cursor: pointer;
+	align-self: center;
+}
+
 j-panel {
 	overflow: hidden;
 	position: relative;
@@ -193,4 +205,10 @@ j-panel {
 	display: inline-block;
 	border: 1px solid @colorSecondary;
 	width: 100%;
+}
+
+j-spacer {
+	flex: 1 1 0;
+	-webkit-box-flex: 1;
+	-webkit-flex: 1;
 }

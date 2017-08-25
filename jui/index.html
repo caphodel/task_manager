@@ -1,0 +1,22 @@
+<script src="../assets/js/jquery.min.js"></script>
+<link href="../assets/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
+<link href="../assets/css/jui2.css" rel="stylesheet" type="text/css" />
+<script src="../assets/js/jui2.lib.js"></script>
+<script src="../assets/js/jui2.tmp.js"></script>
+<script src="../assets/js/jui2.ui.js"></script>
+<script src="lib/chance_min.js"></script>
+<script src="lib/popper.js"></script>
+<body style="height: 100%">
+	<j-panel collapsible="true">
+		<div class="j-header">Table Example</div>
+		<j-table>
+			[["Id", "Username"],["1", "user 1"],["2", "user 2"]]
+		</j-table>
+	</j-panel>
+
+	<script>
+		$('j-table').on('afterdraw', function(){
+			console.log('a')
+		})
+	</script>
+</body>
