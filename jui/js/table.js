@@ -4,7 +4,7 @@
  * @example <caption>Basic table</caption>
  * <j-table>[["column1", "column2"], ["data1", "data2"]]</j-table>
  */
-(function($){
+(function($) {
 	/** @constructor */
 	var proto = Object.create(HTMLElement.prototype)
 
@@ -12,7 +12,8 @@
 
 		jui2.ui.base.proto.createdCallback.call(this, jui2.ui.table);
 
-		var $self = $(this), regxp = /<(.|\n)*?>(.|\n)*?<\/(.|\n)*?>/ig;
+		var $self = $(this),
+			regxp = /<(.|\n)*?>(.|\n)*?<\/(.|\n)*?>/ig;
 		this.aaData = [];
 
 		var text = $('<div>' + this.innerHTML + '</div>');
@@ -25,7 +26,8 @@
 
 		this.innerHTML = jui2.tmpl['tableBase']();
 
-		var $body = $self.children('.j-table').children('.j-table-body'), $head = $self.children('.j-table').children('.j-table-head');
+		var $body = $self.children('.j-table').children('.j-table-body'),
+			$head = $self.children('.j-table').children('.j-table-head');
 
 		//adding header
 		this.addHeader(this.aaData.shift());
@@ -37,17 +39,20 @@
 
 		this.attrChangedCb(['disabled', 'icon'])
 
-		for(i in jui2.method){
+		for (i in jui2.method) {
 			this[i] = jui2.method[i];
 		}
 	};
 
-	proto.generateData = function(data){
-		var $self = $(this), $body = $self.children('.j-table').children('.j-table-body');
+	proto.generateData = function(data) {
+		var $self = $(this),
+			$body = $self.children('.j-table').children('.j-table-body');
 
 		this.data = data || this.data;
 
-		$body.empty().append(jui2.tmpl['tableItems']({rows: this.data}));
+		$body.empty().append(jui2.tmpl['tableItems']({
+			rows: this.data
+		}));
 
 		$body.find('> div').click(function() {
 			$(this).parent().children().removeClass('selected-top-border')
@@ -57,29 +62,85 @@
 
 		this.setWidth();
 
+		this.addResizer($self.children('.j-table').find('> .j-table-head > .j-table-head-row > div'))
+
 		$self.triggerHandler('afterdraw');
 	}
 
-	proto.addHeader = function(arrHeader){
-		var $el = $(this), self = this, $headerContainer = self.getHeaderContainer(), header = jui2.tmpl['tableHeader']({columns: arrHeader});
+	proto.addHeader = function(arrHeader) {
+		var $el = $(this),
+			self = this,
+			$headerContainer = self.getHeaderContainer(),
+			$header = $(jui2.tmpl['tableHeader']({
+				columns: arrHeader
+			}));
 
-		$headerContainer.append(header);
+		$headerContainer.append($header);
 
-		return $(header);
+		return $header;
 	}
 
-	proto.getHeaderContainer = function(){
+	proto.addResizer = function(el) {
+		var $el = $(this)
+		$(el).each(function(index, el) {
+			if (el.resizer == undefined) {
+				var $resizer = $('<div class="j-table-column-resizer"></div>')
+
+				$el.children('.j-table').append($resizer);
+
+				el.resizer = $resizer[0];
+
+				el.resizer_popper = new Popper(el, $resizer[0], {
+					placement: 'top-end',
+					modifiers: {
+						offset: {
+							offset: '0px, -' + $(el).outerHeight(true) + 'px'
+						}
+					},
+					onCreate: function(data) {}
+				});
+
+				function startDrag(el, e){
+					console.log(el, e)
+				}
+
+				function endDrag(el, e){
+					console.log(el, e)
+				}
+
+				console.log($(el).parent())
+
+				var options = {
+					constrain: true,
+					relativeTo: $(el).parent(),
+
+					onMouseDown: startDrag,
+					onTouchStart: startDrag,
+					onMouseUp: endDrag,
+					onTouchStop: endDrag
+				};
+
+				//displace($resizer[0], options);
+			}
+		});
+	}
+
+	proto.getHeaderContainer = function() {
 		var $el = $(this)
 		return $el.find('.j-table > .j-table-head');
 	}
 
-	proto.getBodyContainer = function(){
+	proto.getBodyContainer = function() {
 		var $el = $(this)
 		return $el.find('.j-table > .j-table-body');
 	}
 
-	proto.setWidth = function(){
-		var cellWidth = [], self = this, $self = $(this), $header = this.getHeaderContainer(), $body = this.getBodyContainer();
+	proto.setWidth = function() {
+		var cellWidth = [],
+			self = this,
+			$self = $(this),
+			$header = this.getHeaderContainer(),
+			$body = this.getBodyContainer();
 
 		$header.children('.j-table-head-row').children().each(function(i, val) {
 			cellWidth[i] = $(val).width();
@@ -96,9 +157,9 @@
 
 		var maxWidthKey = $.maxKey(cellWidth);
 
-		var count=0;
-		for (var i=cellWidth.length; i--;) {
-			count+=cellWidth[i];
+		var count = 0;
+		for (var i = cellWidth.length; i--;) {
+			count += cellWidth[i];
 		}
 
 		cellWidth[maxWidthKey] += $header.width() - count;
@@ -113,8 +174,11 @@
 		$body.find('> div > div').css('white-space', 'normal')
 	}
 
-	proto.setHeaderMenu = function(){
-		var self = this, $self = $(this), $header = this.getHeaderContainer(), $body = this.getBodyContainer();
+	proto.setHeaderMenu = function() {
+		var self = this,
+			$self = $(this),
+			$header = this.getHeaderContainer(),
+			$body = this.getBodyContainer();
 		$('body').click(function(e) {
 			if ($(e.target).parents('.j-table-head-action').length == 0 && e.target.className.match(/j-table-head-action/) == null && $(e.target).parents('.j-pop').length == 0) {
 				var $jtable = $('j-table');
@@ -125,7 +189,8 @@
 		})
 
 		$header.find('.j-table-head-action').click(function() {
-			var $headerMenu = $self.find('> .j-table > .j-table-head-pop'), $headAction = $(this);
+			var $headerMenu = $self.find('> .j-table > .j-table-head-pop'),
+				$headAction = $(this);
 			if ($self[0].jui_popper_id != this) {
 				if ($self[0].jui_popper)
 					$self[0].jui_popper.destroy()
@@ -186,15 +251,15 @@
 	}
 
 	jui2.ui.table = {
-		widget: document.registerElement('j-table',  {
+		widget: document.registerElement('j-table', {
 			prototype: proto
 		}),
 		proto: proto
 	}
 
-	jui2.attrChange['jtable_ajax-loader'] = function(el, oldVal, newVal) {
+	jui2.attrChange['j-table_ajax-loader'] = function(el, oldVal, newVal) {
 		var $el = $(el);
-		if(newVal != null){
+		if (newVal != null) {
 			el.param = {
 				sEcho: 0,
 				rand: 0,
@@ -207,26 +272,24 @@
 				totalPage: 0
 			}
 			el.generateData_ = el.generateData;
-			el.generateData = function(data){
-				if(typeof data == 'array'){
+			el.generateData = function(data) {
+				if (typeof data == 'array') {
 					el.generateData_(data);
 				}
-				if(!data){
-					$.getJSON(newVal, param, function(data){
-						if(data.sEcho == el.param.sEcho){
+				if (!data) {
+					$.getJSON(newVal, param, function(data) {
+						if (data.sEcho == el.param.sEcho) {
 							el.aaData = data.aaData;
 							el.param.iTotalRecords = data.iTotalRecords;
-							el.param.totalPage = Math.ceil(el.param.iTotalRecords/el.param.iDisplayLength)
+							el.param.totalPage = Math.ceil(el.param.iTotalRecords / el.param.iDisplayLength)
 							el.generateData_(data.aaData);
 						}
 					})
 				}
 			}
-		}
-		else{
+		} else {
 
 		}
 	}
 
-}(jQuery))
-;
+}(jQuery));

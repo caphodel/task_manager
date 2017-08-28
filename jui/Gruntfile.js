@@ -32,7 +32,7 @@ module.exports = function (grunt) {
 				dest : '../assets/js/<%= pkg.name %>.ui.js'
 			},
 			lib : {
-				src : ['lib/document-register-element.js', 'lib/handlebars.runtime-v3.0.3.js', 'lib/helper.js', 'lib/expr-eval.min.js', 'lib/popper.js'],
+				src : ['lib/document-register-element.js', 'lib/handlebars.runtime-v3.0.3.js', 'lib/helper.js', 'lib/expr-eval.min.js', 'lib/popper.js', 'lib/displace.min.js'],
 				dest : '../assets/js/<%= pkg.name %>.lib.js'
 			},
 			css : {
