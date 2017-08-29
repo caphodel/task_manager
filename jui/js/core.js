@@ -8,6 +8,71 @@ var jui2 = jui2 || {
 	chart: {}
 };
 
+
+
+// Which HTML element is the target of the event
+function mouseTarget(e) {
+	var targ;
+	if (!e) var e = window.event;
+	if (e.target) targ = e.target;
+	else if (e.srcElement) targ = e.srcElement;
+	if (targ.nodeType == 3) // defeat Safari bug
+		targ = targ.parentNode;
+	return targ;
+}
+
+// Mouse position relative to the document
+// From http://www.quirksmode.org/js/events_properties.html
+function mousePositionDocument(e) {
+	var posx = 0;
+	var posy = 0;
+	if (!e) {
+		var e = window.event;
+	}
+	if (e.pageX || e.pageY) {
+		posx = e.pageX;
+		posy = e.pageY;
+	}
+	else if (e.clientX || e.clientY) {
+		posx = e.clientX + document.body.scrollLeft + document.documentElement.scrollLeft;
+		posy = e.clientY + document.body.scrollTop + document.documentElement.scrollTop;
+	}
+	return {
+		x : posx,
+		y : posy
+	};
+}
+
+// Find out where an element is on the page
+// From http://www.quirksmode.org/js/findpos.html
+function findPos(obj) {
+	var curleft = curtop = 0;
+	if (obj.offsetParent) {
+		do {
+			curleft += obj.offsetLeft;
+			curtop += obj.offsetTop;
+		} while (obj = obj.offsetParent);
+	}
+	return {
+		left : curleft,
+		top : curtop
+	};
+}
+
+// Mouse position relative to the element
+// not working on IE7 and below
+function mousePositionElement(e, target) {
+	var mousePosDoc = mousePositionDocument(e);
+	//var target = mouseTarget(e);
+	var targetPos = findPos(target);
+	var posx = mousePosDoc.x - targetPos.left;
+	var posy = mousePosDoc.y - targetPos.top;
+	return {
+		x : posx,
+		y : posy
+	};
+}
+
 (function($) {
 
 	Array.prototype._reduce = function(callback /*, initialValue*/) {
@@ -152,6 +217,26 @@ var jui2 = jui2 || {
 			$('.j-confirm').remove()
 		})
 	}
+
+	$.fn.offsetRelative = function(top){
+		var $this = $(this);
+		var $parent = $this.offsetParent();
+		var offset = $this.position();
+		if(!top) return offset; // Didn't pass a 'top' element
+		else if($parent.get(0).tagName == "BODY") return offset; // Reached top of document
+		else if($(top,$parent).length) return offset; // Parent element contains the 'top' element we want the offset to be relative to
+		else if($parent[0] == $(top)[0]) return offset; // Reached the 'top' element we want the offset to be relative to
+		else { // Get parent's relative offset
+			var parent_offset = $parent.offsetRelative(top);
+			offset.top += parent_offset.top;
+			offset.left += parent_offset.left;
+			return offset;
+		}
+	};
+	
+	$.fn.positionRelative = function(top){
+		return $(this).offsetRelative(top);
+	};
 
 	/**
 	 * After resize event

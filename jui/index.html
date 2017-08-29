@@ -9,14 +9,18 @@
 <body style="height: 100%">
 	<j-panel collapsible="true">
 		<div class="j-header">Table Example</div>
-		<j-table>
-			[["Id", "Username"],["1", "user 1"],["2", "user 2"]]
+		<j-table id="table1">
+			[["Id", "Username", "password"],["1", "user 1", "123456"],["2", "user 2", "asdfghjk"]]
 		</j-table>
 	</j-panel>
 
 	<script>
-		$('j-table').on('afterdraw', function(){
+		$('#table1').on('afterdraw', function(){
 			console.log('a')
 		})
 	</script>
+
+	<j-table style="width: 500px">
+		[["Id", "Username", "password"],["1", "user 1", "123456"],["2", "user 2", "asdfghjk"]]
+	</j-table>
 </body>

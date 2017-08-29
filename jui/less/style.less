@@ -25,6 +25,10 @@ j-panel {
 	border: 1px solid @colorPrimary;
 }
 
+j-table{
+	width: 100%;
+}
+
 j-table>.j-table {
 	display: flex;
 	flex-direction: column;
@@ -123,7 +127,7 @@ j-table>.j-table {
 	cursor: col-resize;
 }
 
-.j-table>.j-table-column-resizer:active {
+.j-table>.j-table-column-resizer:active, .j-table>.j-table-column-resizer-active {
 	background: @colorPrimaryDarker;
 	-moz-background-clip: content;
 	/* Firefox 3.6 */

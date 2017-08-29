@@ -9,6 +9,71 @@ var jui2 = jui2 || {
 	chart: {}
 };
 
+
+
+// Which HTML element is the target of the event
+function mouseTarget(e) {
+	var targ;
+	if (!e) var e = window.event;
+	if (e.target) targ = e.target;
+	else if (e.srcElement) targ = e.srcElement;
+	if (targ.nodeType == 3) // defeat Safari bug
+		targ = targ.parentNode;
+	return targ;
+}
+
+// Mouse position relative to the document
+// From http://www.quirksmode.org/js/events_properties.html
+function mousePositionDocument(e) {
+	var posx = 0;
+	var posy = 0;
+	if (!e) {
+		var e = window.event;
+	}
+	if (e.pageX || e.pageY) {
+		posx = e.pageX;
+		posy = e.pageY;
+	}
+	else if (e.clientX || e.clientY) {
+		posx = e.clientX + document.body.scrollLeft + document.documentElement.scrollLeft;
+		posy = e.clientY + document.body.scrollTop + document.documentElement.scrollTop;
+	}
+	return {
+		x : posx,
+		y : posy
+	};
+}
+
+// Find out where an element is on the page
+// From http://www.quirksmode.org/js/findpos.html
+function findPos(obj) {
+	var curleft = curtop = 0;
+	if (obj.offsetParent) {
+		do {
+			curleft += obj.offsetLeft;
+			curtop += obj.offsetTop;
+		} while (obj = obj.offsetParent);
+	}
+	return {
+		left : curleft,
+		top : curtop
+	};
+}
+
+// Mouse position relative to the element
+// not working on IE7 and below
+function mousePositionElement(e, target) {
+	var mousePosDoc = mousePositionDocument(e);
+	//var target = mouseTarget(e);
+	var targetPos = findPos(target);
+	var posx = mousePosDoc.x - targetPos.left;
+	var posy = mousePosDoc.y - targetPos.top;
+	return {
+		x : posx,
+		y : posy
+	};
+}
+
 (function($) {
 
 	Array.prototype._reduce = function(callback /*, initialValue*/) {
@@ -153,6 +218,26 @@ var jui2 = jui2 || {
 			$('.j-confirm').remove()
 		})
 	}
+
+	$.fn.offsetRelative = function(top){
+		var $this = $(this);
+		var $parent = $this.offsetParent();
+		var offset = $this.position();
+		if(!top) return offset; // Didn't pass a 'top' element
+		else if($parent.get(0).tagName == "BODY") return offset; // Reached top of document
+		else if($(top,$parent).length) return offset; // Parent element contains the 'top' element we want the offset to be relative to
+		else if($parent[0] == $(top)[0]) return offset; // Reached the 'top' element we want the offset to be relative to
+		else { // Get parent's relative offset
+			var parent_offset = $parent.offsetRelative(top);
+			offset.top += parent_offset.top;
+			offset.left += parent_offset.left;
+			return offset;
+		}
+	};
+	
+	$.fn.positionRelative = function(top){
+		return $(this).offsetRelative(top);
+	};
 
 	/**
 	 * After resize event
@@ -1715,8 +1800,11 @@ jui2.method = {
 		jui2.ui.base.proto.createdCallback.call(this, jui2.ui.table);
 
 		var $self = $(this),
+			self = this,
 			regxp = /<(.|\n)*?>(.|\n)*?<\/(.|\n)*?>/ig;
 		this.aaData = [];
+
+		$self.addClass('j-ui')
 
 		var text = $('<div>' + this.innerHTML + '</div>');
 		text.children().remove()
@@ -1741,9 +1829,15 @@ jui2.method = {
 
 		this.attrChangedCb(['disabled', 'icon'])
 
+		this.maxWidth = [];
+
 		for (i in jui2.method) {
 			this[i] = jui2.method[i];
 		}
+
+		$self.delegate('> .j-table > .j-table-head > .j-table-head-row > div', 'doubletap dblclick', function(e) {
+			self.setColumnMaxWidth(this);
+		});
 	};
 
 	proto.generateData = function(data) {
@@ -1769,7 +1863,24 @@ jui2.method = {
 		$self.triggerHandler('afterdraw');
 	}
 
-	proto.addHeader = function(arrHeader) {
+	proto.setColumnMaxWidth = function(el){
+		var $el = $(el), $elItems = $(this).find('>.j-table > .j-table-body > .j-table-body-row > .j-table-body-column:nth-child('+(el.column+1)+')'), $elWidth = $('<div style="position: absolute;visibility: hidden;height: auto;width: auto;white-space: nowrap;padding: 8px;"></div>').appendTo('body'), width = $elWidth.html(el.innerHTML).outerWidth(true);
+		$elItems.each(function(i, val){
+			var w = $elWidth.html(val.innerHTML).outerWidth(true);
+			if(w>width){
+				width = w;
+			}
+		})
+
+		$elItems.outerWidth(width)
+		$el.outerWidth(width)
+		$(el).parent().children().each(function(i, el){
+			el.resizer_popper.update()
+		})
+		$elWidth.remove()
+	}
+
+	proto.addHeader = function(arrHeader, boundTo) {
 		var $el = $(this),
 			self = this,
 			$headerContainer = self.getHeaderContainer(),
@@ -1777,20 +1888,25 @@ jui2.method = {
 				columns: arrHeader
 			}));
 
+		$header.children().each(function(i, val){
+			val.column = boundTo != undefined ? boundTo[i] : i;
+		})
+
 		$headerContainer.append($header);
 
 		return $header;
 	}
 
 	proto.addResizer = function(el) {
-		var $el = $(this)
+		var $table = $(this)
 		$(el).each(function(index, el) {
 			if (el.resizer == undefined) {
-				var $resizer = $('<div class="j-table-column-resizer"></div>')
+				var $resizer = $('<div class="j-table-column-resizer" ontouchstart=""></div>')
 
-				$el.children('.j-table').append($resizer);
+				$table.children('.j-table').append($resizer);
 
 				el.resizer = $resizer[0];
+				$resizer[0].target = el;
 
 				el.resizer_popper = new Popper(el, $resizer[0], {
 					placement: 'top-end',
@@ -1799,30 +1915,71 @@ jui2.method = {
 							offset: '0px, -' + $(el).outerHeight(true) + 'px'
 						}
 					},
-					onCreate: function(data) {}
+					onCreate: function(data) {
+						/*$resizer[0].position = {
+							start: {
+								x: 0,
+								y: 0,
+								offset: $resizer.offsetRelative().left
+							}
+						}*/
+					}
 				});
 
-				function startDrag(el, e){
-					console.log(el, e)
+				$resizer[0].position = {
+					start: {
+						x: 0,
+						y: 0,
+						offset: $resizer.offsetRelative().left
+					}
 				}
 
-				function endDrag(el, e){
-					console.log(el, e)
-				}
+				$resizer.on('mousedown touchstart', function(e) {
+					var $el = $(this)
+					$el.addClass('j-table-column-resizer-active')
+					$el.css('width', '2px')
+					var clientX = e.type != 'touchstart' ? e.originalEvent.clientX : e.originalEvent.changedTouches[0].clientX;
+					this.position.start.x = clientX
+					this.position.start.offset = $resizer.offsetRelative().left
 
-				console.log($(el).parent())
+					$('body')[0].dragEl = this;
+				})
 
-				var options = {
-					constrain: true,
-					relativeTo: $(el).parent(),
+				$('body').on("mouseup touchend", function(e) {
+					if (this.dragEl) {
+						var $el = $(this.dragEl)
+						$el.removeClass('j-table-column-resizer-active')
+						$el.css('width', '1px')
+						var clientX = e.type != 'touchend' ? e.originalEvent.clientX : e.originalEvent.changedTouches[0].clientX;
+						var translate = 'translate3d(' + (this.dragEl.position.start.offset + (clientX - this.dragEl.position.start.x)) + 'px, 0px, 0px)', resizer = this.dragEl
+						this.dragEl.style.webkitTransform = translate
+						this.dragEl.style.MozTransform = translate
+						this.dragEl.style.msTransform = translate
+						this.dragEl.style.OTransform = translate
+						this.dragEl.style.transform = translate
+						var elWidth = $(this.dragEl.target).outerWidth(true) + (clientX - this.dragEl.position.start.x),
+						elNextWidth = $(this.dragEl.target).next().outerWidth(true) - (clientX - this.dragEl.position.start.x);
+						$target = $(this.dragEl.target)
+						$target.outerWidth(elWidth).next().outerWidth(elNextWidth)
+						$target.parent().parent().parent().find('> .j-table-body > .j-table-body-row > .j-table-body-column:nth-child('+(this.dragEl.target.column+1)+')').outerWidth(elWidth).next().outerWidth(elNextWidth)
+						$target.parent().children().each(function(i, el){
+							el.resizer_popper.update()
+						})
+					}
+					this.dragEl = undefined;
+				})
 
-					onMouseDown: startDrag,
-					onTouchStart: startDrag,
-					onMouseUp: endDrag,
-					onTouchStop: endDrag
-				};
-
-				//displace($resizer[0], options);
+				$('body').on("mousemove touchmove", function(e) {
+					if (this.dragEl!=undefined) {
+						var clientX = e.type != 'touchmove' ? e.originalEvent.clientX : e.originalEvent.changedTouches[0].clientX;
+						var translate = 'translate3d(' + (this.dragEl.position.start.offset + (clientX - this.dragEl.position.start.x)) + 'px, 0px, 0px)'
+						this.dragEl.style.webkitTransform = translate
+						this.dragEl.style.MozTransform = translate
+						this.dragEl.style.msTransform = translate
+						this.dragEl.style.OTransform = translate
+						this.dragEl.style.transform = translate
+					}
+				})
 			}
 		});
 	}
@@ -1845,14 +2002,14 @@ jui2.method = {
 			$body = this.getBodyContainer();
 
 		$header.children('.j-table-head-row').children().each(function(i, val) {
-			cellWidth[i] = $(val).width();
+			cellWidth[i] = $(val).outerWidth(true);
 		})
 
 		//console.log(cellWidth)
 
 		$.each(cellWidth, function(i, val) {
 			var width = Math.max.apply(null, $body.find('> div > div:nth-child(' + (i + 1) + ')').map(function() {
-				return $(this).width();
+				return $(this).outerWidth(true);
 			}).get());
 			cellWidth[i] = width > cellWidth[i] ? width : cellWidth[i];
 		})
@@ -1869,8 +2026,8 @@ jui2.method = {
 		//console.log($header.width(), cellWidth, count )
 
 		$.each(cellWidth, function(i, val) {
-			$header.find('> div > div:nth-child(' + (i + 1) + ')').width(val)
-			$body.find('> div > div:nth-child(' + (i + 1) + ')').width(val)
+			$header.find('> div > div:nth-child(' + (i + 1) + ')').outerWidth(val)
+			$body.find('> div > div:nth-child(' + (i + 1) + ')').outerWidth(val)
 		})
 
 		$body.find('> div > div').css('white-space', 'normal')

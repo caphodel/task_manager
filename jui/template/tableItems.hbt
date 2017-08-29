@@ -1,7 +1,7 @@
 {{#each rows}}
-<div style="display: flex;">
+<div style="display: flex;" class="j-table-body-row">
 	{{#each this}}
-	<div><span>{{{this}}}</span></div>
+	<div class="j-table-body-column"><span>{{{this}}}</span></div>
 	{{/each}}
 </div>
 {{/each}}

@@ -277,13 +277,13 @@ this["jui2"]["tmpl"]["tableInPlaceForm"] = Handlebars.template({"compiler":[6,">
 this["jui2"]["tmpl"]["tableItems"] = Handlebars.template({"1":function(depth0,helpers,partials,data) {
     var stack1;
 
-  return "<div style=\"display: flex;\">\r\n"
+  return "<div style=\"display: flex;\" class=\"j-table-body-row\">\r\n"
     + ((stack1 = helpers.each.call(depth0,depth0,{"name":"each","hash":{},"fn":this.program(2, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
     + "</div>\r\n";
 },"2":function(depth0,helpers,partials,data) {
     var stack1;
 
-  return "	<div><span>"
+  return "	<div class=\"j-table-body-column\"><span>"
     + ((stack1 = this.lambda(depth0, depth0)) != null ? stack1 : "")
     + "</span></div>\r\n";
 },"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
