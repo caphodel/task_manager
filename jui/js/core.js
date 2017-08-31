@@ -233,7 +233,7 @@ function mousePositionElement(e, target) {
 			return offset;
 		}
 	};
-	
+
 	$.fn.positionRelative = function(top){
 		return $(this).offsetRelative(top);
 	};
@@ -345,6 +345,14 @@ function mousePositionElement(e, target) {
 		}
 
 		return '<?xml version="1.0" encoding="utf-8" standalone="yes"?><?xml-stylesheet type="text/xsl" href="'+root+'.xsl" title="Compact"?>'+$body.append($root).html()
+	}
+
+	$.fn.sumWidth = function(){
+		var width = 0;
+		for(var i=0;i<this.length;i++){
+			width+=this.eq(i).outerWidth(true);
+		}
+		return width;
 	}
 
 	/*old code*/

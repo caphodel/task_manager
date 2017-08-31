@@ -77,7 +77,7 @@
 	}
 
 	proto.setColumnMaxWidth = function(el){
-		var $el = $(el), $elItems = $(this).find('>.j-table > .j-table-body > .j-table-body-row > .j-table-body-column:nth-child('+(el.column+1)+')'), $elWidth = $('<div style="position: absolute;visibility: hidden;height: auto;width: auto;white-space: nowrap;padding: 8px;"></div>').appendTo('body'), width = $elWidth.html(el.innerHTML).outerWidth(true);
+		var $el = $(el), $elItems = $(this).find('>.j-table > .j-table-body > .j-table-body-row > .j-table-body-column-'+el.column), $elWidth = $('<div style="position: absolute;visibility: hidden;height: auto;width: auto;white-space: nowrap;padding: 8px;"></div>').appendTo('body'), width = $elWidth.html(el.innerHTML).outerWidth(true);
 		$elItems.each(function(i, val){
 			var w = $elWidth.html(val.innerHTML).outerWidth(true);
 			if(w>width){
@@ -85,12 +85,13 @@
 			}
 		})
 
-		$elItems.outerWidth(width)
-		$el.outerWidth(width)
+		$elItems.css("flex", "1 0 "+width+"px")//.outerWidth(width)
+		$el.css("flex", "1 0 "+width+"px")//.outerWidth(width)
 		$(el).parent().children().each(function(i, el){
 			el.resizer_popper.update()
 		})
 		$elWidth.remove()
+		$el.children().find('> .j-table-body > .j-table-body-row, > .j-table-head > .j-table-head-row').width($el.parent().children().sumWidth())
 	}
 
 	proto.addHeader = function(arrHeader, boundTo) {
@@ -173,8 +174,9 @@
 						var elWidth = $(this.dragEl.target).outerWidth(true) + (clientX - this.dragEl.position.start.x),
 						elNextWidth = $(this.dragEl.target).next().outerWidth(true) - (clientX - this.dragEl.position.start.x);
 						$target = $(this.dragEl.target)
-						$target.outerWidth(elWidth).next().outerWidth(elNextWidth)
-						$target.parent().parent().parent().find('> .j-table-body > .j-table-body-row > .j-table-body-column:nth-child('+(this.dragEl.target.column+1)+')').outerWidth(elWidth).next().outerWidth(elNextWidth)
+						$target.css("flex", "1 0 "+elWidth+"px")/*.outerWidth(elWidth)*/.next().css("flex", "1 0 "+elNextWidth+"px")//.outerWidth(elNextWidth)
+						$target.parent().parent().parent().find('> .j-table-body > .j-table-body-row > .j-table-body-column-'+this.dragEl.target.column).css("flex", "1 0 "+elWidth+"px")/*.outerWidth(elWidth)*/.next().css("flex", "1 0 "+elNextWidth+"px")//.outerWidth(elNextWidth)
+						$target.parent().parent().parent().find('> .j-table-body > .j-table-body-row, > .j-table-head > .j-table-head-row').width($target.parent().children().sumWidth())
 						$target.parent().children().each(function(i, el){
 							el.resizer_popper.update()
 						})
@@ -239,9 +241,11 @@
 		//console.log($header.width(), cellWidth, count )
 
 		$.each(cellWidth, function(i, val) {
-			$header.find('> div > div:nth-child(' + (i + 1) + ')').outerWidth(val)
-			$body.find('> div > div:nth-child(' + (i + 1) + ')').outerWidth(val)
+			$header.find('> div > div:nth-child(' + (i + 1) + ')').css("flex", "1 0 "+val+"px")//.outerWidth(val)
+			$body.find('> div > div:nth-child(' + (i + 1) + ')').css("flex", "1 0 "+val+"px")//.outerWidth(val)
 		})
+
+		$(this).children().find('> .j-table-body > .j-table-body-row, > .j-table-head > .j-table-head-row').width($header.children().eq(0).children().sumWidth())
 
 		$body.find('> div > div').css('white-space', 'normal')
 	}
