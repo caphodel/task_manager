@@ -1,0 +1,19 @@
+{
+  "name": "tame",
+  "version": "0.0.1",
+  "author": "Deddy Lasmono Putro",
+  "description": "Task Manager",
+  "homepage": "http://none at the moment",
+  "dependencies": {
+    "jsdom-quokka-plugin": "^1.0.5"
+  },
+  "quokka": {
+    "plugins": ["jsdom-quokka-plugin"],
+    "jsdom": {
+        "scripts": "./assets/js/jquery.min.js",
+        "config": {
+
+        }
+    }
+  }
+}
