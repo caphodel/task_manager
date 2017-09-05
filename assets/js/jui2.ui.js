@@ -1952,6 +1952,7 @@ jui2.method = {
 					this.position.start.offset = $resizer.offsetRelative().left
 
 					$('body')[0].dragEl = this;
+					$el.parent().addClass('j-no-select')
 				})
 
 				$('body').on("mouseup touchend", function(e) {
@@ -1970,8 +1971,11 @@ jui2.method = {
 						elNextWidth = $(this.dragEl.target).next().outerWidth(true) - (clientX - this.dragEl.position.start.x);
 						$target = $(this.dragEl.target)
 						$target.css("flex", "1 0 "+elWidth+"px")/*.outerWidth(elWidth)*/.next().css("flex", "1 0 "+elNextWidth+"px")//.outerWidth(elNextWidth)
-						$target.parent().parent().parent().find('> .j-table-body > .j-table-body-row > .j-table-body-column-'+this.dragEl.target.column).css("flex", "1 0 "+elWidth+"px")/*.outerWidth(elWidth)*/.next().css("flex", "1 0 "+elNextWidth+"px")//.outerWidth(elNextWidth)
-						$target.parent().parent().parent().find('> .j-table-body > .j-table-body-row, > .j-table-head > .j-table-head-row').width($target.parent().children().sumWidth())
+						var $table = $target.parent().parent().parent()
+						console.log($(this.dragEl).parent())
+						$table.removeClass('j-no-select')
+						$table.find('> .j-table-body > .j-table-body-row > .j-table-body-column-'+this.dragEl.target.column).css("flex", "1 0 "+elWidth+"px")/*.outerWidth(elWidth)*/.next().css("flex", "1 0 "+elNextWidth+"px")//.outerWidth(elNextWidth)
+						$table.find('> .j-table-body > .j-table-body-row, > .j-table-head > .j-table-head-row').width($target.parent().children().sumWidth())
 						$target.parent().children().each(function(i, el){
 							el.resizer_popper.update()
 						})
@@ -1981,8 +1985,9 @@ jui2.method = {
 
 				$('body').on("mousemove touchmove", function(e) {
 					if (this.dragEl!=undefined) {
+						var table = $(this.dragEl.target).parent().parent().parent()[0];
 						var clientX = e.type != 'touchmove' ? e.originalEvent.clientX : e.originalEvent.changedTouches[0].clientX;
-						var translate = 'translate3d(' + (this.dragEl.position.start.offset + (clientX - this.dragEl.position.start.x)) + 'px, 0px, 0px)'
+						var translate = 'translate3d(' + (this.dragEl.position.start.offset + (clientX - this.dragEl.position.start.x) + table.scrollLeft) + 'px, 0px, 0px)'
 						this.dragEl.style.webkitTransform = translate
 						this.dragEl.style.MozTransform = translate
 						this.dragEl.style.msTransform = translate
