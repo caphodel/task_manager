@@ -148,6 +148,17 @@ function mousePositionElement(e, target) {
 			result += mask[Math.round(Math.random() * (mask.length - 1))];
 		return result;
 	};
+
+	jui2.recylerItem = []
+
+	jui2.recyler = setInterval(function () {
+		jui2.recylerItem.forEach(function(item){
+			if($('#'+item.attr('related-to')).length == 0){
+				item.remove()
+				delete item.id
+			}
+		});
+	}, 60000);
 	/**
 	 * return highest z-index
 	 * @memberof jui2

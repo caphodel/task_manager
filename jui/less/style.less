@@ -7,15 +7,21 @@
 @textColorPrimary: #404040;
 @textColorAccent: #fff;
 @windowBackground: #fff;
-.fa {
-	font:normal normal normal 14px/1 FontAwesome !important;
-}
 
 .j-ui {
+	webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
 	box-sizing: border-box;
 	position: relative;
 	display: inline-block;
 	vertical-align: top;
+	font-family: Verdana, sans-serif;
+	box-sizing: border-box;
+	font-size: 12px;
+	line-height: 18px;
+}
+.fa {
+	font:normal normal normal 14px/1 FontAwesome !important;
 }
 
 .j-no-select{
@@ -227,4 +233,28 @@ j-spacer {
 	flex: 1 1 0;
 	-webkit-box-flex: 1;
 	-webkit-flex: 1;
+}
+
+j-toolbar{
+	padding: 4px 5px;
+	display: flex;
+	flex-direction: row;
+	flex-wrap: wrap;
+}
+
+.j-control{
+	border: 1px solid #E2E2E2;
+	padding: 4px 5px;
+	border-radius: 3px;
+	font-weight: 600;
+}
+
+.j-control-click{
+	cursor: pointer;
+	border-radius: 2px;
+}
+
+.j-control-click:hover{
+	color: @colorSecondary;
+	border-color: @colorPrimaryDarker;
 }

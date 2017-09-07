@@ -149,6 +149,17 @@ function mousePositionElement(e, target) {
 			result += mask[Math.round(Math.random() * (mask.length - 1))];
 		return result;
 	};
+
+	jui2.recylerItem = []
+
+	jui2.recyler = setInterval(function () {
+		jui2.recylerItem.forEach(function(item){
+			if($('#'+item.attr('related-to')).length == 0){
+				item.remove()
+				delete item.id
+			}
+		});
+	}, 60000);
 	/**
 	 * return highest z-index
 	 * @memberof jui2
@@ -1503,7 +1514,7 @@ jui2.method = {
 
 		this.iconPosition = 'afterBegin';
 
-		$self.attr('tabindex', 0).addClass('j-transition1 j-border-box j-focus-highlight1 j-inline-block');
+		$self.attr('tabindex', 0).addClass('j-transition1 j-border-box j-focus-highlight1 j-inline-block j-ui j-control j-control-click');
 
 		if(this.innerHTML.trim() == '')
 			this.innerHTML = ''
@@ -1823,6 +1834,10 @@ jui2.method = {
 			this.aaData = JSON.parse(text[0].innerHTML.replace(regxp, ''));
 
 		this.innerHTML = jui2.tmpl['tableBase']();
+		this.headerMenu = $self.find('> .j-table > .j-table-head-pop').attr('related-to', $self.prop('id'))
+		jui2.recylerItem.push(this.headerMenu);
+
+		$(this.headerMenu).appendTo('body')
 
 		var $body = $self.children('.j-table').children('.j-table-body'),
 			$head = $self.children('.j-table').children('.j-table-head');
@@ -1971,8 +1986,7 @@ jui2.method = {
 						elNextWidth = $(this.dragEl.target).next().outerWidth(true) - (clientX - this.dragEl.position.start.x);
 						$target = $(this.dragEl.target)
 						$target.css("flex", "1 0 "+elWidth+"px")/*.outerWidth(elWidth)*/.next().css("flex", "1 0 "+elNextWidth+"px")//.outerWidth(elNextWidth)
-						var $table = $target.parent().parent().parent()
-						console.log($(this.dragEl).parent())
+						var $table = $(this.dragEl).parent()
 						$table.removeClass('j-no-select')
 						$table.find('> .j-table-body > .j-table-body-row > .j-table-body-column-'+this.dragEl.target.column).css("flex", "1 0 "+elWidth+"px")/*.outerWidth(elWidth)*/.next().css("flex", "1 0 "+elNextWidth+"px")//.outerWidth(elNextWidth)
 						$table.find('> .j-table-body > .j-table-body-row, > .j-table-head > .j-table-head-row').width($target.parent().children().sumWidth())
@@ -1985,7 +1999,7 @@ jui2.method = {
 
 				$('body').on("mousemove touchmove", function(e) {
 					if (this.dragEl!=undefined) {
-						var table = $(this.dragEl.target).parent().parent().parent()[0];
+						var table = $(this.dragEl).parent()[0];
 						var clientX = e.type != 'touchmove' ? e.originalEvent.clientX : e.originalEvent.changedTouches[0].clientX;
 						var translate = 'translate3d(' + (this.dragEl.position.start.offset + (clientX - this.dragEl.position.start.x) + table.scrollLeft) + 'px, 0px, 0px)'
 						this.dragEl.style.webkitTransform = translate
@@ -2056,16 +2070,18 @@ jui2.method = {
 			$header = this.getHeaderContainer(),
 			$body = this.getBodyContainer();
 		$('body').click(function(e) {
-			if ($(e.target).parents('.j-table-head-action').length == 0 && e.target.className.match(/j-table-head-action/) == null && $(e.target).parents('.j-pop').length == 0) {
-				var $jtable = $('j-table');
-				$jtable.find('> .j-table > .j-table-head .j-table-head-action').css('display', '');
-				$jtable[0].jui_popper_id = null;
-				$jtable.find('> .j-table > .j-table-head-pop').hide()
+			if ($(e.target).closest('.j-table-head-action').length == 0 && $(e.target).parents('.j-pop').length == 0) {
+				var $jtable = $(e.target).closest('j-table');
+				if($jtable.length!=0){
+					$jtable.find('> .j-table > .j-table-head .j-table-head-action').css('display', '');
+					$jtable[0].jui_popper_id = null;
+					$jtable[0].headerMenu.hide()
+				}
 			}
 		})
 
 		$header.find('.j-table-head-action').click(function() {
-			var $headerMenu = $self.find('> .j-table > .j-table-head-pop'),
+			var $headerMenu = $self[0].headerMenu,
 				$headAction = $(this);
 			if ($self[0].jui_popper_id != this) {
 				if ($self[0].jui_popper)
@@ -2105,6 +2121,14 @@ jui2.method = {
 			}
 			$self[0].jui_popper_id = this;
 		})
+	}
+
+	proto.getRow = function(index){
+		return $(this).find('> .j-table > .j-table-body > .j-table-body-row').eq(index);
+	}
+
+	proto.getRecord = function(index){
+		return this.aaData[index];
 	}
 
 	proto.attachedCallback = function() {

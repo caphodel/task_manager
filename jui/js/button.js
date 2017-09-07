@@ -22,7 +22,7 @@
 
 		this.iconPosition = 'afterBegin';
 
-		$self.attr('tabindex', 0).addClass('j-transition1 j-border-box j-focus-highlight1 j-inline-block');
+		$self.attr('tabindex', 0).addClass('j-transition1 j-border-box j-focus-highlight1 j-inline-block j-ui j-control j-control-click');
 
 		if(this.innerHTML.trim() == '')
 			this.innerHTML = ''
