@@ -4,12 +4,12 @@
 	<div class="j-table-body">
 	</div>
 	<div class="j-table-head-pop j-pop j-ui">
-		<div>
+		<div class="j-table-sort-asc">
 			<i class="fa fa-long-arrow-up" style="width: 48px; text-align: center;"></i>
 			<div>Sort Ascending</div>
 			<i class="fa" style="width: 48px; text-align: center;"></i>
 		</div>
-		<div>
+		<div class="j-table-sort-desc">
 			<i class="fa fa-long-arrow-down" style="width: 48px; text-align: center;"></i>
 			<div>Sort Descending</div>
 			<i class="fa" style="width: 48px; text-align: center;"></i>

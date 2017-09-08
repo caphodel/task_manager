@@ -31,6 +31,15 @@
 		this.headerMenu = $self.find('> .j-table > .j-table-head-pop').attr('related-to', $self.prop('id'))
 		jui2.recylerItem.push(this.headerMenu);
 
+		/*setup menu event*/
+		this.headerMenu.find('.j-table-sort-asc').click(function(){
+			self.sort(self.headerMenu[0].column, 'asc');
+		})
+
+		this.headerMenu.find('.j-table-sort-desc').click(function(){
+			self.sort(self.headerMenu[0].column, 'desc');
+		})
+
 		$(this.headerMenu).appendTo('body')
 
 		var $body = $self.children('.j-table').children('.j-table-body'),
@@ -258,6 +267,19 @@
 		$body.find('> div > div').css('white-space', 'normal')
 	}
 
+	proto._sort = function(column, sort){
+		if (sort == 'asc')
+			this.aaData.sort(function(a,b){return a[column]-b[column]})
+		if (sort == 'desc')
+			this.aaData.sort(function(a,b){return b[column]-a[column]})
+		this.sort = column;
+	}
+
+	proto.sort = function(column, sort){
+		this._sort(column, sort);
+		this.generateData();
+	}
+
 	proto.setHeaderMenu = function() {
 		var self = this,
 			$self = $(this),
@@ -265,18 +287,29 @@
 			$body = this.getBodyContainer();
 		$('body').click(function(e) {
 			if ($(e.target).closest('.j-table-head-action').length == 0 && $(e.target).parents('.j-pop').length == 0) {
-				var $jtable = $(e.target).closest('j-table');
-				if($jtable.length!=0){
-					$jtable.find('> .j-table > .j-table-head .j-table-head-action').css('display', '');
-					$jtable[0].jui_popper_id = null;
-					$jtable[0].headerMenu.hide()
+				var $jtable = $('#'+$('body').find('> .j-table-head-pop:visible').attr('related-to'))
+				$jtable.find('.j-table-head-action:visible').removeAttr('style');
+				if($jtable.length > 0){
+					//$jtable.find('.j-table-head-action').hide()
+					$jtable.each(function(i, val){
+						val.jui_popper_id = null;
+						val.headerMenu.hide()
+					})
 				}
 			}
 		})
 
 		$header.find('.j-table-head-action').click(function() {
-			var $headerMenu = $self[0].headerMenu,
+			var $self = $(this).closest('j-table'), $headerMenu = $self[0].headerMenu,
 				$headAction = $(this);
+				$headerMenu[0].column = $(this).parent()[0].column;
+			$headAction.parent().siblings().children('.j-table-head-action').removeAttr('style');
+			$('j-table').find('.j-table-head-action:visible').not($headAction).removeAttr('style').closest('j-table').each(function(i, val){
+				val.jui_popper_id = null;
+				val.headerMenu.hide()
+			});
+			$('body').find('> .j-table-head-pop:not([related-to='+$headAction.closest('j-table').prop('id')+'])').hide()
+
 			if ($self[0].jui_popper_id != this) {
 				if ($self[0].jui_popper)
 					$self[0].jui_popper.destroy()

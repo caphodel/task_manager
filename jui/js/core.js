@@ -149,7 +149,7 @@ function mousePositionElement(e, target) {
 		return result;
 	};
 
-	jui2.recylerItem = []
+	jui2.recylerItem = [];
 
 	jui2.recyler = setInterval(function () {
 		jui2.recylerItem.forEach(function(item){
