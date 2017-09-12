@@ -1,4 +1,4 @@
-<j-card class="j-ui" style="width: 300px;padding-bottom: 52px;">
+<!--j-card class="j-ui" style="width: 300px;padding-bottom: 52px;">
 	<div class="j-header">
 		Your Projects
 	</div>
@@ -26,4 +26,17 @@
 	<div style="display: flex;position:absolute;bottom:0;width:100%;padding: 6px 20px; height: 52px;">
 		<j-button style="margin-left: auto;border:1px solid #E2E2E2;padding: 12px 10px;border-radius: 3px;font-weight: 600;">View All Projects</j-button>
 	</div>
-</j-card>
+</j-card-->
+
+<j-panel>
+	<div class="j-header">
+		Project
+	</div>
+	<j-table>
+		[
+			["Project No", "Description", "Task"],
+			["PRJ-01", "Project no 1 description", "7/10"],
+			["PRJ-02", "Project no 2 description", "5/12"]
+		]
+	</j-table>
+</j-panel>

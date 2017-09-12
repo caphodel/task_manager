@@ -14,29 +14,30 @@
 		* {
 			color: #1c2022;
 		}
-		
+
 		#header j-button {
 			color: #ABACB1;
+			border: 0px;
 		}
-		
+
 		#header>.j-menu>j-button,
 		#header>.j-menu-alt>j-button {
 			font-family: "Lato", sans-serif !important;
 			font-size: 16px !important;
 			font-weight: 600 !important;
 		}
-		
+
 		#header>.j-menu>j-button,
 		#header>.j-menu-alt>j-button {
 			padding: 20px;
 			cursor: pointer;
 		}
-		
+
 		#header>.j-menu-alt>i {
 			padding: 10px;
 			cursor: pointer;
 		}
-		
+
 		#header>.j-menu>j-button:hover,
 		#header>i:hover,
 		j-button:hover,
@@ -45,11 +46,11 @@
 		#header>.j-menu-alt>i:hover {
 			color: #4ABFDF !important;
 		}
-		
+
 		body {
 			background: #F7F8F9;
 		}
-		
+
 		*[data-badge]:after {
 			background: #00a4d2 none repeat scroll 0 0;
 			border: 2px solid #026280;
@@ -66,43 +67,43 @@
 			width: auto;
 			padding: 0px 5px;
 		}
-		
+
 		i[data-badge] {
 			color: #4ABFDF;
 		}
-		
+
 		*[data-badge=""]:after,
 		*[data-badge="0"]:after {
 			display: none;
 		}
-		
+
 		i[data-badge=""],
 		i[data-badge="0"] {
 			color: inherit;
 		}
-		
+
 		.j-ui {
 			box-sizing: border-box;
 			position: relative;
 			display: inline-block;
 		}
-		
+
 		.j-height-s {
 			height: 10px;
 		}
-		
+
 		.j-radius-s {
 			border-radius: 3px;
 		}
-		
+
 		.j-padding-s {
 			padding: 1px;
 		}
-		
+
 		.j-background-transparent {
 			background: rgba(0, 0, 0, 0.1);
 		}
-		
+
 		j-card {
 			border-color: #e1e8ed;
 			border-image: none;
@@ -131,56 +132,56 @@
 			border-bottom-left-radius: 4px;
 			border-bottom-right-radius: 4px;
 		}
-		
+
 		.info-task-completed>div {
 			padding: 14px 20px;
 		}
-		
+
 		.j-footer {
 			padding: 20px 20px !important;
 			background: #F8F8F8;
 		}
-		
+
 		.j-footer>i {
 			cursor: pointer;
 		}
-		
+
 		.j-footer>i:hover {
 			color: #4ABFDF !important;
 		}
-		
+
 		j-card>.j-header {
 			border-bottom: 1px solid #E2E2E2;
 			background: #2FBFF3;
 			color: #fff;
 		}
-		
-		.j-header,
+
+		/*.j-header,
 		.j-header>* {
 			font-family: "Lato", sans-serif;
 			font-size: 16px;
 			font-weight: 600;
 			color: #525e61;
-		}
-		
+		}*/
+
 		.j-header {
 			padding: 14px 20px;
 		}
-		
+
 		.info-task-completed table td {
 			padding: 2px 5px;
 		}
-		
+
 		.info-task-completed table tr:nth-child(1) td:nth-child(1) {
 			color: #ABACB1;
 			font-size: 80px;
 			padding-left: 0px;
 		}
-		
+
 		.j-height-s .j-progress-bar {
 			height: 8px;
 		}
-		
+
 		.j-progress-bar {
 			border-radius: 2px;
 			background-image: -webkit-linear-gradient(top, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.05));
@@ -198,32 +199,32 @@
 			-webkit-box-shadow: 0 0 1px 1px rgba(0, 0, 0, 0.25), inset 0 1px rgba(255, 255, 255, 0.1);
 			box-shadow: 0 0 1px 1px rgba(0, 0, 0, 0.25), inset 0 1px rgba(255, 255, 255, 0.1);
 		}
-		
+
 		.j-progress {
 			-webkit-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.25), 0 1px rgba(255, 255, 255, 0.08);
 			box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.25), 0 1px rgba(255, 255, 255, 0.08);
 		}
-		
+
 		.j-progress-bar-5 {
 			background-color: #f63a0f;
 		}
-		
+
 		.j-progress-bar-25 {
 			background-color: #f27011;
 		}
-		
+
 		.j-progress-bar-50 {
 			background-color: #f2b01e;
 		}
-		
+
 		.j-progress-bar-75 {
 			background-color: #f2d31b;
 		}
-		
+
 		.j-progress-bar-100 {
 			background-color: #86e01e;
 		}
-		
+
 		.j-list {
 			border-collapse: collapse;
 			width: 100%;
@@ -231,32 +232,32 @@
 			padding: 0px 10px;
 			table-layout: fixed;
 		}
-		
+
 		.j-list td {
 			text-overflow: ellipsis;
 			white-space: nowrap;
 			overflow: hidden;
 		}
-		
+
 		.j-list td,
 		.j-list th {
 			padding: .9em;
 			vertical-align: top;
 		}
-		
+
 		.j-list tr {
 			padding: .35em;
 			border-bottom: 1px solid #E2E2E2;
 		}
-		
+
 		.j-list thead tr {
 			border-bottom: 2px solid #E2E2E2;
 		}
-		
+
 		.j-list td[data-badge]:after {
 			display: none;
 		}
-		
+
 		.j-list td[data-hidden] {
 			text-indent: inherit;
 			white-space: inherit;
@@ -264,7 +265,7 @@
 			font-size: inherit;
 			margin: 0;
 		}
-		
+
 		.j-menu-button,
 		.j-menu-button-alt {
 			text-decoration: none;
@@ -272,7 +273,7 @@
 			padding: 20px;
 			cursor: pointer;
 		}
-		
+
 		nav.j-menu,
 		nav.j-menu-alt {
 			-moz-animation-duration: 0.5s;
@@ -281,7 +282,7 @@
 			animation-duration: 0.5s;
 		}
 		/*
-		
+
 		.ripple:active:after {
 			opacity: .2;
 			position: absolute;
@@ -293,7 +294,7 @@
 			top: 0;
 			left: 0;
 		}*/
-		
+
 		.j-line-bar::after {
 			background: #86e01e none repeat scroll 0 0;
 			content: "";
@@ -301,28 +302,7 @@
 			height: 3px;
 			width: 50%;
 		}
-		
-		j-textfield {
-			padding: 5px 8px;
-			align-items: center;
-			display: flex;
-		}
-		
-		j-textfield label {
-			width: 120px;
-			font-weight: 700;
-		}
-		
-		j-textfield input {
-			border-radius: 3px;
-			border: 1px solid #DFE1E3;
-			padding: 12px 10px;
-		}
-		
-		j-textfield input:focus {
-			border-color: #4697e4;
-		}
-		
+
 		j-spacer {
 			flex: 1 1 0;
 			-webkit-box-flex: 1;
@@ -330,7 +310,9 @@
 		}
 
 	</style>
-	<link href="assets/css/responsive.css" rel="stylesheet" type="text/css" />
+	<!--link href="assets/css/responsive.css" rel="stylesheet" type="text/css" /-->
+
+	<link href="assets/css/jui2.css" rel="stylesheet" type="text/css" />
 </head>
 
 <body>
@@ -339,7 +321,7 @@
 		<i class="j-menu-button fa fa-bars fa-2x ripple" style="color: #ABACB1;"></i>
 		<nav class="j-menu">
 			<j-button class="ripple j-ui" style="color: #525e61">Dashboard</j-button>
-			<j-button class="ripple j-ui" style="color: #ABACB1">Project</j-button>
+			<j-button id="red-project" class="ripple j-ui" style="color: #ABACB1">Project</j-button>
 			<j-button class="ripple j-ui" style="color: #ABACB1">Task</j-button>
 			<j-button class="ripple j-ui" style="color: #ABACB1">Calendar</j-button>
 			<j-button class="ripple j-ui" style="color: #ABACB1">Document</j-button>
@@ -378,8 +360,8 @@
 			var docEl = document.documentElement,
 				IS_BODY_ACTING_ROOT = docEl && docEl.clientHeight === 0;
 
-			// Used to feature test Opera returning wrong values 
-			// for documentElement.clientHeight. 
+			// Used to feature test Opera returning wrong values
+			// for documentElement.clientHeight.
 			function isDocumentElementHeightOff() {
 				var d = document,
 					div = d.createElement('div');
@@ -467,6 +449,10 @@
 
 		$('#red-sign-in').click(function() {
 			redLoad(redDomain + "/base/login?from_base", "#red-content")
+		})
+
+		$('#red-project').click(function() {
+			redLoad(redDomain + "/project?from_base", "#red-content")
 		})
 
 		/*$.ajax({

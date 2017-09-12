@@ -1,16 +1,16 @@
-<j-panel id="red-form-login" style="display: flex; align-items: center; height: 100%; width: 100%;">
+<div id="red-form-login" style="display: flex; align-items: center; height: 100%; width: 100%;">
 	<j-spacer></j-spacer>
-	<j-card class="j-ui" style="padding-bottom: 52px;">
+	<j-panel class="j-ui" style="width: auto">
 		<div class="j-header">
 			Login
 		</div>
 		<j-textfield style="display: flex;" class="j-ui" id="username" type="text">Username</j-textfield>
 		<j-textfield style="display: flex;" class="j-ui" id="password" type="password">Password</j-textfield>
 
-		<div style="display: flex;position:absolute;bottom:0;width:100%;padding: 6px 20px; height: 52px;">
-			<j-button id="red-btn-login" style="margin-left: auto;border:1px solid #E2E2E2;padding: 12px 10px;border-radius: 3px;font-weight: 600;">Login</j-button>
-		</div>
-	</j-card>
+		<j-toolbar>
+			<j-spacer></j-spacer><j-button id="red-btn-login">Login</j-button>
+		</j-toolbar>
+	</j-panel>
 	<j-spacer></j-spacer>
 </div>
 <script>

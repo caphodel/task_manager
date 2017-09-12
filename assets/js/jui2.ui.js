@@ -2190,7 +2190,25 @@ jui2.method = {
 		proto: proto
 	}
 
-	jui2.attrChange['j-table_ajax-loader'] = function(el, oldVal, newVal) {
+	jui2.attrChange['j-table_src-array'] = function(el, oldVal, newVal) {
+		if (newVal != null){
+			if (el.generateData_ != undefined)
+				el.generateData_ = el.generateData;
+			el.generateData = function(data) {
+				if (typeof data == 'array') {
+					el.generateData_(data);
+				}
+				if (!data) {
+					el.generateData_(eval(newVal));
+				}
+			}
+		}
+		else{
+
+		}
+	}
+
+	jui2.attrChange['j-table_src-ajax'] = function(el, oldVal, newVal) {
 		var $el = $(el);
 		if (newVal != null) {
 			el.param = {
@@ -2204,7 +2222,8 @@ jui2.method = {
 				sSortDir: 'desc',
 				totalPage: 0
 			}
-			el.generateData_ = el.generateData;
+			if (el.generateData_ != undefined)
+				el.generateData_ = el.generateData;
 			el.generateData = function(data) {
 				if (typeof data == 'array') {
 					el.generateData_(data);
