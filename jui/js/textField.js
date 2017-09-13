@@ -8,7 +8,7 @@
  * <j-textfield icon="fa-user">Username</j-textfield>
  */
 
-(function($) {
+(function ($) {
 	/** @constructor */
 	var proto = Object.create(HTMLElement.prototype)
 

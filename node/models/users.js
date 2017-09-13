@@ -76,6 +76,10 @@ module.exports = function(sequelize, DataTypes) {
     identity_url: {
       type: DataTypes.STRING(255),
       allowNull: true
+    },
+    elektronika: {
+      type: DataTypes.INTEGER(11),
+      allowNull: true
     }
   }, {
     tableName: 'users'
