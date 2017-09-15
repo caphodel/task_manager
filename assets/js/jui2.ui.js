@@ -1587,7 +1587,7 @@ jui2.method = {
  * <j-textfield icon="fa-user">Username</j-textfield>
  */
 
-(function($) {
+(function ($) {
 	/** @constructor */
 	var proto = Object.create(HTMLElement.prototype)
 
@@ -1879,7 +1879,7 @@ jui2.method = {
 		this.data = data || this.data;
 
 		$body.empty().append(jui2.tmpl['tableItems']({
-			rows: this.data
+			rows: this.data,//.splice(0, $self[0].getHeaderContainer().children().last().children().length)
 		}));
 
 		$body.find('> div').click(function() {
@@ -1891,6 +1891,8 @@ jui2.method = {
 		this.setWidth();
 
 		this.addResizer($self.children('.j-table').find('> .j-table-head > .j-table-head-row > div'))
+
+        $body.children().children(':nth-child(n+'+($self[0].getHeaderContainer().children().last().children().length+1)+')').hide()
 
 		$self.triggerHandler('afterdraw');
 	}
@@ -2192,7 +2194,7 @@ jui2.method = {
 
 	jui2.attrChange['j-table_src-array'] = function(el, oldVal, newVal) {
 		if (newVal != null){
-			if (el.generateData_ != undefined)
+			if (el.generateData_ == undefined)
 				el.generateData_ = el.generateData;
 			el.generateData = function(data) {
 				if (typeof data == 'array') {
@@ -2202,6 +2204,25 @@ jui2.method = {
 					el.generateData_(eval(newVal));
 				}
 			}
+		}
+		else{
+
+		}
+	}
+
+	jui2.attrChange['j-table_src-fn'] = function(el, oldVal, newVal) {
+		if (newVal != null){
+			if (el.generateData_ == undefined)
+				el.generateData_ = el.generateData;
+			el.generateData = function(data) {
+				if (typeof data == 'array' || typeof data == 'object') {
+					el.generateData_(data);
+				}
+				if (!data) {
+					el.generateData_(eval(newVal).call());
+				}
+			}
+            el.generateData()
 		}
 		else{
 
@@ -2222,7 +2243,7 @@ jui2.method = {
 				sSortDir: 'desc',
 				totalPage: 0
 			}
-			if (el.generateData_ != undefined)
+			if (el.generateData_ == undefined)
 				el.generateData_ = el.generateData;
 			el.generateData = function(data) {
 				if (typeof data == 'array') {

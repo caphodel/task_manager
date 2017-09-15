@@ -16,10 +16,10 @@ router.post('/', function (req, res) {
 		}
 	}).then(function (data) {
 		res.status(200);
-		res.json(data);
+		res.jsonp(data);
 	}).catch(function (error) {
 		res.status(500);
-		res.json({
+		res.jsonp({
 			error: error,
 			stackError: error.stack
 		});
@@ -35,10 +35,10 @@ router.put('/', function (req, res) {
 
 	users.create(req.body).then(function (data) {
 		res.status(200);
-		res.json(data);
+		res.jsonp(data);
 	}).catch(function (error) {
 		res.status(500);
-		res.json({
+		res.jsonp({
 			error: error,
 			stackError: error.stack
 		});
@@ -64,10 +64,10 @@ router.delete('/', function (req, res) {
 		}
 	}).then(function (data) {
 		res.status(200);
-		res.json(data);
+		res.jsjsonpon(data);
 	}).catch(function (error) {
 		res.status(500);
-		res.json({
+		res.jsonp({
 			error: error,
 			stackError: error.stack
 		});
@@ -83,10 +83,10 @@ router.get('/', function (req, res) {
 		where: req.query
 	}).then(data => {
 		res.status(200);
-		res.json(data);
+		res.jsonp(data);
 	}).catch(function (error) {
 		res.status(500);
-		res.json({
+		res.jsonp({
 			error: error,
 			stackError: error.stack
 		});

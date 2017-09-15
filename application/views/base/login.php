@@ -20,7 +20,7 @@
 			password: $("#password").val()
 		}, function(data, textStatus) {
 			if (data.success) {
-				red_token = data.token;
+                Cookie.set('token', data.token)
 				$('#red-form-login').remove();
 				$('#red-sign-in').text("Logged In")
 			} else {

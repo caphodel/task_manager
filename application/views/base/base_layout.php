@@ -9,6 +9,7 @@
 	<script src="assets/js/jui2.lib.js"></script>
 	<script src="assets/js/jui2.tmp.min.js"></script>
 	<script src="assets/js/jui2.ui.js"></script>
+	<script src="assets/js/cookie.js"></script>
 	<title>Task Manager</title>
 	<style>
 		* {

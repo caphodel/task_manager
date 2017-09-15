@@ -6,7 +6,7 @@ var Sequelize = require("sequelize"),
 	router = express.Router(),
 	cors = require('cors');
 
-var sequelize = new Sequelize('tame', 'root', 'asdfghjkl', {
+var sequelize = new Sequelize('tame', 'root', '', {
 	host: 'localhost',
 	dialect: 'mysql',
 	pool: {
@@ -34,11 +34,11 @@ app.use('/api', jwt({
 	secret: app.get("salt"),
 	getToken: function fromHeaderOrQuerystring(req) {
 		var token = req.cookies && req.cookies.access_token || req.body.access_token || req.query.access_token || req.headers['x-access-token'];
-		
+
 		if (token) {
 			return token;
 		}
-		
+
 		return null;
 	}
 }).unless({
@@ -51,6 +51,9 @@ router.use('/user', rUser);
 
 var rAuth = require('./router/auth');
 router.use('/auth', rAuth);
+
+var rProject = require('./router/projects');
+router.use('/project', rProject);
 
 app.use('/api', router);
 

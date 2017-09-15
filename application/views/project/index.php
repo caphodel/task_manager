@@ -28,15 +28,46 @@
 	</div>
 </j-card-->
 
+<script>
+    function project() {
+        var $el = $('#red-tbl-project');
+        if ($el[0].limit == undefined)
+            $el[0].limit = 10
+        if ($el[0].offset == undefined)
+            $el[0].offset = 0
+        $.ajax({
+            url: window.location.origin + ':8080/api/project/total',
+            type: 'GET',
+            dataType: 'json',
+            success: function(data) {
+                $el[0].total = data.total
+            },
+            error: function() {},
+            beforeSend: function setHeader(xhr) {
+                xhr.setRequestHeader('x-access-token', Cookies.get('token'));
+            }
+        });
+        $.ajax({
+            url: window.location.origin + ':8080/api/project/' + $el[0].limit + '/' + $el[0].offset,
+            type: 'GET',
+            dataType: 'json',
+            success: function(data) {
+                $('#red-tbl-project')[0].generateData(data)
+            },
+            error: function() {},
+            beforeSend: function setHeader(xhr) {
+                xhr.setRequestHeader('x-access-token', Cookies.get('token'));
+            }
+        });
+    }
+
+</script>
+
 <j-panel>
-	<div class="j-header">
-		Project
-	</div>
-	<j-table>
-		[
-			["Project No", "Description", "Task"],
-			["PRJ-01", "Project no 1 description", "7/10"],
-			["PRJ-02", "Project no 2 description", "5/12"]
-		]
-	</j-table>
+    <div class="j-header">
+        Project
+    </div>
+    <j-table id="red-tbl-project" src-fn="project">
+        [ ["Project No", "Description", "Task"] ]
+    </j-table>
 </j-panel>
