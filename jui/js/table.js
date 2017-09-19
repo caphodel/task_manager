@@ -19,6 +19,10 @@
 
 		$self.addClass('j-ui')
 
+        this.jui2 = {
+            events: {}
+        }
+
 		var text = $('<div>' + this.innerHTML + '</div>');
 		text.children().remove()
 
@@ -64,16 +68,27 @@
 		$self.delegate('> .j-table > .j-table-head > .j-table-head-row > div', 'doubletap dblclick', function(e) {
 			self.setColumnMaxWidth(this);
 		});
+
+
+        $self.on('doubletap dblclick', '> .j-table > .j-table-body > .j-table-body-row', function(){
+            console.log(this, $(this).index())
+            if(self.jui2.events.onItemDoubleClick)
+                self.jui2.events.onItemDoubleClick(self.aaData[$(this).index()]);
+        })
+
+        if(self.setup){
+            self.setup();
+        }
 	};
 
 	proto.generateData = function(data) {
 		var $self = $(this),
 			$body = $self.children('.j-table').children('.j-table-body');
 
-		this.data = data || this.data;
+		this.aaData = data || this.aaData;
 
 		$body.empty().append(jui2.tmpl['tableItems']({
-			rows: this.data,//.splice(0, $self[0].getHeaderContainer().children().last().children().length)
+			rows: this.aaData,//.splice(0, $self[0].getHeaderContainer().children().last().children().length)
 		}));
 
 		$body.find('> div').click(function() {
@@ -351,6 +366,16 @@
 			$self[0].jui_popper_id = this;
 		})
 	}
+
+    proto.onItemDoubleClick = function(fn){
+        $(this).find('> .j-table > .j-table-body').css('cursor', 'pointer');
+        this.jui2.events.onItemDoubleClick = fn;
+    }
+
+    proto.offItemDoubleClick = function(fn){
+        $(this).find('> .j-table > .j-table-body').css('cursor', '');
+        this.jui2.events.onItemDoubleClick = null;
+    }
 
 	proto.getRow = function(index){
 		return $(this).find('> .j-table > .j-table-body > .j-table-body-row').eq(index);

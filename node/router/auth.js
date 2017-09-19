@@ -8,6 +8,9 @@ router.post('/', function (req, res) {
 	var db = req.app.get("db");
 
 	const users = db.import('../models/users');
+	//const roles = db.import('../models/roles');
+
+    //users.hasOne(roles, {foreignKey: 'fk_companyname', targetKey: 'id'})
 
 	req.body.hashed_password = md5(req.body.username + ":tame:" + req.body.password);
 
@@ -28,19 +31,21 @@ router.post('/', function (req, res) {
 			data = {
 				success: true,
 				message: 'Authentication success.',
-				token: jwt.sign({login: result.login}, req.app.get('salt'), {
+				token: jwt.sign({login: result.login, }, req.app.get('salt'), {
 					expiresIn: '24h'
 				})
 			}
 		}
-		res.json(data);
+		res.jsonp(data);
 	}).catch(function (error) {
 		res.status(500);
-		res.json({
+		res.jsonp({
 			error: error,
 			stackError: error.stack
 		});
 	});
 });
+
+global.notoken.push('/api/auth')
 
 module.exports = router;

@@ -1748,7 +1748,7 @@ jui2.method = {
 		});*/
 
 	};
-	
+
 	proto.attachedCallback = function(){
 		for (i in this.attributes) {
             var attrName = this.attributes[i].nodeName,
@@ -1778,7 +1778,7 @@ jui2.method = {
 		}),
 		proto: proto
 	}
-	
+
 	jui2.attrChange['j-progressbar_value'] = function (el, oldVal, newVal) {
 		if(newVal){
 			el.pgValue = isNaN(newVal) ? exprEval.Parser.evaluate(newVal+" * 100 ") : newVal;
@@ -1825,6 +1825,10 @@ jui2.method = {
 
 		$self.addClass('j-ui')
 
+        this.jui2 = {
+            events: {}
+        }
+
 		var text = $('<div>' + this.innerHTML + '</div>');
 		text.children().remove()
 
@@ -1870,6 +1874,17 @@ jui2.method = {
 		$self.delegate('> .j-table > .j-table-head > .j-table-head-row > div', 'doubletap dblclick', function(e) {
 			self.setColumnMaxWidth(this);
 		});
+
+
+        $self.on('doubletap dblclick', '> .j-table > .j-table-body > .j-table-body-row', function(){
+            console.log(this, $(this).index())
+            if(self.jui2.events.onItemDoubleClick)
+                self.jui2.events.onItemDoubleClick(self.aaData[$(this).index()]);
+        })
+
+        if(self.setup){
+            self.setup();
+        }
 	};
 
 	proto.generateData = function(data) {
@@ -2157,6 +2172,16 @@ jui2.method = {
 			$self[0].jui_popper_id = this;
 		})
 	}
+
+    proto.onItemDoubleClick = function(fn){
+        $(this).find('> .j-table > .j-table-body').css('cursor', 'pointer');
+        this.jui2.events.onItemDoubleClick = fn;
+    }
+
+    proto.offItemDoubleClick = function(fn){
+        $(this).find('> .j-table > .j-table-body').css('cursor', '');
+        this.jui2.events.onItemDoubleClick = null;
+    }
 
 	proto.getRow = function(index){
 		return $(this).find('> .j-table > .j-table-body > .j-table-body-row').eq(index);

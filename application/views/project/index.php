@@ -38,7 +38,7 @@
         $.ajax({
             url: window.location.origin + ':8080/api/project/total',
             type: 'GET',
-            dataType: 'json',
+            dataType: 'jsonp',
             success: function(data) {
                 $el[0].total = data.total
             },
@@ -48,9 +48,9 @@
             }
         });
         $.ajax({
-            url: window.location.origin + ':8080/api/project/' + $el[0].limit + '/' + $el[0].offset,
+            url: window.location.origin + ':8080/api/project/list/' + $el[0].limit + '/' + $el[0].offset,
             type: 'GET',
-            dataType: 'json',
+            dataType: 'jsonp',
             success: function(data) {
                 $('#red-tbl-project')[0].generateData(data)
             },
@@ -71,3 +71,11 @@
         [ ["Project No", "Description", "Task"] ]
     </j-table>
 </j-panel>
+<script>
+    $('#red-tbl-project')[0].setup = function() {
+        $('#red-tbl-project')[0].onItemDoubleClick(function(record) {
+            console.log('show project', record);
+        })
+    }
+
+</script>

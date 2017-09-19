@@ -1,48 +1,57 @@
 var
-	express = require('express'),
-	md5 = require('md5'),
-	router = express.Router();
+    express = require('express'),
+    md5 = require('md5'),
+    router = express.Router(),
+    valuesToArray = function (obj) {
+        var data = []
+        for (var key in obj.dataValues) {
+            if (obj.dataValues.hasOwnProperty(key)) {
+                data.push(obj[key])
+            }
+        }
+        return data;
+    };
 
 router.post('/', function (req, res) {
-	var db = req.app.get("db");
+    var db = req.app.get("db");
 
-	const users = db.import('../models/users');
+    const users = db.import('../models/users');
 
-	req.body.hashed_password = md5(req.body.login + ":tame:" + req.body.password);
+    req.body.hashed_password = md5(req.body.login + ":tame:" + req.body.password);
 
-	users.update(req.body, {
-		where: {
-			id: req.body.id
-		}
-	}).then(function (data) {
-		res.status(200);
-		res.jsonp(data);
-	}).catch(function (error) {
-		res.status(500);
-		res.jsonp({
-			error: error,
-			stackError: error.stack
-		});
-	});
+    users.update(req.body, {
+        where: {
+            id: req.body.id
+        }
+    }).then(function (data) {
+        res.status(200);
+        res.jsonp(data);
+    }).catch(function (error) {
+        res.status(500);
+        res.jsonp({
+            error: error,
+            stackError: error.stack
+        });
+    });
 });
 
 router.put('/', function (req, res) {
-	var db = req.app.get("db");
+    var db = req.app.get("db");
 
-	const users = db.import('../models/users');
+    const users = db.import('../models/users');
 
-	req.body.hashed_password = md5(req.body.login + ":tame:" + req.body.password);
+    req.body.hashed_password = md5(req.body.login + ":tame:" + req.body.password);
 
-	users.create(req.body).then(function (data) {
-		res.status(200);
-		res.jsonp(data);
-	}).catch(function (error) {
-		res.status(500);
-		res.jsonp({
-			error: error,
-			stackError: error.stack
-		});
-	});
+    users.create(req.body).then(function (data) {
+        res.status(200);
+        res.jsonp(data);
+    }).catch(function (error) {
+        res.status(500);
+        res.jsonp({
+            error: error,
+            stackError: error.stack
+        });
+    });
 });
 
 /**
@@ -54,43 +63,64 @@ router.put('/', function (req, res) {
  */
 
 router.delete('/', function (req, res) {
-	var db = req.app.get("db");
+    var db = req.app.get("db");
 
-	const users = db.import('../models/users');
+    const users = db.import('../models/users');
 
-	users.destroy({
-		where: {
-			id: req.body.id
-		}
-	}).then(function (data) {
-		res.status(200);
-		res.jsjsonpon(data);
-	}).catch(function (error) {
-		res.status(500);
-		res.jsonp({
-			error: error,
-			stackError: error.stack
-		});
-	});
+    users.destroy({
+        where: {
+            id: req.body.id
+        }
+    }).then(function (data) {
+        res.status(200);
+        res.jsjsonpon(data);
+    }).catch(function (error) {
+        res.status(500);
+        res.jsonp({
+            error: error,
+            stackError: error.stack
+        });
+    });
 });
 
-router.get('/', function (req, res) {
-	var db = req.app.get("db");
+router.get('/list/:limit?/:offset?', function (req, res) {
+    var db = req.app.get("db"),
+        options = {
+            where: JSON.parse(JSON.stringify(req.query))
+        };
 
-	const users = db.import('../models/users');
+    delete options.where.callback;
+    delete options.where._;
 
-	users.findAll({
-		where: req.query
-	}).then(data => {
-		res.status(200);
-		res.jsonp(data);
-	}).catch(function (error) {
-		res.status(500);
-		res.jsonp({
-			error: error,
-			stackError: error.stack
-		});
-	});
+    if (!req.params.limit) {
+
+    } else {
+        options.limit = parseInt(req.params.limit)
+    }
+
+    if (!req.params.offset) {
+
+    } else {
+        options.offset = parseInt(req.params.offset)
+    }
+
+    const users = db.import('../models/users');
+
+    users.findAll({
+        where: options
+    }).then(data => {
+        for (var i=0;i<data.length;i++){
+            data[i] = valuesToArray(data[i])
+        }
+        res.status(200);
+        res.jsonp(data);
+    }).catch(function (error) {
+        res.status(500);
+        res.jsonp({
+            error: error,
+            stackError: error.stack
+        });
+    });
 });
 
 module.exports = router;
