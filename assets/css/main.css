@@ -19,9 +19,10 @@
   top: 0px;
   width: 100%;
   z-index: 10000;
-  background: #81acfd;
+  /*background: @color5;*/
   display: flex;
   color: #ffffff;
+  background: #24292E;
 }
 .logo {
   font-family: 'Play', sans-serif;
@@ -128,3 +129,13 @@ j-button:active:after{
 	width: 100%;
 	height: 100%;
 }*/
+.red-util-container {
+  background: #fafbfc;
+  border-bottom: 1px solid #e1e4e8;
+  display: block;
+  width: 100%;
+  padding: 20px;
+}
+.red-content-container {
+  padding: 20px;
+}

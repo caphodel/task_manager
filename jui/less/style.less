@@ -20,6 +20,7 @@
 	box-sizing: border-box;
 	font-size: 12px;
 	line-height: 18px;
+    background: #fff;
 }
 .fa {
 	font:normal normal normal 14px/1 FontAwesome !important;
@@ -58,6 +59,7 @@ j-table>.j-table {
 .j-table>.j-table-head {
 	background: @windowBackground;
 	border-bottom: 2px solid @colorPrimaryDarker;
+    /*min-width: 100%;*/
 }
 
 .j-table>.j-table-head>div>div:not(:last-child) {
@@ -154,6 +156,10 @@ j-table>.j-table {
 	/* Safari 4? Chrome 6? */
 	background-clip: content-box;
 	/* Firefox 4, Safari 5, Opera 10, IE 9 */
+}
+
+.j-table-head-row, .j-table-body-row{
+    /*min-width: 100%;*/
 }
 
 .j-pop {

@@ -5,6 +5,7 @@
  */
 
 (function($) {
+
   /** @constructor */
   var proto = Object.create(HTMLElement.prototype);
 
@@ -54,7 +55,7 @@
       $this.attr('id', 'j-'+jui2.random(8, 'aA#'));
     }
 
-    this.juiid = jui2.random(8, 'aA#');
+    this.juiid = $this.attr('id');
 
     if(pr)
       if(!pr.extension){

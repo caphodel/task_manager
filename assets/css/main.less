@@ -1,81 +1,100 @@
 // out: ./main.css, sourcemap: false, compress: false
+
 /* color */
+
 @color1: #0079C4;
 @color2: #ffffff;
 @color3: #D7D7D7;
 @color4: #6B92ED;
 @color5: #81ACFD;
+@background2: #FAFBFC;
 
 /* default */
+
 * {
-	padding: 0px;
-	margin: 0px;
-	font-family: Verdana,sans-serif;
-	box-sizing: border-box;
-	font-size: 12px;
+    padding: 0px;
+    margin: 0px;
+    font-family: Verdana, sans-serif;
+    box-sizing: border-box;
+    font-size: 12px;
 }
+
 
 /* fonts */
-.font-play{
-	font-family: 'Play', sans-serif;
+
+.font-play {
+    font-family: 'Play', sans-serif;
 }
+
 
 /* css untuk header */
-#header{
-	border-bottom: 1px solid @color3;
-	position: fixed;
-	top: 0px;
-	width: 100%;
-	z-index: 10000;
-	background: @color5;
-	display: flex;
-	color: @color2;
+
+#header {
+    border-bottom: 1px solid @color3;
+    position: fixed;
+    top: 0px;
+    width: 100%;
+    z-index: 10000;
+    /*background: @color5;*/
+    display: flex;
+    color: @color2;
+    background: #24292E;
 }
 
-.logo{
-	.font-play;
-	color: @color2;
-	font-size: 36px;
-	display: inline-block;
-	padding: 10px;
-	width: 290px;
-	text-align: center;
-	background: @color4;
+.logo {
+    .font-play;
+    color: @color2;
+    font-size: 36px;
+    display: inline-block;
+    padding: 10px;
+    width: 290px;
+    text-align: center;
+    background: @color4;
 }
+
 
 /* css untuk body */
-#body{
-	border-collapse: collapse;
-	border: 0px;
-	height: 100%;
-	width: 100%;
+
+#body {
+    border-collapse: collapse;
+    border: 0px;
+    height: 100%;
+    width: 100%;
 }
+
 
 /* css untuk left body */
-#left{
-	vertical-align: top;
-	width: 250px;
-	padding: 20px;
-	border-right: 1px solid @color3;
-	padding-top: 63px;
+
+#left {
+    vertical-align: top;
+    width: 250px;
+    padding: 20px;
+    border-right: 1px solid @color3;
+    padding-top: 63px;
 }
+
 
 /* css untuk right body */
-#right{
-	vertical-align: top;
-	margin-top: 58px;
-	padding-top: 58px;
-	background: #F5F5F5;
+
+#right {
+    vertical-align: top;
+    margin-top: 58px;
+    padding-top: 58px;
+    background: #F5F5F5;
 }
 
+
 /* j-button */
-j-button{
-	padding: 6px;
-	padding-bottom: 2px;
-	cursor: pointer;
-	border-bottom: 4px solid transparent;
-	position: relative;
+
+j-button {
+    padding: 6px;
+    padding-bottom: 2px;
+    cursor: pointer;
+    border-bottom: 4px solid transparent;
+    position: relative;
 }
+
+
 /*j-button:hover{
 	border-bottom: 1px solid @color2;
 	padding-bottom: 5px;
@@ -111,6 +130,8 @@ j-button.active:hover:after{
     position: absolute;
     width: 100%;
 }*/
+
+
 /*j-button{
 	background: @color4 none repeat scroll 0 0;
 	border: 1px solid @color2;
@@ -141,3 +162,15 @@ j-button:active:after{
 	width: 100%;
 	height: 100%;
 }*/
+
+.red-util-container {
+    background: @background2;
+    border-bottom: 1px solid #e1e4e8;
+    display: block;
+    width: 100%;
+    padding: 20px;
+}
+
+.red-content-container{
+    padding: 20px;
+}

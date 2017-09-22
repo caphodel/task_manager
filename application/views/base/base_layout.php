@@ -19,6 +19,7 @@
 		#header j-button {
 			color: #ABACB1;
 			border: 0px;
+            background: #24292E;
 		}
 
 		#header>.j-menu>j-button,
@@ -49,7 +50,7 @@
 		}
 
 		body {
-			background: #F7F8F9;
+			background: #fff;
 		}
 
 		*[data-badge]:after {
@@ -318,10 +319,10 @@
 
 <body>
 
-	<div id="header" style="height: 60px; background: #fff; border: 0px; box-shadow: 0 0.5px 0 0 #ffffff inset, 0 1px 2px 0 #B3B3B3;flex: 1 1 0;-webkit-box-flex: 1;-webkit-flex: 1;align-items: center;display: flex;">
+	<div id="header" style="height: 60px; border: 0px; box-shadow: 0 0.5px 0 0 #ffffff inset, 0 1px 2px 0 #B3B3B3;flex: 1 1 0;-webkit-box-flex: 1;-webkit-flex: 1;align-items: center;display: flex;">
 		<i class="j-menu-button fa fa-bars fa-2x ripple" style="color: #ABACB1;"></i>
 		<nav class="j-menu">
-			<j-button class="ripple j-ui" style="color: #525e61">Dashboard</j-button>
+			<j-button class="ripple j-ui" style="color: #ABACB1">Dashboard</j-button>
 			<j-button id="red-project" class="ripple j-ui" style="color: #ABACB1">Project</j-button>
 			<j-button class="ripple j-ui" style="color: #ABACB1">Task</j-button>
 			<j-button class="ripple j-ui" style="color: #ABACB1">Calendar</j-button>
@@ -340,7 +341,7 @@
 		<i class="j-menu-button-alt fa fa-ellipsis-v fa-2x ripple" style="color: #ABACB1;"></i>
 	</div>
 
-	<div id="red-content" style="padding: 10px; padding-top: 70px; box-sizing: border-box; height: 100%; display: flex; flex-wrap: wrap;">
+	<div id="red-content" style="/*padding: 10px; padding-top: 70px;*/ padding-top: 60px; box-sizing: border-box; height: 100%;/* display: flex; flex-wrap: wrap;*/">
 
 		<?php if(isset($load)) $this->view($load); ?>
 
@@ -469,7 +470,6 @@
 				$('#content').append(data);
 			}
 		})*/
-
 	</script>
 </body>
 
