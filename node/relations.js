@@ -4,19 +4,24 @@ var projects = global.model['projects'],
     issue_statuses = global.model['issue_statuses'],
     users = global.model['users'],
     enumerations = global.model['enumerations'],
-    issue_categories = global.model['issue_categories'];
+    issue_categories = global.model['issue_categories'],
+    time_entries = global.model['time_entries'],
+    member_roles = global.model['member_roles'],
+    roles = global.model['roles'],
+    members = global.model['members'];
 
-//set association for issues and projects
+//set association for issues
+//issues and project
 projects.hasMany(issues)
 issues.belongsTo(projects);
-//set association for issues and trackers
+//issues and trackers
 issues.hasOne(trackers, {
     foreignKey: "id"
 })
 issues.belongsTo(trackers, {
     foreignKey: "tracker_id"
 });
-//set association for issues and issue_statuses
+//issues and issue_statuses
 issue_statuses.hasOne(issues, {
     foreignKey: "status_id"
 });
@@ -24,7 +29,7 @@ issues.belongsTo(issue_statuses, {
     as: 'status',
     foreignKey: "status_id"
 });
-//set association for issues and users as assigned_to
+//issues and users as assigned_to
 users.hasOne(issues, {
     foreignKey: "assigned_to_id"
 });
@@ -32,7 +37,7 @@ issues.belongsTo(users, {
     as: 'assigned_to',
     foreignKey: "assigned_to_id"
 });
-//set association for issues and users as author
+//issues and users as author
 users.hasOne(issues, {
     foreignKey: "author_id"
 });
@@ -40,7 +45,7 @@ issues.belongsTo(users, {
     as: 'author',
     foreignKey: "author_id"
 });
-//set association for issues and enumerations as priority
+//issues and enumerations as priority
 enumerations.hasOne(issues, {
     foreignKey: "priority_id"
 });
@@ -48,3 +53,29 @@ issues.belongsTo(enumerations, {
     as: 'priority',
     foreignKey: "priority_id"
 });
+
+//set association projects
+projects.hasMany(members, {
+    foreignKey: 'project_id'
+})
+members.belongsTo(projects)
+projects.hasMany(time_entries, {
+    foreignKey: 'project_id'
+})
+//set association member
+/*members.hasOne(users, {
+    foreignKey: 'user_id'
+})*/
+
+members.belongsTo(users)
+
+members.hasOne(member_roles, {
+    foreignKey: 'member_id'
+})
+
+member_roles.hasOne(roles, {
+    targetKey: 'role_id',
+    foreignKey: 'id'
+})
+
+member_roles.belongsTo(roles)

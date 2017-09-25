@@ -2,6 +2,7 @@ var
     express = require('express'),
     md5 = require('md5'),
     router = express.Router(),
+    bodyParser = require('body-parser'),
     sequelize = require("sequelize"),
     findValue = function (o, value) {
         for (var prop in o) {
@@ -48,7 +49,7 @@ router.get('/total', function (req, res) {
     });
 })
 
-router.get('/list/:limit?/:offset?', function (req, res) {
+/*router.get('/list/where/member/:user/:limit?/:offset?', function (req, res) {
     var db = req.app.get("db"),
         options = {
             where: JSON.parse(JSON.stringify(req.query))
@@ -72,9 +73,46 @@ router.get('/list/:limit?/:offset?', function (req, res) {
     const projects = db.import('../models/projects');
 
     projects.findAll(options).then(data => {
-        /*for (var i = 0; i < data.length; i++) {
-            data[i] = valuesToArray(data[i])
-        }*/
+        res.status(200);
+        res.jsonp(data);
+    }).catch(function (error) {
+        res.status(500);
+        res.jsonp({
+            error: error,
+            stackError: error.stack
+        });
+    });
+});*/
+
+router.get('/list/:limit?/:offset?', function (req, res) {
+    var db = req.app.get("db"),
+        options = {
+
+        };
+
+    if (req.query.where) {
+        if (req.query.where.main)
+            options.where = JSON.parse(JSON.stringify(req.query.where.main))
+    }
+
+    if (req.query.orderby)
+        options.order = JSON.parse(req.query.orderby)
+
+    if (!req.params.limit) {
+
+    } else {
+        options.limit = parseInt(req.params.limit)
+    }
+
+    if (!req.params.offset) {
+
+    } else {
+        options.offset = parseInt(req.params.offset)
+    }
+
+    const projects = db.import('../models/projects');
+
+    projects.findAll(options).then(data => {
         res.status(200);
         res.jsonp(data);
     }).catch(function (error) {
@@ -85,6 +123,46 @@ router.get('/list/:limit?/:offset?', function (req, res) {
         });
     });
 });
+
+/*router.post('/list/:limit?/:offset?/members', function (req, res) {
+    var db = req.app.get("db"),
+        options = {
+
+        };
+
+    if(req.body.where){
+        if(req.body.where.projects)
+            options.where = JSON.parse(JSON.stringify(req.body.where.projects))
+    }
+
+    if(req.body.orderby)
+        options.order = JSON.parse(req.body.orderby)
+
+    if (!req.params.limit) {
+
+    } else {
+        options.limit = parseInt(req.params.limit)
+    }
+
+    if (!req.params.offset) {
+
+    } else {
+        options.offset = parseInt(req.params.offset)
+    }
+
+    const projects = db.import('../models/projects');
+
+    projects.findAll(options).then(data => {
+        res.status(200);
+        res.jsonp(data);
+    }).catch(function (error) {
+        res.status(500);
+        res.jsonp({
+            error: error,
+            stackError: error.stack
+        });
+    });
+});*/
 
 /*router.get('/test', function(req, res){
     var db = req.app.get("db")
@@ -129,7 +207,7 @@ router.get('/:identifier', function (req, res) {
     });
 });
 
-router.get('/:identifier/member', function (req, res) {
+router.get('/:identifier/members', function (req, res) {
     var db = req.app.get("db"),
         options = {
             where: {
@@ -138,29 +216,32 @@ router.get('/:identifier/member', function (req, res) {
         };
 
     const members = db.import('../models/members');
+    const member_roles = db.import('../models/member_roles');
     const projects = db.import('../models/projects');
     const users = db.import('../models/users');
-
-    projects.hasMany(members)
-    members.belongsTo(projects);
-    users.hasOne(members)
-    members.belongsTo(users);
+    const roles = db.import('../models/roles');
 
     options.include = [{
         model: projects,
         required: false,
         attributes: []
     }, {
+        model: member_roles,
+        required: true,
+        include: [{
+            model: roles,
+            required: true
+        }]
+    }, {
         model: users,
-        attributes: ['id', 'firstname', 'lastname'],
-        foreignKey: 'id',
-        targetKey: 'user_id'
+        required: true,
+        attributes: ['id', 'firstname', 'lastname', [db.fn('CONCAT', db.col("firstname"), " ", db.col("lastname")), "fullname"]]
     }]
 
     members.findAll(options).then(data => {
-        for (var i = 0; i < data.length; i++) {
+        /*for (var i = 0; i < data.length; i++) {
             data[i] = valuesToArray(data[i])
-        }
+        }*/
         res.status(200);
         res.jsonp(data);
     }).catch(function (error) {
@@ -172,13 +253,16 @@ router.get('/:identifier/member', function (req, res) {
     });
 });
 
-router.get('/:identifier/issue/groupby/tracker', function (req, res) {
+/*router.get('/:identifier/issues', function (req, res) {
     var db = req.app.get("db"),
         options = {
             where: JSON.parse(JSON.stringify(req.query))
         };
 
     options.where['$project.identifier$'] = parseInt(req.params.identifier)
+
+    if (req.query.orderby)
+        options.order = JSON.parse(req.query.orderby)
 
     delete options.where.callback;
     delete options.where._;
@@ -201,7 +285,7 @@ router.get('/:identifier/issue/groupby/tracker', function (req, res) {
         attributes: []
     }]
 
-    options.group = ['tracker_id']
+    //options.group = ['tracker_id']
 
     options.attributes = [[sequelize.fn('count', sequelize.col('issues.id')), 'tracker_count']]
 
@@ -215,15 +299,45 @@ router.get('/:identifier/issue/groupby/tracker', function (req, res) {
             stackError: error.stack
         });
     });
-})
+})*/
 
-router.get('/:identifier/issue', function (req, res) {
+router.get('/:identifier/issues/:limit?/:offset?', function (req, res) {
     var db = req.app.get("db"),
         options = {
             where: {
                 '$project.identifier$': req.params.identifier
             }
         };
+
+    if (req.query.orderby)
+        options.order = JSON.parse(req.query.orderby)
+
+    if (req.query.groupby){
+        options.attributes = [[sequelize.fn('count', sequelize.col('issues.id')), 'count']]
+        options.group = JSON.parse(req.query.groupby)
+    }
+
+    if (req.query.where){
+        if(req.query.where.main){
+            options.where = JSON.parse(JSON.stringify(req.query.where.main))
+            options.where['$project.identifier$'] = req.params.identifier
+        }
+    }
+
+    if (!req.params.limit) {
+
+    } else {
+        options.limit = parseInt(req.params.limit)
+    }
+
+    if (!req.params.offset) {
+
+    } else {
+        options.offset = parseInt(req.params.offset)
+    }
+
+    delete options.where.callback;
+    delete options.where._;
 
     var projects = global.model['projects'],
         issues = global.model['issues'],
@@ -243,7 +357,7 @@ router.get('/:identifier/issue', function (req, res) {
     }, {
         model: issue_statuses,
         as: 'status',
-        attributes: ["id", "name"]
+        attributes: ["id", "name", "is_closed"]
     }, {
         model: users,
         as: 'assigned_to',
