@@ -42,7 +42,7 @@
         <div class="j-header">
             Project
         </div>
-        <j-table id="red-tbl-project" src-fn="project">
+        <j-table id="red-tbl-project" src-fn="project" paging="true">
             [ ["Project No", "Description", "Task"] ]
         </j-table>
     </j-panel>

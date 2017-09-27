@@ -20,7 +20,11 @@
         $self.addClass('j-ui')
 
         this.jui2 = {
-            events: {}
+            events: {},
+            calcMaxWidth: true,
+            cellWidth: [],
+            scrollbarWidth: 0,
+            initial: true
         }
 
         var text = $('<div>' + this.innerHTML + '</div>');
@@ -79,7 +83,7 @@
         })
 
 
-        $('body').on('scrollchange.table' + self.juiid, function () {
+        $(window).on('scrollchange.table' + self.juiid, function () {
             self.setWidth();
         })
     };
@@ -220,12 +224,16 @@
                         this.dragEl.style.msTransform = translate
                         this.dragEl.style.OTransform = translate
                         this.dragEl.style.transform = translate
-                        var $table = $(this.dragEl).parent()
+
+                        var self = $(this.dragEl).parent('.j-table').parent()[0], $table = $(this.dragEl).parent('.j-table');
                         var elWidth = $(this.dragEl.target).outerWidth(true) + (clientX - this.dragEl.position.start.x),
                             allWidth = $table.find('> .j-table-body > .j-table-body-row, > .j-table-head').outerWidth(true) + (clientX - this.dragEl.position.start.x),
                             elNextWidth = $(this.dragEl.target).next().outerWidth(true) - (clientX - this.dragEl.position.start.x);
+
                         $target = $(this.dragEl.target)
                         $target.css("flex", "1 0 " + elWidth + "px") /*.outerWidth(elWidth)*/ /*.next().css("flex", "1 0 " + elNextWidth + "px")*/ //.outerWidth(elNextWidth)
+                        self.jui2.cellWidth[$target.index()] = elWidth;
+
                         $table.removeClass('j-no-select')
                         $table.find('> .j-table-body > .j-table-body-row > .j-table-body-column-' + this.dragEl.target.column).css("flex", "1 0 " + elWidth + "px") /*.outerWidth(elWidth)*/ /*.next().css("flex", "1 0 " + elNextWidth + "px")*/ //.outerWidth(elNextWidth)
                         /*console.log($target.parent().children().sumWidth())
@@ -278,62 +286,83 @@
     }
 
     proto.setWidth = function () {
-        var cellWidth = [],
-            self = this,
+        var self = this,
             $self = $(this),
             $header = this.getHeaderContainer(),
             $body = this.getBodyContainer();
 
-        $header.children('.j-table-head-row').children().each(function (i, val) {
-            cellWidth[i] = $(val).outerWidth(true);
-        })
-
-        $.each(cellWidth, function (i, val) {
-            var width = Math.max.apply(null, $body.find('> div > div:nth-child(' + (i + 1) + ')').map(function () {
-                return $(this).outerWidth(true);
-            }).get());
-            cellWidth[i] = width > cellWidth[i] ? width : cellWidth[i];
-        })
-
-        var maxWidthKey = $.maxKey(cellWidth);
-
-        var count = 0;
-        for (var i = cellWidth.length; i--;) {
-            count += cellWidth[i];
+        if(this.jui2.calcMaxWidth){
+            $header.children('.j-table-head-row').children().each(function (i, val) {
+                self.jui2.cellWidth[i] = $(val).outerWidth(true);
+            })
+            $.each(this.jui2.cellWidth, function (i, val) {
+                var width = Math.max.apply(null, $body.find('> div > div:nth-child(' + (i + 1) + ')').map(function () {
+                    return $(this).outerWidth(true);
+                }).get());
+                self.jui2.cellWidth[i] = width > self.jui2.cellWidth[i] ? width : self.jui2.cellWidth[i];
+            })
         }
 
-        cellWidth[maxWidthKey] += $header.width() - count;
+        if(this.aaData.length > 0){
+            this.jui2.calcMaxWidth = false
+        }
+
+        var maxWidthKey = $.maxKey(self.jui2.cellWidth);
+
+        var count = 0;
+        for (var i = self.jui2.cellWidth.length; i--;) {
+            count += self.jui2.cellWidth[i];
+        }
+
+        this.jui2.cellWidth[maxWidthKey] += $header.width() - count;
 
         var scrollWidth = 0;
 
-        if ($('body').hasScrollBar()) {
-            scrollWidth = $.scrollbarWidth();
+        //console.log($(this).children().width() - $(this).children().children('.j-table-head').width())
+        if(this.aaData.length > 0 && !this.jui2.initial){
+            if ($('body').hasScrollBar()) {
+                this.jui2.scrollbarWidth = scrollWidth = $.scrollbarWidth();
+            }
+            else if(this.jui2.scrollbarWidth!=0){
+                scrollWidth = -this.jui2.scrollbarWidth;
+                this.jui2.scrollbarWidth = 0;
+            }
         }
 
-        cellWidth[cellWidth.length - 1] = cellWidth[cellWidth.length - 1] - scrollWidth;
+        if(this.aaData.length > 0 && this.jui2.initial){
+            this.jui2.initial = false
+        }
+        /*else if($(this).children().width() - $(this).children().children('.j-table-head').width() == $.scrollbarWidth()){
+            scrollWidth = 0;
+        }*/
 
-        $.each(cellWidth, function (i, val) {
+        self.jui2.cellWidth[self.jui2.cellWidth.length - 1] = self.jui2.cellWidth[self.jui2.cellWidth.length - 1] - scrollWidth;
+
+        $.each(self.jui2.cellWidth, function (i, val) {
             $header.find('> div > div:nth-child(' + (i + 1) + ')').css("flex", "1 0 " + val + "px") //.outerWidth(val)
             $body.find('> div > div:nth-child(' + (i + 1) + ')').css("flex", "1 0 " + val + "px") //.outerWidth(val)
         })
 
-        $(this).children().find('> .j-table-body > .j-table-body-row, > .j-table-head > .j-table-head-row').width($header.children().eq(0).children().sumWidth() - scrollWidth)
+        if($(this).children().width() - $(this).children().children('.j-table-head').width() == $.scrollbarWidth()){
+            scrollWidth = -$.scrollbarWidth();
+        }
 
-        $(this).children().find('> .j-table-body > .j-table-body-row, > .j-table-head').width($header.children().eq(0).children().sumWidth() - scrollWidth)
+        count = 0;
+        for (var i = self.jui2.cellWidth.length; i--;) {
+            count += self.jui2.cellWidth[i];
+        }
+
+        //var rowWidth = count//$header.children().eq(0).children().sumWidth() - scrollWidth
+
+        $(this).children().find('> .j-table-body > .j-table-body-row, > .j-table-head > .j-table-head-row').width(count)
+
+        $(this).children().find('> .j-table-body > .j-table-body-row, > .j-table-head').width(count)
 
         $body.find('> div > div').css('white-space', 'normal')
 
         $(this).children().find('> .j-table-body > .j-table-body-row, > .j-table-head > .j-table-head-row').children().each(function (i, el) {
             if (el.resizer_popper) {
                 el.resizer_popper.update()
-                /*
-                var translate = 'translate3d(' + ($(el).prevAll().sumWidth() + $(el).outerWidth()) + 'px, 0px, 0px)'
-                el.resizer_popper.popper.style.webkitTransform = translate
-                el.resizer_popper.popper.style.MozTransform = translate
-                el.resizer_popper.popper.style.msTransform = translate
-                el.resizer_popper.popper.style.OTransform = translate
-                el.resizer_popper.popper.style.transform = translate
-                $(el.resizer_popper.popper).css('transform', translate)*/
             }
         })
     }

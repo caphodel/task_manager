@@ -26,6 +26,7 @@ module.exports = function (grunt) {
 					'js/textField.js',
 					'js/progressBar.js',
 					'js/table.js',
+					'js/pagination.js',
 					'js/panel.js',
 					'js/collapsible.js'
 				],
