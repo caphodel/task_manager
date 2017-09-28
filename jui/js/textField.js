@@ -66,6 +66,10 @@
 			}
 		});
 
+        if (self.setup) {
+            self.setup();
+        }
+
 	};
 
 	proto.addAutocompleteList = function(txt) {
@@ -111,6 +115,14 @@
 		else if (jui2.attrChange[attrName] && this.enabledAttrChange.indexOf(attrName) > -1)
 			jui2.attrChange[attrName](this, false, newVal);
 	}
+
+    jui2.attrChange['j-textfield_no-label'] = function (el, oldVal, newVal) {
+        if (newVal != null) {
+            $(el).children('label').remove()
+        } else {
+
+        }
+    }
 
 	jui2.ui.textField = {
 		widget: document.registerElement('j-textfield', {

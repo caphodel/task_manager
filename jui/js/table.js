@@ -24,7 +24,20 @@
             calcMaxWidth: true,
             cellWidth: [],
             scrollbarWidth: 0,
-            initial: true
+            initial: true,
+            headerOffset: 0
+        }
+
+        this.param = {
+            sEcho: 0,
+            rand: 0,
+            iTotalRecords: 0,
+            iDisplayLength: 10,
+            iDisplayStart: 0,
+            iSortCol: 0,
+            sSearch: '',
+            sSortDir: 'desc',
+            totalPage: 0
         }
 
         var text = $('<div>' + this.innerHTML + '</div>');
@@ -82,10 +95,46 @@
                 self.jui2.events.onItemDoubleClick(self.aaData[$(this).index()]);
         })
 
+        $(window).off('scrollchange.table' + self.juiid)
 
         $(window).on('scrollchange.table' + self.juiid, function () {
+            if ($('#' + self.juiid).length == 0) {
+                $(window).off('scrollchange.table' + self.juiid)
+            }
             self.setWidth();
         })
+
+        var $element = $self;
+        var $follow = $element.find('.j-table-head');
+        var followHeight = $element.find('.j-table-head').outerHeight();
+
+        $(window).off('scroll.table' + self.juiid)
+
+        $(window).on('scroll.table' + self.juiid, function () {
+            var height = $element.outerHeight(),
+                window_height = $(window).height();
+            if ($('#' + self.juiid).length == 0) {
+                $(window).off('scroll.table' + self.juiid)
+            }
+            var pos = $(window).scrollTop();
+            var top = $element.offset().top;
+
+            // Check if element totally above or totally below viewport
+            if (top + height - followHeight < pos || top > pos + window_height) {
+                return;
+            }
+
+            var offset = parseInt($(window).scrollTop() + 60 - top);
+
+            if (offset > 0) {
+                $follow.css('transform', 'translateY(' + (offset) + 'px)');
+                self.jui2.headerOffset = offset;
+            } else {
+                $follow.css('transform', 'translateY(0px)');
+                self.jui2.headerOffset = 0;
+            }
+
+        });
     };
 
     proto.generateData = function (data) {
@@ -225,7 +274,8 @@
                         this.dragEl.style.OTransform = translate
                         this.dragEl.style.transform = translate
 
-                        var self = $(this.dragEl).parent('.j-table').parent()[0], $table = $(this.dragEl).parent('.j-table');
+                        var self = $(this.dragEl).parent('.j-table').parent()[0],
+                            $table = $(this.dragEl).parent('.j-table');
                         var elWidth = $(this.dragEl.target).outerWidth(true) + (clientX - this.dragEl.position.start.x),
                             allWidth = $table.find('> .j-table-body > .j-table-body-row, > .j-table-head').outerWidth(true) + (clientX - this.dragEl.position.start.x),
                             elNextWidth = $(this.dragEl.target).next().outerWidth(true) - (clientX - this.dragEl.position.start.x);
@@ -291,7 +341,7 @@
             $header = this.getHeaderContainer(),
             $body = this.getBodyContainer();
 
-        if(this.jui2.calcMaxWidth){
+        if (this.jui2.calcMaxWidth) {
             $header.children('.j-table-head-row').children().each(function (i, val) {
                 self.jui2.cellWidth[i] = $(val).outerWidth(true);
             })
@@ -303,7 +353,7 @@
             })
         }
 
-        if(this.aaData.length > 0){
+        if (this.aaData.length > 0) {
             this.jui2.calcMaxWidth = false
         }
 
@@ -319,31 +369,30 @@
         var scrollWidth = 0;
 
         //console.log($(this).children().width() - $(this).children().children('.j-table-head').width())
-        if(this.aaData.length > 0 && !this.jui2.initial){
+        if (this.aaData.length > 0 && !this.jui2.initial) {
+            $(this).children().children('.j-table-head').css('position', 'absolute')
             if ($('body').hasScrollBar()) {
                 this.jui2.scrollbarWidth = scrollWidth = $.scrollbarWidth();
-            }
-            else if(this.jui2.scrollbarWidth!=0){
+            } else if (this.jui2.scrollbarWidth != 0) {
                 scrollWidth = -this.jui2.scrollbarWidth;
                 this.jui2.scrollbarWidth = 0;
             }
-        }
-
-        if(this.aaData.length > 0 && this.jui2.initial){
-            this.jui2.initial = false
         }
         /*else if($(this).children().width() - $(this).children().children('.j-table-head').width() == $.scrollbarWidth()){
             scrollWidth = 0;
         }*/
 
-        self.jui2.cellWidth[self.jui2.cellWidth.length - 1] = self.jui2.cellWidth[self.jui2.cellWidth.length - 1] - scrollWidth;
+        //if(this.jui2.initial && $(this).children().width() < Math.round(count) && this.aaData.length > 0){
+        if (count != $(this).children().width())
+            self.jui2.cellWidth[self.jui2.cellWidth.length - 1] = self.jui2.cellWidth[self.jui2.cellWidth.length - 1] - scrollWidth;
+        //}
 
         $.each(self.jui2.cellWidth, function (i, val) {
             $header.find('> div > div:nth-child(' + (i + 1) + ')').css("flex", "1 0 " + val + "px") //.outerWidth(val)
             $body.find('> div > div:nth-child(' + (i + 1) + ')').css("flex", "1 0 " + val + "px") //.outerWidth(val)
         })
 
-        if($(this).children().width() - $(this).children().children('.j-table-head').width() == $.scrollbarWidth()){
+        if ($(this).children().width() - $(this).children().children('.j-table-head').width() == $.scrollbarWidth()) {
             scrollWidth = -$.scrollbarWidth();
         }
 
@@ -365,6 +414,10 @@
                 el.resizer_popper.update()
             }
         })
+
+        if (this.aaData.length > 0 && this.jui2.initial) {
+            this.jui2.initial = false
+        }
     }
 
     proto._sort = function (column, sort) {
@@ -376,11 +429,15 @@
             this.aaData.sort(function (a, b) {
                 return b[column] - a[column]
             })
-        this.sort = column;
+        this.sortColumn = column;
     }
 
     proto.sort = function (column, sort) {
-        this._sort(column, sort);
+        if (this.fnSort) {
+            this.fnSort(column, sort)
+        } else {
+            this._sort(column, sort);
+        }
         this.generateData();
     }
 
@@ -537,17 +594,6 @@
     jui2.attrChange['j-table_src-ajax'] = function (el, oldVal, newVal) {
         var $el = $(el);
         if (newVal != null) {
-            el.param = {
-                sEcho: 0,
-                rand: 0,
-                iTotalRecords: 0,
-                iDisplayLength: el.getAttribute('size') || 10,
-                iDisplayStart: 0,
-                iSortCol: 0,
-                sSearch: '',
-                sSortDir: 'desc',
-                totalPage: 0
-            }
             if (el.generateData_ == undefined)
                 el.generateData_ = el.generateData;
             el.generateData = function (data) {

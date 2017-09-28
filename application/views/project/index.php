@@ -4,17 +4,22 @@
 
 <script>
     function project() {
-        var $el = $('#red-tbl-project');
+        var $el = $('#red-tbl-project');/*
         if ($el[0].limit == undefined)
             $el[0].limit = 10
         if ($el[0].offset == undefined)
-            $el[0].offset = 0
+            $el[0].offset = 0*/
+        $el[0].param.sEcho++
+        var echo = $el[0].param.sEcho;
+
         $.ajax({
             url: window.location.origin + ':8080/api/project/total',
             type: 'GET',
             dataType: 'jsonp',
+            sEcho: echo,
             success: function(data) {
-                $el[0].total = data.total
+                if(this.sEcho == $el[0].param.sEcho)
+                    $el[0].param.iTotalRecords = data.total
             },
             error: function() {},
             beforeSend: function setHeader(xhr) {
@@ -22,11 +27,13 @@
             }
         });
         $.ajax({
-            url: window.location.origin + ':8080/api/project/list/' + $el[0].limit + '/' + $el[0].offset,
+            url: window.location.origin + ':8080/api/project/list/' + $el[0].param.iDisplayLength + '/' + $el[0].param.iDisplayStart,
             type: 'GET',
             dataType: 'jsonp',
+            sEcho: echo,
             success: function(data) {
-                $('#red-tbl-project')[0].generateData(data)
+                if(this.sEcho == $el[0].param.sEcho)
+                    $('#red-tbl-project')[0].generateData(data)
             },
             error: function() {},
             beforeSend: function setHeader(xhr) {

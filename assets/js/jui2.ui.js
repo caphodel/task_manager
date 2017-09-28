@@ -1679,6 +1679,10 @@ jui2.method = {
 			}
 		});
 
+        if (self.setup) {
+            self.setup();
+        }
+
 	};
 
 	proto.addAutocompleteList = function(txt) {
@@ -1724,6 +1728,14 @@ jui2.method = {
 		else if (jui2.attrChange[attrName] && this.enabledAttrChange.indexOf(attrName) > -1)
 			jui2.attrChange[attrName](this, false, newVal);
 	}
+
+    jui2.attrChange['j-textfield_no-label'] = function (el, oldVal, newVal) {
+        if (newVal != null) {
+            $(el).children('label').remove()
+        } else {
+
+        }
+    }
 
 	jui2.ui.textField = {
 		widget: document.registerElement('j-textfield', {
@@ -1867,6 +1879,18 @@ jui2.method = {
             initial: true
         }
 
+        this.param = {
+            sEcho: 0,
+            rand: 0,
+            iTotalRecords: 0,
+            iDisplayLength: 10,
+            iDisplayStart: 0,
+            iSortCol: 0,
+            sSearch: '',
+            sSortDir: 'desc',
+            totalPage: 0
+        }
+
         var text = $('<div>' + this.innerHTML + '</div>');
         text.children().remove()
 
@@ -1922,10 +1946,44 @@ jui2.method = {
                 self.jui2.events.onItemDoubleClick(self.aaData[$(this).index()]);
         })
 
+        $(window).off('scrollchange.table' + self.juiid)
 
         $(window).on('scrollchange.table' + self.juiid, function () {
+            if ($('#' + self.juiid).length == 0) {
+                $(window).off('scrollchange.table' + self.juiid)
+            }
             self.setWidth();
         })
+
+        var $element = $self;
+        var $follow = $element.find('.j-table-head');
+        var followHeight = $element.find('.j-table-head').outerHeight();
+
+        $(window).off('scroll.table' + self.juiid)
+
+        $(window).on('scroll.table' + self.juiid, function () {
+            var height = $element.outerHeight(),
+                window_height = $(window).height();
+            if ($('#' + self.juiid).length == 0) {
+                $(window).off('scroll.table' + self.juiid)
+            }
+            var pos = $(window).scrollTop();
+            var top = $element.offset().top;
+
+            // Check if element totally above or totally below viewport
+            if (top + height - followHeight < pos || top > pos + window_height) {
+                return;
+            }
+
+            var offset = parseInt($(window).scrollTop() + 60 - top);
+
+            if (offset > 0) {
+                $follow.css('transform', 'translateY(' + (offset) + 'px)');
+            } else {
+                $follow.css('transform', 'translateY(0px)');
+            }
+
+        });
     };
 
     proto.generateData = function (data) {
@@ -2065,7 +2123,8 @@ jui2.method = {
                         this.dragEl.style.OTransform = translate
                         this.dragEl.style.transform = translate
 
-                        var self = $(this.dragEl).parent('.j-table').parent()[0], $table = $(this.dragEl).parent('.j-table');
+                        var self = $(this.dragEl).parent('.j-table').parent()[0],
+                            $table = $(this.dragEl).parent('.j-table');
                         var elWidth = $(this.dragEl.target).outerWidth(true) + (clientX - this.dragEl.position.start.x),
                             allWidth = $table.find('> .j-table-body > .j-table-body-row, > .j-table-head').outerWidth(true) + (clientX - this.dragEl.position.start.x),
                             elNextWidth = $(this.dragEl.target).next().outerWidth(true) - (clientX - this.dragEl.position.start.x);
@@ -2131,7 +2190,7 @@ jui2.method = {
             $header = this.getHeaderContainer(),
             $body = this.getBodyContainer();
 
-        if(this.jui2.calcMaxWidth){
+        if (this.jui2.calcMaxWidth) {
             $header.children('.j-table-head-row').children().each(function (i, val) {
                 self.jui2.cellWidth[i] = $(val).outerWidth(true);
             })
@@ -2143,7 +2202,7 @@ jui2.method = {
             })
         }
 
-        if(this.aaData.length > 0){
+        if (this.aaData.length > 0) {
             this.jui2.calcMaxWidth = false
         }
 
@@ -2159,31 +2218,30 @@ jui2.method = {
         var scrollWidth = 0;
 
         //console.log($(this).children().width() - $(this).children().children('.j-table-head').width())
-        if(this.aaData.length > 0 && !this.jui2.initial){
+        if (this.aaData.length > 0 && !this.jui2.initial) {
+            $(this).children().children('.j-table-head').css('position', 'absolute')
             if ($('body').hasScrollBar()) {
                 this.jui2.scrollbarWidth = scrollWidth = $.scrollbarWidth();
-            }
-            else if(this.jui2.scrollbarWidth!=0){
+            } else if (this.jui2.scrollbarWidth != 0) {
                 scrollWidth = -this.jui2.scrollbarWidth;
                 this.jui2.scrollbarWidth = 0;
             }
-        }
-
-        if(this.aaData.length > 0 && this.jui2.initial){
-            this.jui2.initial = false
         }
         /*else if($(this).children().width() - $(this).children().children('.j-table-head').width() == $.scrollbarWidth()){
             scrollWidth = 0;
         }*/
 
-        self.jui2.cellWidth[self.jui2.cellWidth.length - 1] = self.jui2.cellWidth[self.jui2.cellWidth.length - 1] - scrollWidth;
+        //if(this.jui2.initial && $(this).children().width() < Math.round(count) && this.aaData.length > 0){
+        if (count != $(this).children().width())
+            self.jui2.cellWidth[self.jui2.cellWidth.length - 1] = self.jui2.cellWidth[self.jui2.cellWidth.length - 1] - scrollWidth;
+        //}
 
         $.each(self.jui2.cellWidth, function (i, val) {
             $header.find('> div > div:nth-child(' + (i + 1) + ')').css("flex", "1 0 " + val + "px") //.outerWidth(val)
             $body.find('> div > div:nth-child(' + (i + 1) + ')').css("flex", "1 0 " + val + "px") //.outerWidth(val)
         })
 
-        if($(this).children().width() - $(this).children().children('.j-table-head').width() == $.scrollbarWidth()){
+        if ($(this).children().width() - $(this).children().children('.j-table-head').width() == $.scrollbarWidth()) {
             scrollWidth = -$.scrollbarWidth();
         }
 
@@ -2205,6 +2263,10 @@ jui2.method = {
                 el.resizer_popper.update()
             }
         })
+
+        if (this.aaData.length > 0 && this.jui2.initial) {
+            this.jui2.initial = false
+        }
     }
 
     proto._sort = function (column, sort) {
@@ -2216,11 +2278,15 @@ jui2.method = {
             this.aaData.sort(function (a, b) {
                 return b[column] - a[column]
             })
-        this.sort = column;
+        this.sortColumn = column;
     }
 
     proto.sort = function (column, sort) {
-        this._sort(column, sort);
+        if (this.fnSort) {
+            this.fnSort(column, sort)
+        } else {
+            this._sort(column, sort);
+        }
         this.generateData();
     }
 
@@ -2377,17 +2443,6 @@ jui2.method = {
     jui2.attrChange['j-table_src-ajax'] = function (el, oldVal, newVal) {
         var $el = $(el);
         if (newVal != null) {
-            el.param = {
-                sEcho: 0,
-                rand: 0,
-                iTotalRecords: 0,
-                iDisplayLength: el.getAttribute('size') || 10,
-                iDisplayStart: 0,
-                iSortCol: 0,
-                sSearch: '',
-                sSortDir: 'desc',
-                totalPage: 0
-            }
             if (el.generateData_ == undefined)
                 el.generateData_ = el.generateData;
             el.generateData = function (data) {
@@ -2416,15 +2471,54 @@ jui2.method = {
 
     jui2.attrChange['j-table_paging'] = function(el, oldVal, newVal){
         if (newVal != null) {
-            $el = $(el);
-            $el.append('<j-toolbar class="j-table-pagination"><i class="fa fa-step-backward"></i> <i class="fa fa-caret-left"></i> <i class="fa fa-caret-right"></i> <i class="fa fa-step-forward"></i></j-toolbar>')
+            var $el = $(el);
+            $el.append('<j-toolbar class="j-table-pagination" style="align-items: baseline;"><j-button class="j-table-first"><i class="fa fa-fast-backward"></i></j-button> <j-button class="j-table-prev"><i class="fa fa-backward"></i></j-button> <j-textfield class="j-table-page" no-label="true" style="width: 60px;"></j-textfield> <j-button class="j-table-next"><i class="fa fa-forward"></i></j-button> <j-button class="j-table-last"><i class="fa fa-fast-forward"></i></j-button></j-toolbar>');
+
+            $el.children('.j-table-pagination').children('.j-table-page').on('afterdraw', function(){
+                $el.children('.j-table-pagination').children('.j-table-page').val(1);
+            })
+
+            /*$el.children('.j-table-pagination').children('.j-table-page').val(1)
+
+            console.log($el.children('.j-table-pagination').children('.j-table-page'))
+            $el.children('.j-table-pagination').children('.j-table-page').setup = function(el){
+                console.log('aaa')
+                $el.children('.j-table-pagination').children('.j-table-page').val(1)
+            }*/
+
+            $el.children('.j-table-pagination').children('.j-table-first').click(function(){
+                el.param.iDisplayStart = 0;
+                el.generateData();
+                $el.children('.j-table-pagination').children('.j-table-page').val(Math.floor((el.param.iDisplayStart+el.param.iDisplayLength)/el.param.iDisplayLength))
+            })
+
+            $el.children('.j-table-pagination').children('.j-table-prev').click(function(){
+                el.param.iDisplayStart -= el.param.iDisplayLength;
+                el.generateData();
+                $el.children('.j-table-pagination').children('.j-table-page').val(Math.floor((el.param.iDisplayStart+el.param.iDisplayLength)/el.param.iDisplayLength))
+            })
+
+            $el.children('.j-table-pagination').children('.j-table-next').click(function(){
+                el.param.iDisplayStart += el.param.iDisplayLength;
+                el.generateData();
+                $el.children('.j-table-pagination').children('.j-table-page').val(Math.floor((el.param.iDisplayStart+el.param.iDisplayLength)/el.param.iDisplayLength))
+            })
+
+            $el.children('.j-table-pagination').children('.j-table-last').click(function(){
+                var mod = (el.param.iTotalRecords % el.param.iDisplayLength);
+                mod = mod == 0 ? el.param.iDisplayLength : mod;
+                el.param.iDisplayStart = el.param.iTotalRecords - mod;
+                el.generateData();
+                $el.children('.j-table-pagination').children('.j-table-page').val(Math.floor((el.param.iDisplayStart+el.param.iDisplayLength)/el.param.iDisplayLength))
+            })
         }
         else{
             $el = $(el);
             $el.children('.j-table-pagination').remove();
         }
     }
-}(jQuery));;/****js/panel.js****/
+}(jQuery));
+;/****js/panel.js****/
 /**
  * @classdesc Table custom web component
  * @class table

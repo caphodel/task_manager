@@ -22,9 +22,9 @@
 	line-height: 18px;
     background: #fff;
 }
-.fa {
+/*.fa {
 	font:normal normal normal 14px/1 FontAwesome !important;
-}
+}*/
 
 .j-no-select{
   -webkit-touch-callout: none; /* iOS Safari */
@@ -162,6 +162,11 @@ j-table>.j-table {
     /*min-width: 100%;*/
 }
 
+.j-table-page > input{
+    width: 100%;
+    text-align: center;
+}
+
 .j-pop {
 	padding: 8px 0;
 	background: @windowBackground;
@@ -249,16 +254,33 @@ j-toolbar{
 	flex-wrap: wrap;
 }
 
+j-toolbar > *{
+    margin: 2px;
+}
+
 .j-control{
 	border: 1px solid @colorPrimaryDarker/*#E2E2E2*/;
 	padding: 4px 5px;
 	border-radius: 3px;
 	font-weight: 600;
+    min-height: 28px;
+}
+
+.j-control i{
+    line-height: 18px !important;
+    font-size: 14px;
+}
+
+.j-control-icon{
+	/*border: 1px solid @colorPrimaryDarker/*#E2E2E2*/;
+	padding: 4px 5px;
+	/*border-radius: 3px;*/
+	font-weight: 600;
 }
 
 .j-control-click{
 	cursor: pointer;
-	border-radius: 2px;
+	border-radius: 3px;
 }
 
 .j-control-click:hover{

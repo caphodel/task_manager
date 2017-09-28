@@ -311,8 +311,8 @@
 		}
 
         .fa-lg2 {
-            font-size: 1.6em !important;
-            line-height: .75em !important;
+            font-size: 1.4em !important;
+            line-height: .65em !important;
             vertical-align: -15%;
         }
 
