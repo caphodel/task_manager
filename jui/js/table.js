@@ -418,6 +418,7 @@
         })
 
         if (this.aaData.length > 0 && this.jui2.initial) {
+            $(this).children().children('.j-table-head').css('transform', 'translateY(0px)').css('position', 'absolute')
             this.jui2.initial = false
         }
     }
