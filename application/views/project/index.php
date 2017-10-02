@@ -1,5 +1,5 @@
 <div class="red-util-container" style="display: flex;">
-    <j-spacer></j-spacer><j-button><i class="fa fa-plus"></i> New Project</j-button>
+    <j-spacer></j-spacer><j-button red-permission="login"><i class="fa fa-plus"></i> New Project</j-button>
 </div>
 
 <script>

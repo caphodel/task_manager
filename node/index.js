@@ -19,7 +19,7 @@ var sequelize = new Sequelize('tame', 'root', '', {
         timestamps: false,
         underscored: true
     },
-    logging: console.log
+    logging: false
 })
 
 app.use(cors());
