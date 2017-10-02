@@ -453,7 +453,7 @@
         }
 
         function redPermissionChecker() {
-            var login = Cookies.get('token');
+            /*var login = Cookies.get('token');
             if (login != undefined) {
                 if(!jwt_decode(login)){
                     $('[red-permission="login"').remove()
@@ -464,7 +464,7 @@
             }
             else{
                 $('[red-permission="login"').remove()
-            }
+            }*/
         }
 
         function redLoad(url, el) {

@@ -160,6 +160,8 @@
         $body.children().children(':nth-child(n+' + ($self[0].getHeaderContainer().children().last().children().length + 1) + ')').hide()
 
         $self.triggerHandler('afterdraw');
+        $self.triggerHandler('j-table.afterdraw');
+        $body.css('padding-top', $self[0].getHeaderContainer().height())
     }
 
     proto.setColumnMaxWidth = function (el) {

@@ -275,9 +275,13 @@ this["jui2"]["tmpl"]["tableInPlaceForm"] = Handlebars.template({"compiler":[6,">
 },"useData":true});
 
 this["jui2"]["tmpl"]["tableItems"] = Handlebars.template({"1":function(depth0,helpers,partials,data) {
-    var stack1;
+    var stack1, helper, alias1=helpers.helperMissing, alias2="function", alias3=this.escapeExpression;
 
-  return "<div style=\"display: flex;\" class=\"j-table-body-row\">\r\n"
+  return "<div style=\"display: flex;\" class=\"j-table-body-row j-table-body-row-"
+    + alias3(((helper = (helper = helpers.index || (data && data.index)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"index","hash":{},"data":data}) : helper)))
+    + "\" data-index=\""
+    + alias3(((helper = (helper = helpers.index || (data && data.index)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"index","hash":{},"data":data}) : helper)))
+    + "\">\r\n"
     + ((stack1 = helpers.each.call(depth0,depth0,{"name":"each","hash":{},"fn":this.program(2, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
     + "</div>\r\n";
 },"2":function(depth0,helpers,partials,data) {

@@ -1,5 +1,5 @@
 {{#each rows}}
-<div style="display: flex;" class="j-table-body-row">
+<div style="display: flex;" class="j-table-body-row j-table-body-row-{{@index}}" data-index="{{@index}}">
 	{{#each this}}
 	<div class="j-table-body-column j-table-body-column-{{@index}}"><span>{{{this}}}</span></div>
 	{{/each}}

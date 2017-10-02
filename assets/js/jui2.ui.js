@@ -2012,6 +2012,8 @@ jui2.method = {
         $body.children().children(':nth-child(n+' + ($self[0].getHeaderContainer().children().last().children().length + 1) + ')').hide()
 
         $self.triggerHandler('afterdraw');
+        $self.triggerHandler('j-table.afterdraw');
+        $body.css('padding-top', $self[0].getHeaderContainer().height())
     }
 
     proto.setColumnMaxWidth = function (el) {
@@ -2475,11 +2477,17 @@ jui2.method = {
     jui2.attrChange['j-table_paging'] = function(el, oldVal, newVal){
         if (newVal != null) {
             var $el = $(el);
-            $el.append('<j-toolbar class="j-table-pagination" style="align-items: baseline;"><j-button class="j-table-first"><i class="fa fa-fast-backward"></i></j-button> <j-button class="j-table-prev"><i class="fa fa-backward"></i></j-button> <j-textfield class="j-table-page" no-label="true" style="width: 60px;"></j-textfield> <j-button class="j-table-next"><i class="fa fa-forward"></i></j-button> <j-button class="j-table-last"><i class="fa fa-fast-forward"></i></j-button><j-spacer></j-spacer><span class="j-table-data-info></span></j-toolbar>');
+            $el.append('<j-toolbar class="j-table-pagination" style="align-items: baseline;"><j-button class="j-table-first"><i class="fa fa-fast-backward"></i></j-button> <j-button class="j-table-prev"><i class="fa fa-backward"></i></j-button> <j-textfield class="j-table-page" no-label="true" style="width: 60px;"></j-textfield> <j-button class="j-table-next"><i class="fa fa-forward"></i></j-button> <j-button class="j-table-last"><i class="fa fa-fast-forward"></i></j-button><j-spacer></j-spacer><span class="j-table-data-info">aa</span></j-toolbar>');
+
+            $el.on('j-table.afterdraw', function(){
+                var last = (el.param.iDisplayStart+el.param.iDisplayLength);
+                if(last>el.param.iTotalRecords)
+                    last = el.param.iTotalRecords
+                $el.children('.j-table-pagination').children('.j-table-data-info').html((el.param.iDisplayStart+1)+'-'+last+'/'+el.param.iTotalRecords);
+            })
 
             $el.children('.j-table-pagination').children('.j-table-page').on('afterdraw', function(){
                 $el.children('.j-table-pagination').children('.j-table-page').val(1);
-                $el.children('.j-table-pagination').children('.j-table-data-info').html((el.param.iDisplayStart+1)+'-'+(el.param.iDisplayStart+el.param.iDisplayLength)+'/'+el.param.iTotalRecords);
             })
 
             /*$el.children('.j-table-pagination').children('.j-table-page').val(1)
@@ -2493,7 +2501,6 @@ jui2.method = {
             $el.children('.j-table-pagination').children('.j-table-first').click(function(){
                 el.param.iDisplayStart = 0;
                 el.generateData();
-                $el.children('.j-table-pagination').children('.j-table-page').val(Math.floor((el.param.iDisplayStart+el.param.iDisplayLength)/el.param.iDisplayLength))
             })
 
             $el.children('.j-table-pagination').children('.j-table-prev').click(function(){
