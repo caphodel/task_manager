@@ -12,6 +12,13 @@
 .font-play {
   font-family: 'Play', sans-serif;
 }
+a {
+  color: #0079c4;
+  text-decoration: none;
+}
+a:hover {
+  text-decoration: underline;
+}
 /* css untuk header */
 #header {
   border-bottom: 1px solid #d7d7d7;
@@ -138,4 +145,26 @@ j-button:active:after{
 }
 .red-content-container {
   padding: 20px;
+}
+.red-info-container {
+  background: #fafbfc;
+  border: 1px solid #e1e4e8;
+  display: block;
+  width: 100%;
+  padding: 20px;
+}
+.red-layout-table {
+  border-collapse: collapse;
+  border: 0;
+  vertical-align: top;
+  width: 100%;
+}
+.red-layout-table > tbody > tr > td {
+  vertical-align: top;
+}
+.red-layout-table > tbody > tr > td:not(:last-child) {
+  padding-right: 20px;
+}
+.red-issue-tracker-name {
+  font-size: 18px;
 }

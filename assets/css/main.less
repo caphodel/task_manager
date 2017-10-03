@@ -26,6 +26,14 @@
     font-family: 'Play', sans-serif;
 }
 
+a{
+    color: @color1;
+    text-decoration: none;
+}
+
+a:hover{
+    text-decoration: underline;
+}
 
 /* css untuk header */
 
@@ -173,4 +181,31 @@ j-button:active:after{
 
 .red-content-container{
     padding: 20px;
+}
+
+.red-info-container {
+    background: @background2;
+    border: 1px solid #e1e4e8;
+    display: block;
+    width: 100%;
+    padding: 20px;
+}
+
+.red-layout-table{
+    border-collapse: collapse;
+    border: 0;
+    vertical-align: top;
+    width: 100%;
+}
+
+.red-layout-table > tbody > tr > td{
+    vertical-align: top;
+}
+
+.red-layout-table > tbody > tr > td:not(:last-child){
+    padding-right: 20px;
+}
+
+.red-issue-tracker-name{
+    font-size: 18px;
 }

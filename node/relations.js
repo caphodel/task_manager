@@ -13,6 +13,7 @@ var projects = global.model['projects'],
     news = global.model['news'],
     custom_fields = global.model['custom_fields'],
     custom_fields_projects = global.model['custom_fields_projects'],
+    watchers = global.model['watchers'],
     members = global.model['members'];
 
 //set association for issues
@@ -23,6 +24,21 @@ issues.hasOne(trackers, {
 })
 issues.belongsTo(trackers, {
     foreignKey: "tracker_id"
+});
+issues.hasMany(watchers, {
+    foreignKey: 'watchable_id'
+})
+watchers.belongsTo(issues, {
+    foreignKey: "watchable_id",
+    through: {
+        watchable_type: "Issue"
+    }
+});
+watchers.hasOne(users, {
+    foreignKey: 'id'
+})
+watchers.belongsTo(users, {
+    foreignKey: "user_id"
 });
 //issues and issue_statuses
 issue_statuses.hasOne(issues, {

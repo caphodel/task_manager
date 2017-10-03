@@ -3,12 +3,8 @@
 </div>
 
 <script>
-    function project() {
-        var $el = $('#red-tbl-project');/*
-        if ($el[0].limit == undefined)
-            $el[0].limit = 10
-        if ($el[0].offset == undefined)
-            $el[0].offset = 0*/
+    function red_project() {
+        var $el = $('#red-tbl-project');
         $el[0].param.sEcho++
         var echo = $el[0].param.sEcho;
 
@@ -42,6 +38,12 @@
         });
     }
 
+    function red_project_custom(record){
+        record.id = '<a href="<?php echo base_url() ?>'+"projects/"+record.identifier+'">'+record.name+'</a>'
+        record.name = '<a href="<?php echo base_url() ?>'+"projects/"+record.identifier+'">'+record.description+'</a>'
+        return record;
+    }
+
 </script>
 
 <div class="red-content-container">
@@ -49,14 +51,15 @@
         <div class="j-header">
             Project
         </div>
-        <j-table id="red-tbl-project" src-fn="project" paging="true">
-            [ ["Project No", "Description", "Task"] ]
+        <j-table id="red-tbl-project" src-fn="red_project" paging="true" custom="red_project_custom">
+            [ ["Project No", "Description"] ]
         </j-table>
     </j-panel>
     <script>
         $('#red-tbl-project')[0].setup = function() {
-            $('#red-tbl-project')[0].onItemDoubleClick(function(record) {
-            })
+            /*$('#red-tbl-project')[0].onItemDoubleClick(function(record) {
+                redLoad("project/"+record.identifier+"?from_base", "#red-content")
+            })*/
         }
 
     </script>

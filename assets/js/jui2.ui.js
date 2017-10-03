@@ -1995,8 +1995,12 @@ jui2.method = {
 
         this.aaData = data || this.aaData;
 
+        this.generatedData = $.extend(true, {}, this.aaData)
+
+        $self.triggerHandler('j-table.beforedraw');
+
         $body.empty().append(jui2.tmpl['tableItems']({
-            rows: this.aaData, //.splice(0, $self[0].getHeaderContainer().children().last().children().length)
+            rows: this.generatedData, //.splice(0, $self[0].getHeaderContainer().children().last().children().length)
         }));
 
         $body.find('> div').click(function () {
@@ -2478,7 +2482,7 @@ jui2.method = {
     jui2.attrChange['j-table_paging'] = function(el, oldVal, newVal){
         if (newVal != null) {
             var $el = $(el);
-            $el.append('<j-toolbar class="j-table-pagination" style="align-items: baseline;"><j-button class="j-table-first"><i class="fa fa-fast-backward"></i></j-button> <j-button class="j-table-prev"><i class="fa fa-backward"></i></j-button> <j-textfield class="j-table-page" no-label="true" style="width: 60px;"></j-textfield> <j-button class="j-table-next"><i class="fa fa-forward"></i></j-button> <j-button class="j-table-last"><i class="fa fa-fast-forward"></i></j-button><j-spacer></j-spacer><span class="j-table-data-info">aa</span></j-toolbar>');
+            $el.append('<j-toolbar class="j-table-pagination" style="align-items: baseline;"><j-button class="j-table-first"><i class="fa fa-fast-backward"></i></j-button> <j-button class="j-table-prev"><i class="fa fa-backward"></i></j-button> <j-textfield class="j-table-page" no-label="true" style="width: 60px;"></j-textfield> <j-button class="j-table-next"><i class="fa fa-forward"></i></j-button> <j-button class="j-table-last"><i class="fa fa-fast-forward"></i></j-button><j-spacer></j-spacer><span class="j-table-data-info"></span></j-toolbar>');
 
             $el.on('j-table.afterdraw', function(){
                 var last = (el.param.iDisplayStart+el.param.iDisplayLength);
@@ -2527,6 +2531,23 @@ jui2.method = {
         else{
             $el = $(el);
             $el.children('.j-table-pagination').remove();
+        }
+    }
+}(jQuery));
+;/****js/custom.js****/
+(function ($) {
+
+    jui2.attrChange['j-table_custom'] = function(el, oldVal, newVal){
+        if (newVal != null) {
+            var $el = $(el);
+            $el.on('j-table.beforedraw', function(){
+                for(var i=0; i<el.aaData.length; i++){
+                    el.generatedData[i] = eval(newVal).call(this, el.aaData[i])
+                }
+            })
+        }
+        else{
+
         }
     }
 }(jQuery));

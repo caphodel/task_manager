@@ -33,6 +33,7 @@ router.post('/', function (req, res) {
                 message: 'Authentication success.',
                 token: jwt.sign({
                     login: result.login,
+                    id: result.id,
                 }, req.app.get('salt'), {
                     expiresIn: '24h'
                 })

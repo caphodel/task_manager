@@ -27,6 +27,7 @@ module.exports = function (grunt) {
 					'js/progressBar.js',
 					'js/table.js',
 					'js/pagination.js',
+					'js/custom.js',
 					'js/panel.js',
 					'js/collapsible.js'
 				],

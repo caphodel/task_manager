@@ -1,19 +1,22 @@
 <html>
 
 <head>
-    <link href="assets/css/main.css" rel="stylesheet" type="text/css" />
-    <link href="assets/css/fonts.css" rel="stylesheet" type="text/css" />
-    <link href="assets/css/animate.css" rel="stylesheet" type="text/css" />
-    <script src="assets/js/jquery.min.js"></script>
-    <script src="assets/js/jui2.lib.js"></script>
-    <script src="assets/js/jui2.tmp.min.js"></script>
-    <script src="assets/js/jui2.ui.js"></script>
-    <script src="assets/js/cookie.js"></script>
-    <script src="assets/js/jwt-decode.min.js"></script>
+    <link href="<?php echo base_url() ?>assets/css/main.css" rel="stylesheet" type="text/css" />
+    <link href="<?php echo base_url() ?>assets/css/fonts.css" rel="stylesheet" type="text/css" />
+    <link href="<?php echo base_url() ?>assets/css/animate.css" rel="stylesheet" type="text/css" />
+    <script src="<?php echo base_url() ?>assets/js/jquery.min.js"></script>
+    <script src="<?php echo base_url() ?>assets/js/jui2.lib.js"></script>
+    <script src="<?php echo base_url() ?>assets/js/jui2.tmp.min.js"></script>
+    <script src="<?php echo base_url() ?>assets/js/jui2.ui.js"></script>
+    <script src="<?php echo base_url() ?>assets/js/cookie.js"></script>
+    <script src="<?php echo base_url() ?>assets/js/history.js"></script>
+    <script src="<?php echo base_url() ?>assets/js/jwt-decode.min.js"></script>
+    <script src="<?php echo base_url() ?>assets/js/defiant.min.js"></script>
     <title>Task Manager</title>
     <style>
         * {
             color: #1c2022;
+            line-height: 18px;
         }
 
         #header j-button {
@@ -324,8 +327,8 @@
     </style>
     <!--link href="assets/css/responsive.css" rel="stylesheet" type="text/css" /-->
 
-    <link href="assets/css/jui2.css" rel="stylesheet" type="text/css" />
-    <link href="assets/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
+    <link href="<?php echo base_url() ?>assets/css/jui2.css" rel="stylesheet" type="text/css" />
+    <link href="<?php echo base_url() ?>assets/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
 </head>
 
 <body>
@@ -334,8 +337,8 @@
         <!--i class="j-menu-button fa fa-bars fa-2x ripple" style="color: #ABACB1;"></i-->
         <nav class="j-menu">
             <j-button class="ripple j-ui" style="color: #ABACB1">Dashboard</j-button>
-            <j-button id="red-project" class="ripple j-ui" style="color: #ABACB1">Project</j-button>
-            <j-button class="ripple j-ui" style="color: #ABACB1">Task</j-button>
+            <j-button href="<?php echo base_url() ?>projects" class="ripple j-ui" style="color: #ABACB1">Project</j-button>
+            <j-button id="red-btn-task" class="ripple j-ui" style="color: #ABACB1">Task</j-button>
             <j-button class="ripple j-ui" style="color: #ABACB1">Calendar</j-button>
             <j-button class="ripple j-ui" style="color: #ABACB1">Document</j-button>
         </nav>
@@ -344,7 +347,7 @@
             <!--j-button class="j-ui ripple" data-label="Notification">
 				<i class="fa fa-bell fa-lg j-ui" style="" data-badge="10"></i>
 			</j-button-->
-            <j-button id="red-sign-in" class="j-ui ripple">
+            <j-button href="<?php echo base_url() ?>login" id="red-sign-in" class="j-ui ripple">
                 Sign In
             </j-button>
             <!--div style="width: 200px;" id="user-info"></div-->
@@ -440,7 +443,7 @@
                 })
         })
 
-        var redDomain = window.location + "/index.php",
+        var redDomain = "<?php echo base_url() ?>",
             red_token = "";
 
         function redAppend(url, el) {
@@ -455,14 +458,12 @@
         function redPermissionChecker() {
             var login = Cookies.get('token');
             if (login != undefined) {
-                if(!jwt_decode(login)){
+                if (!jwt_decode(login)) {
                     $('[red-permission="login"').remove()
-                }
-                else{
+                } else {
                     $('#red-sign-in').text("Logged In")
                 }
-            }
-            else{
+            } else {
                 $('[red-permission="login"').remove()
             }
         }
@@ -477,13 +478,13 @@
             })
         }
 
-        $('#red-sign-in').click(function() {
-            redLoad(redDomain + "/base/login?from_base", "#red-content")
-        })
+        /*$('#red-sign-in').click(function() {
+            redLoad("index.php/base/login?from_base", "#red-content")
+        })*/
 
-        $('#red-project').click(function() {
-            redLoad(redDomain + "/project?from_base", "#red-content")
-        })
+        /*$('#red-project').click(function() {
+            redLoad("index.php/project?from_base", "#red-content")
+        })*/
 
         /*$.ajax({
         	url: 'index.php/project/',
@@ -499,6 +500,66 @@
         	}
         })*/
         redPermissionChecker()
+
+        function isExternal(url) {
+            var match = url.match(/^([^:\/?#]+:)?(?:\/\/([^\/?#]*))?([^?#]+)?(\?[^#]*)?(#.*)?/);
+            if (typeof match[1] === "string" && match[1].length > 0 && match[1].toLowerCase() !== location.protocol) return true;
+            if (typeof match[2] === "string" && match[2].length > 0 && match[2].replace(new RegExp(":(" + {
+                    "http:": 80,
+                    "https:": 443
+                }[location.protocol] + ")?$"), "") !== location.host) return true;
+            return false;
+        }
+
+        $(function() {
+            // we get a normal Location object
+
+            /*
+             * Note, this is the only difference when using this library,
+             * because the object window.location cannot be overriden,
+             * so library the returns generated "location" object within
+             * an object window.history, so get it out of "history.location".
+             * For browsers supporting "history.pushState" get generated
+             * object "location" with the usual "window.location".
+             */
+            var location = window.history.location || window.location;
+
+            // looking for all the links and hang on the event, all references in this document
+            $(document).on('click tap', 'a, j-button[href]', function() {
+                // keep the link in the browser history
+
+                if (!isExternal($(this).attr('href'))) {
+
+                    history.pushState(null, null, $(this).attr('href'));
+
+                    // here can cause data loading, etc.
+                    redLoad($(this).attr('href'), "#red-content")
+
+                    // do not give a default action
+                    return false;
+                } else {
+                    return true
+                }
+            });
+
+            // hang on popstate event triggered by pressing back/forward in browser
+            $(window).on('popstate', function(e) {
+
+                // here can cause data loading, etc.
+
+                // just post
+                //console.log("We returned to the page with a link: " + location.href);
+                if (location.href.split("task_manager/")[1] != "")
+                    redLoad(location.href, "#red-content");
+            });
+        });
+
+        $(document).ready(function() {
+            var href = window.location.href.split(redDomain);
+            if (href.length > 1 && href[1] != ''){
+                redLoad(redDomain + href[1], "#red-content")
+            }
+        })
 
     </script>
 </body>

@@ -19,7 +19,7 @@ var sequelize = new Sequelize('tame', 'root', '', {
         timestamps: false,
         underscored: true
     },
-    logging: false
+    logging: console.log
 })
 
 app.use(cors());
@@ -70,6 +70,9 @@ router.use('/auth', rAuth);
 
 var rProject = require('./router/projects');
 router.use('/project', rProject);
+
+var rIssues = require('./router/issues');
+router.use('/issue', rIssues);
 
 app.use('/api', router);
 

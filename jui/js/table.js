@@ -143,8 +143,12 @@
 
         this.aaData = data || this.aaData;
 
+        this.generatedData = $.extend(true, {}, this.aaData)
+
+        $self.triggerHandler('j-table.beforedraw');
+
         $body.empty().append(jui2.tmpl['tableItems']({
-            rows: this.aaData, //.splice(0, $self[0].getHeaderContainer().children().last().children().length)
+            rows: this.generatedData, //.splice(0, $self[0].getHeaderContainer().children().last().children().length)
         }));
 
         $body.find('> div').click(function () {

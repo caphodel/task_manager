@@ -33,46 +33,62 @@ var
     };
 
 router.get('/total', function (req, res) {
-    var db = req.app.get("db");
-
-    db.query('select count(*) as total from projects', {
-        type: db.QueryTypes.SELECT
-    }).then(count => {
-        res.status(200);
-        res.jsonp(count[0]);
-    }).catch(function (error) {
-        res.status(500);
-        res.jsonp({
-            error: error,
-            stackError: error.stack
-        });
-    });
-})
-
-/*router.get('/list/where/member/:user/:limit?/:offset?', function (req, res) {
     var db = req.app.get("db"),
         options = {
-            where: JSON.parse(JSON.stringify(req.query))
+            where: {
+
+            }
         };
+
+    if (req.query.orderby)
+        options.order = JSON.parse(req.query.orderby)
+
+    if (req.query.where){
+        var where = req.query.where;
+        if(where.main){
+            options.where = where.main
+        }
+    }
 
     delete options.where.callback;
     delete options.where._;
 
-    if (!req.params.limit) {
+    var projects = global.model['projects'],
+        issues = global.model['issues'],
+        trackers = global.model['trackers'],
+        issue_statuses = global.model['issue_statuses'],
+        users = global.model['users'],
+        priority = global.model['enumerations'],
+        issue_categories = global.model['issue_categories'];
 
-    } else {
-        options.limit = parseInt(req.params.limit)
-    }
+    options.attributes = [[sequelize.fn('count', sequelize.col('issues.id')), 'total']]
 
-    if (!req.params.offset) {
+    options.include = [{
+        model: projects,
+        required: false,
+        attributes: ["id", "identifier", "name"]
+    }, {
+        model: trackers,
+        attributes: ["id", "name"]
+    }, {
+        model: issue_statuses,
+        as: 'status',
+        attributes: ["id", "name", "is_closed"]
+    }, {
+        model: users,
+        as: 'assigned_to',
+        attributes: ["id", [db.fn('CONCAT', db.col("assigned_to.firstname"), " ", db.col("assigned_to.lastname")), "name"]]
+    }, {
+        model: priority,
+        as: 'priority',
+        attributes: ["id", "name"]
+    }, {
+        model: users,
+        as: 'author',
+        attributes: ["id", [db.fn('CONCAT', db.col("author.firstname"), " ", db.col("author.lastname")), "name"]]
+    }]
 
-    } else {
-        options.offset = parseInt(req.params.offset)
-    }
-
-    const projects = db.import('../models/projects');
-
-    projects.findAll(options).then(data => {
+    issues.findAll(options).then(data => {
         res.status(200);
         res.jsonp(data);
     }).catch(function (error) {
@@ -82,7 +98,7 @@ router.get('/total', function (req, res) {
             stackError: error.stack
         });
     });
-});*/
+})
 
 router.get('/list/:limit?/:offset?', function (req, res) {
     var db = req.app.get("db"),
@@ -112,9 +128,43 @@ router.get('/list/:limit?/:offset?', function (req, res) {
         options.offset = parseInt(req.params.offset)
     }
 
-    const projects = db.import('../models/projects');
+    delete options.where.callback;
+    delete options.where._;
 
-    projects.findAll(options).then(data => {
+    var projects = global.model['projects'],
+        issues = global.model['issues'],
+        trackers = global.model['trackers'],
+        issue_statuses = global.model['issue_statuses'],
+        users = global.model['users'],
+        priority = global.model['enumerations'],
+        issue_categories = global.model['issue_categories'];
+
+    options.include = [{
+        model: projects,
+        required: false,
+        attributes: ["id", "identifier", "name"]
+    }, {
+        model: trackers,
+        attributes: ["id", "name"]
+    }, {
+        model: issue_statuses,
+        as: 'status',
+        attributes: ["id", "name", "is_closed"]
+    }, {
+        model: users,
+        as: 'assigned_to',
+        attributes: ["id", [db.fn('CONCAT', db.col("assigned_to.firstname"), " ", db.col("assigned_to.lastname")), "name"]]
+    }, {
+        model: priority,
+        as: 'priority',
+        attributes: ["id", "name"]
+    }, {
+        model: users,
+        as: 'author',
+        attributes: ["id", [db.fn('CONCAT', db.col("author.firstname"), " ", db.col("author.lastname")), "name"]]
+    }]
+
+    issues.findAll(options).then(data => {
         res.status(200);
         res.jsonp(data);
     }).catch(function (error) {
@@ -126,75 +176,68 @@ router.get('/list/:limit?/:offset?', function (req, res) {
     });
 });
 
-/*router.post('/list/:limit?/:offset?/members', function (req, res) {
-    var db = req.app.get("db"),
-        options = {
-
-        };
-
-    if(req.body.where){
-        if(req.body.where.projects)
-            options.where = JSON.parse(JSON.stringify(req.body.where.projects))
-    }
-
-    if(req.body.orderby)
-        options.order = JSON.parse(req.body.orderby)
-
-    if (!req.params.limit) {
-
-    } else {
-        options.limit = parseInt(req.params.limit)
-    }
-
-    if (!req.params.offset) {
-
-    } else {
-        options.offset = parseInt(req.params.offset)
-    }
-
-    const projects = db.import('../models/projects');
-
-    projects.findAll(options).then(data => {
-        res.status(200);
-        res.jsonp(data);
-    }).catch(function (error) {
-        res.status(500);
-        res.jsonp({
-            error: error,
-            stackError: error.stack
-        });
-    });
-});*/
-
-/*router.get('/test', function(req, res){
-    var db = req.app.get("db")
-    query = "SELECT `issues`.`id`, count(`issues`.`id`) AS `tracker_count`, `tracker`.`id` AS `tracker.id`, `tracker`.`name` AS `tracker.name` FROM `issues` AS `issues` LEFT OUTER JOIN `projects` AS `project` ON `issues`.`project_id` = `project`.`id` LEFT OUTER JOIN `trackers` AS `tracker` ON `issues`.`tracker_id` = `tracker`.`id` WHERE `project`.`identifier` = 'proj-164y2017' GROUP BY `tracker_id`;";
-    db.query(query, {
-        type: db.QueryTypes.SELECT
-    }).then(count => {
-        res.status(200);
-        res.jsonp(count[0]);
-    }).catch(function (error) {
-        res.status(500);
-        res.jsonp({
-            error: error,
-            stackError: error.stack
-        });
-    });
-})*/
-
 router.get('/:identifier', function (req, res) {
     var db = req.app.get("db"),
         options = {
             where: {
-                identifier: req.params.identifier
+                id: req.params.identifier
             }
         };
 
-    //const projects = db.import('../models/projects');
-    projects = global.model['projects']
+    if (req.query.where){
+        var where = req.query.where;
+        if(where.main){
+            options.where = where.main
+            options.where.id = req.params.identifier
+        }
+    }
 
-    projects.findOne(options).then(data => {
+    delete options.where.callback;
+    delete options.where._;
+
+    var projects = global.model['projects'],
+        issues = global.model['issues'],
+        trackers = global.model['trackers'],
+        issue_statuses = global.model['issue_statuses'],
+        users = global.model['users'],
+        priority = global.model['enumerations'],
+        watchers = global.model['watchers'],
+        issue_categories = global.model['issue_categories'];
+
+    options.include = [{
+        model: projects,
+        required: false,
+        attributes: ["id", "identifier", "name"]
+    }, {
+        model: trackers,
+        attributes: ["id", "name"]
+    }, {
+        model: issue_statuses,
+        as: 'status',
+        attributes: ["id", "name", "is_closed"]
+    }, {
+        model: users,
+        as: 'assigned_to',
+        attributes: ["id", [db.fn('CONCAT', db.col("assigned_to.firstname"), " ", db.col("assigned_to.lastname")), "name"]]
+    }, {
+        model: priority,
+        as: 'priority',
+        attributes: ["id", "name"]
+    }, {
+        model: users,
+        as: 'author',
+        attributes: ["id", [db.fn('CONCAT', db.col("author.firstname"), " ", db.col("author.lastname")), "name"]]
+    }, {
+        model: watchers,
+        as: 'watchers',
+        include: [{
+            model: users,
+            attributes: ["id", [db.fn('CONCAT', db.col("watchers->user.firstname"), " ", db.col("watchers->user.lastname")), "name"]]
+        }]
+    }]
+
+
+    issues.findOne(options).then(data => {
         for (var i = 0; i < data.length; i++) {
             data[i] = valuesToArray(data[i])
         }
@@ -320,9 +363,8 @@ router.get('/:identifier/issues/:limit?/:offset?', function (req, res) {
     }
 
     if (req.query.where){
-        var where = req.query.where;
-        if(where.main){
-            options.where = where.main
+        if(req.query.where.main){
+            options.where = JSON.parse(JSON.stringify(req.query.where.main))
             options.where['$project.identifier$'] = req.params.identifier
         }
     }
@@ -353,7 +395,7 @@ router.get('/:identifier/issues/:limit?/:offset?', function (req, res) {
     options.include = [{
         model: projects,
         required: false,
-        attributes: ["id", "identifier", "name"]
+        attributes: ["id", "name"]
     }, {
         model: trackers,
         attributes: ["id", "name"]
@@ -428,8 +470,8 @@ router.put('/', function (req, res) {
     });
 });
 
-global.notoken.push('/api/project/total')
-global.notoken.push(/\/api\/project\/list\/\w*/ig)
-global.notoken.push(/\/api\/project\/\w*/ig)
+global.notoken.push('/api/issue/total')
+global.notoken.push(/\/api\/issue\/list\/\w*/ig)
+global.notoken.push(/\/api\/issue\/\w*/ig)
 
 module.exports = router;
