@@ -298,6 +298,10 @@ this["jui2"]["tmpl"]["tableItems"] = Handlebars.template({"1":function(depth0,he
   return ((stack1 = helpers.each.call(depth0,(depth0 != null ? depth0.rows : depth0),{"name":"each","hash":{},"fn":this.program(1, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "");
 },"useData":true});
 
+this["jui2"]["tmpl"]["tag"] = Handlebars.template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
+    return "";
+},"useData":true});
+
 this["jui2"]["tmpl"]["textArea"] = Handlebars.template({"1":function(depth0,helpers,partials,data) {
     return ": ";
 },"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {

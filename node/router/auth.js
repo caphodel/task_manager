@@ -34,6 +34,7 @@ router.post('/', function (req, res) {
                 token: jwt.sign({
                     login: result.login,
                     id: result.id,
+                    admin: result.admin,
                 }, req.app.get('salt'), {
                     expiresIn: '24h'
                 })

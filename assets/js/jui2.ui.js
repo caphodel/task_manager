@@ -2614,6 +2614,147 @@ jui2.method = {
 
 }(jQuery))
 ;
+;/****js/tag.js****/
+/**
+ * @classdesc Tag custom web component
+ * @class tag
+ * @example <caption>Basic tag</caption>
+ * <j-tag>My Tag</j-tag>
+ * @example <caption>Tag with different color</caption>
+ * <j-tag color="blue">My Tag</j-tag>
+ * @example <caption>Tag with icon</caption>
+ * <j-tag icon="fa-calendar">My Tag</j-tag>
+ */
+(function($){
+	/** @constructor */
+	var proto = Object.create(HTMLElement.prototype)
+
+	proto.createdCallback = function() {
+
+		jui2.ui.base.proto.createdCallback.call(this, jui2.ui.tag);
+
+		var $self = $(this)
+
+		this.iconPosition = 'afterBegin';
+
+		$self.attr('tabindex', 0).addClass('j-ui j-tag').append('<i class="fa fa-close"></i>');
+
+        $self.children('.fa-close').on('click', function(){
+            $self.triggerHandler('close');
+            $self.remove();
+        })
+
+		for(i in jui2.method){
+			this[i] = jui2.method[i];
+		}
+	};
+
+	proto.attributeChangedCallback = function(attrName, oldVal, newVal){
+		/*var attr = this.tagName.toLowerCase()+'_'+attrName;
+		if(jui2.attrChange[attr])
+			jui2.attrChange[attr](this, oldVal, newVal);
+	    else if(jui2.attrChange[attrName] && this.enabledAttrChange.indexOf(attrName) > -1)
+	      jui2.attrChange[attrName](this, oldVal, newVal);*/
+		this.attrChangedCb(false, attrName, oldVal, newVal)
+	}
+
+   /**
+ 	* Fires when tag clicked
+ 	* @event click
+ 	* @memberof tag
+ 	* @example
+ 	* <j-tag id="myTag">My Tag</j-tag>
+ 	* <script>
+ 	* $('#myTag').on('click', function(value){
+ 	* 	console.log('Tag clicked') //will print 'Tag clicked' in javascript console
+ 	* })
+ 	* </script>
+ 	*/
+	jui2.ui.tag = {
+		widget: document.registerElement('j-tag',  {
+			prototype: proto
+		}),
+		proto: proto
+	}
+
+}(jQuery))
+;
+;/****js/timeline.js****/
+/**
+ * @classdesc Timeline custom web component
+ * @class timeline
+ * @example <caption>Basic timeline</caption>
+ * <j-timeline>My Timeline</j-timeline>
+ * @example <caption>Timeline with different color</caption>
+ * <j-timeline color="blue">My Timeline</j-timeline>
+ * @example <caption>Timeline with icon</caption>
+ * <j-timeline icon="fa-calendar">My Timeline</j-timeline>
+ */
+(function($){
+	/** @constructor */
+	var proto = Object.create(HTMLElement.prototype)
+
+	proto.createdCallback = function() {
+
+		jui2.ui.base.proto.createdCallback.call(this, jui2.ui.timeline);
+
+		var $self = $(this)
+
+		this.iconPosition = 'afterBegin';
+
+		$self.attr('tabindex', 0).addClass('j-ui');
+
+        $self.children().each(function(i, val){
+            if($(val).children('.j-timeline-point').length == 0){
+                $(val).append('<div class="j-timeline-point"></div>')
+            }
+        })
+
+		for(i in jui2.method){
+			this[i] = jui2.method[i];
+		}
+	};
+
+    proto.append = function(el){
+        $(this).append(el);
+
+        $(this).children().each(function(i, val){
+            if($(val).children('.j-timeline-point').length == 0){
+                $(val).append('<div class="j-timeline-point"></div>')
+            }
+        })
+    }
+
+	proto.attributeChangedCallback = function(attrName, oldVal, newVal){
+		/*var attr = this.timelineName.toLowerCase()+'_'+attrName;
+		if(jui2.attrChange[attr])
+			jui2.attrChange[attr](this, oldVal, newVal);
+	    else if(jui2.attrChange[attrName] && this.enabledAttrChange.indexOf(attrName) > -1)
+	      jui2.attrChange[attrName](this, oldVal, newVal);*/
+		this.attrChangedCb(false, attrName, oldVal, newVal)
+	}
+
+   /**
+ 	* Fires when timeline clicked
+ 	* @event click
+ 	* @memberof timeline
+ 	* @example
+ 	* <j-timeline id="myTimeline">My Timeline</j-timeline>
+ 	* <script>
+ 	* $('#myTimeline').on('click', function(value){
+ 	* 	console.log('Timeline clicked') //will print 'Timeline clicked' in javascript console
+ 	* })
+ 	* </script>
+ 	*/
+	jui2.ui.timeline = {
+		widget: document.registerElement('j-timeline',  {
+			prototype: proto
+		}),
+		proto: proto
+	}
+
+}(jQuery))
+;
 ;/****js/collapsible.js****/
 (function($){
 

@@ -47,7 +47,7 @@ class Base extends CI_Controller {
                     load_controller($url[0]);
             }
         }
-        else{
+        else {
 		  $this->load->view('base/base_layout');
         }
 	}

@@ -3,6 +3,7 @@
 @colorPrimaryDarker: #d0d0d0;
 @colorSecondary: #5fa2dd;
 /*#4697e4*/
+
 @colorAccent: #ffefbb;
 @colorAccentDark: #f2e3b2;
 @textColorPrimary: #404040;
@@ -10,312 +11,396 @@
 @windowBackground: #fff;
 
 .j-ui {
-	webkit-box-sizing: border-box;
-	-moz-box-sizing: border-box;
-	box-sizing: border-box;
-	position: relative;
-	display: inline-block;
-	vertical-align: top;
-	font-family: Verdana, sans-serif;
-	box-sizing: border-box;
-	font-size: 12px;
-	line-height: 18px;
-    background: #fff;
+    webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    position: relative;
+    display: inline-block;
+    vertical-align: top;
+    font-family: Verdana, sans-serif;
+    box-sizing: border-box;
+    font-size: 12px;
+    line-height: 18px;
+    background: @windowBackground;
 }
+
 /*.fa {
 	font:normal normal normal 14px/1 FontAwesome !important;
 }*/
 
-.j-no-select{
-  -webkit-touch-callout: none; /* iOS Safari */
-    -webkit-user-select: none; /* Safari */
-     -khtml-user-select: none; /* Konqueror HTML */
-       -moz-user-select: none; /* Firefox */
-        -ms-user-select: none; /* Internet Explorer/Edge */
-            user-select: none; /* Non-prefixed version, currently
+.j-no-select {
+    -webkit-touch-callout: none;
+    /* iOS Safari */
+    -webkit-user-select: none;
+    /* Safari */
+    -khtml-user-select: none;
+    /* Konqueror HTML */
+    -moz-user-select: none;
+    /* Firefox */
+    -ms-user-select: none;
+    /* Internet Explorer/Edge */
+    user-select: none;
+    /* Non-prefixed version, currently
                                   supported by Chrome and Opera */
 }
 
 j-panel {
-	overflow: hidden;
-	position: relative;
-	background: @windowBackground;
-	display: inline-block;
-	border: 1px solid @colorPrimary;
+    overflow: hidden;
+    position: relative;
+    background: @windowBackground;
+    display: inline-block;
+    border: 1px solid @colorPrimary;
 }
 
-j-table{
-	width: 100%;
+j-table {
+    width: 100%;
 }
 
-j-table>.j-table {
-	display: flex;
-	flex-direction: column;
-	color: @textColorPrimary;
-	position: relative;
-	overflow: auto;
+j-table > .j-table {
+    display: flex;
+    flex-direction: column;
+    color: @textColorPrimary;
+    position: relative;
+    overflow: auto;
 }
 
-.j-table>.j-table-head {
-	background: @windowBackground;
-	border-bottom: 2px solid @colorPrimaryDarker;
+.j-table > .j-table-head {
+    background: @windowBackground;
+    border-bottom: 2px solid @colorPrimaryDarker;
     /*min-width: 100%;*/
 }
 
-.j-table>.j-table-head>div>div:not(:last-child) {
-	border-right: 1px solid @colorPrimaryDark;
+.j-table > .j-table-head > div > div:not(:last-child) {
+    border-right: 1px solid @colorPrimaryDark;
 }
 
-.j-table>.j-table-head>div>div {
-	padding: 8px;
-	overflow: hidden;
-	min-width: 43px;
-	box-sizing: border-box;
-	text-overflow: ellipsis;
-	white-space: nowrap;
-	position: relative;
+.j-table > .j-table-head > div > div {
+    padding: 8px;
+    overflow: hidden;
+    min-width: 43px;
+    box-sizing: border-box;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    position: relative;
 }
 
-.j-table>.j-table-head>div>div:hover>.j-table-head-action {
-	display: block;
+.j-table > .j-table-head > div > div:hover > .j-table-head-action {
+    display: block;
 }
 
-.j-table>.j-table-head>div>div>.j-table-head-action {
-	display: none;
-	position: absolute;
-	right: 0px;
-	top: 0px;
-	height: 100%;
-	border-left: 1px solid @colorPrimaryDark;
-	padding: 8px 8px;
-	background: @windowBackground;
-	cursor: pointer;
+.j-table > .j-table-head > div > div > .j-table-head-action {
+    display: none;
+    position: absolute;
+    right: 0px;
+    top: 0px;
+    height: 100%;
+    border-left: 1px solid @colorPrimaryDark;
+    padding: 8px 8px;
+    background: @windowBackground;
+    cursor: pointer;
 }
 
-.j-table>.j-table-body {
-	background: @windowBackground;
+.j-table > .j-table-body {
+    background: @windowBackground;
 }
 
-.j-table>.j-table-body>div {
-	border-bottom: 1px solid @colorPrimaryDark;
+.j-table > .j-table-body > div {
+    border-bottom: 1px solid @colorPrimaryDark;
 }
 
-.j-table>.j-table-body>div.selected-top-border {
-	border-color: @colorAccentDark !important;
+.j-table > .j-table-body > div.selected-top-border {
+    border-color: @colorAccentDark !important;
 }
 
-.j-table>.j-table-body>div.selected {
-	background: @colorAccent !important;
-	border-color: @colorAccentDark !important;
+.j-table > .j-table-body > div.selected {
+    background: @colorAccent !important;
+    border-color: @colorAccentDark !important;
 }
 
-.j-table>.j-table-body>div:active+div {
-	border-top-width: 0;
+.j-table > .j-table-body > div:active + div {
+    border-top-width: 0;
 }
 
-.j-table>.j-table-body>div>div:not(:last-child) {
-	border-right: 1px solid rgba(0, 0, 0, 0);
+.j-table > .j-table-body > div > div:not(:last-child) {
+    border-right: 1px solid rgba(0, 0, 0, 0);
 }
 
-.j-table>.j-table-body>div>div {
-	padding: 8px;
-	overflow: hidden;
-	min-width: 43px;
-	box-sizing: border-box;
-	text-overflow: ellipsis;
-	white-space: nowrap;
+.j-table > .j-table-body > div > div {
+    padding: 8px;
+    overflow: hidden;
+    min-width: 43px;
+    box-sizing: border-box;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
-.j-table>.j-table-body>div:nth-child(even) {
-	background: @colorPrimary;
+.j-table > .j-table-body > div:nth-child(even) {
+    background: @colorPrimary;
 }
 
-.j-table>.j-table-column-resizer {
-	background: rgba(0, 0, 0, 0);
-	width: 1px;
-	/*position: absolute;*/
-	height: 100%;
-	/*top: 0px;*/
-	border-left: 5px solid rgba(0, 0, 0, 0);
-	/*border-right: 5px solid rgba(0, 0, 0, 0);*/
-	-moz-background-clip: content;
-	/* Firefox 3.6 */
-	-webkit-background-clip: content;
-	/* Safari 4? Chrome 6? */
-	background-clip: content-box;
-	/* Firefox 4, Safari 5, Opera 10, IE 9 */
-	display: inline-block;
-	cursor: col-resize;
+.j-table > .j-table-column-resizer {
+    background: rgba(0, 0, 0, 0);
+    width: 1px;
+    /*position: absolute;*/
+    height: 100%;
+    /*top: 0px;*/
+    border-left: 5px solid rgba(0, 0, 0, 0);
+    /*border-right: 5px solid rgba(0, 0, 0, 0);*/
+    -moz-background-clip: content;
+    /* Firefox 3.6 */
+    -webkit-background-clip: content;
+    /* Safari 4? Chrome 6? */
+    background-clip: content-box;
+    /* Firefox 4, Safari 5, Opera 10, IE 9 */
+    display: inline-block;
+    cursor: col-resize;
 }
 
-.j-table>.j-table-column-resizer:active, .j-table>.j-table-column-resizer-active {
-	background: @colorPrimaryDarker;
-	-moz-background-clip: content;
-	/* Firefox 3.6 */
-	-webkit-background-clip: content;
-	/* Safari 4? Chrome 6? */
-	background-clip: content-box;
-	/* Firefox 4, Safari 5, Opera 10, IE 9 */
+.j-table > .j-table-column-resizer:active,
+.j-table > .j-table-column-resizer-active {
+    background: @colorPrimaryDarker;
+    -moz-background-clip: content;
+    /* Firefox 3.6 */
+    -webkit-background-clip: content;
+    /* Safari 4? Chrome 6? */
+    background-clip: content-box;
+    /* Firefox 4, Safari 5, Opera 10, IE 9 */
 }
 
-.j-table-head-row, .j-table-body-row{
+.j-table-head-row,
+.j-table-body-row {
     /*min-width: 100%;*/
 }
 
-.j-table-page > input{
+.j-table-page > input {
     width: 100%;
     text-align: center;
 }
 
 .j-pop {
-	padding: 8px 0;
-	background: @windowBackground;
-	-webkit-box-shadow: 2px 2px 8px 0 rgba(0, 0, 0, 0.4);
-	box-shadow: 2px 2px 8px 0 rgba(0, 0, 0, 0.4);
-	display: none;
+    padding: 8px 0;
+    background: @windowBackground;
+    -webkit-box-shadow: 2px 2px 8px 0 rgba(0, 0, 0, 0.4);
+    box-shadow: 2px 2px 8px 0 rgba(0, 0, 0, 0.4);
+    display: none;
 }
 
-.j-pop>div:hover {
-	background: @colorPrimaryDark;
+.j-pop > div:hover {
+    background: @colorPrimaryDark;
 }
 
-.j-pop>div:not(.j-menu-separator) {
-	cursor: pointer;
-	padding: 8px 0;
-	display: flex;
+.j-pop > div:not(.j-menu-separator) {
+    cursor: pointer;
+    padding: 8px 0;
+    display: flex;
 }
 
-.j-pop>div>*:not(.j-pop-children) {
-	display: inline-block;
-	align-self: center;
+.j-pop > div > *:not(.j-pop-children) {
+    display: inline-block;
+    align-self: center;
 }
 
-.j-pop>div>div {
-	flex: 1 1 0;
-	-webkit-box-flex: 1;
-	-webkit-flex: 1;
+.j-pop > div > div {
+    flex: 1 1 0;
+    -webkit-box-flex: 1;
+    -webkit-flex: 1;
 }
 
 .j-menu-separator {
-	height: 1px;
-	border-width: 1px 0 0;
-	border-style: solid;
-	border-color: @colorPrimaryDark;
-	margin: 8px 0;
+    height: 1px;
+    border-width: 1px 0 0;
+    border-style: solid;
+    border-color: @colorPrimaryDark;
+    margin: 8px 0;
 }
 
 .j-header {
-	border-bottom: 1px solid @colorPrimaryDark;
-	background: @colorSecondary;
-	color: @textColorAccent;
+    border-bottom: 1px solid @colorPrimaryDark;
+    background: @colorSecondary;
+    color: @textColorAccent;
 }
 
 .j-header,
-.j-header>* {
-	font-family: "Lato", sans-serif;
-	font-size: 16px;
-	font-weight: 600;
-	color: @textColorAccent;
+.j-header > * {
+    font-family: "Lato", sans-serif;
+    font-size: 16px;
+    font-weight: 600;
+    color: @textColorAccent;
 }
 
 .j-header {
-	padding: 14px 20px;
-	display: flex;
+    padding: 14px 20px;
+    display: flex;
 }
 
 *[collapsed] > .j-header {
-	border-bottom-width: 0px;
+    border-bottom-width: 0px;
 }
 
-.j-collapser{
-	cursor: pointer;
-	align-self: center;
+.j-collapser {
+    cursor: pointer;
+    align-self: center;
 }
 
 j-panel {
-	overflow: hidden;
-	position: relative;
-	background: @windowBackground;
-	display: inline-block;
-	border: 1px solid @colorSecondary;
-	width: 100%;
+    overflow: hidden;
+    position: relative;
+    background: @windowBackground;
+    display: inline-block;
+    border: 1px solid @colorSecondary;
+    width: 100%;
 }
 
 j-spacer {
-	flex: 1 1 0;
-	-webkit-box-flex: 1;
-	-webkit-flex: 1;
+    flex: 1 1 0;
+    -webkit-box-flex: 1;
+    -webkit-flex: 1;
 }
 
-j-toolbar{
-	padding: 4px 5px;
-	display: flex;
-	flex-direction: row;
-	flex-wrap: wrap;
+j-toolbar {
+    padding: 4px 5px;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
 }
 
-j-toolbar > *{
+j-toolbar > * {
     margin: 2px;
+    align-self: center;
 }
 
-.j-control{
-	border: 1px solid @colorPrimaryDarker/*#E2E2E2*/;
-	padding: 4px 5px;
-	border-radius: 3px;
-	font-weight: 600;
-    min-height: 28px;
+.j-control {
+    border: 1px solid @colorPrimaryDarker/*#E2E2E2*/
+    ;
+    padding: 2px 5px;
+    border-radius: 3px;
+    font-weight: 600;
+    min-height: 24px;
 }
 
-.j-control i{
+.j-control i {
     line-height: 18px !important;
     font-size: 14px;
 }
 
-.j-control-icon{
-	/*border: 1px solid @colorPrimaryDarker/*#E2E2E2*/;
-	padding: 4px 5px;
-	/*border-radius: 3px;*/
-	font-weight: 600;
+.j-control-icon {
+    /*border: 1px solid @colorPrimaryDarker/*#E2E2E2*/
+    ;
+    padding: 4px 5px;
+    /*border-radius: 3px;*/
+    font-weight: 600;
 }
 
-.j-control-click{
-	cursor: pointer;
-	border-radius: 3px;
+.j-control-click {
+    cursor: pointer;
+    border-radius: 3px;
+    -webkit-touch-callout: none;
+    /* iOS Safari */
+    -webkit-user-select: none;
+    /* Safari */
+    -khtml-user-select: none;
+    /* Konqueror HTML */
+    -moz-user-select: none;
+    /* Firefox */
+    -ms-user-select: none;
+    /* Internet Explorer/Edge */
+    user-select: none;
 }
 
-.j-control-click:hover{
-	color: @colorSecondary;
-	border-color: @colorPrimaryDarker;
+.j-control-click:hover {
+    color: @colorSecondary;
+    border-color: @colorPrimaryDarker;
 }
 
-.j-control-click:active{
-	box-shadow: inset 0 0.15em 0.3em rgba(27,31,35,0.15);
+.j-control-click:active {
+    box-shadow: inset 0 0.15em 0.3em rgba(27, 31, 35, 0.15);
 }
 
 /* j-textfield */
 
-
 j-textfield {
-	padding: 3px 8px;
-	align-items: center;
-	display: flex;
+    padding: 3px 8px;
+    align-items: center;
+    display: flex;
 }
 
 j-textfield label {
-	width: 120px;
-	font-weight: 700;
+    width: 120px;
+    font-weight: 700;
 }
 
 j-textfield input {
-	border-radius: 3px;
-	border: 1px solid @colorPrimaryDarker;
-	/*padding: 12px 10px;*/
-	padding: 4px 8px;
-	box-shadow: inset 0 1px 2px rgba(27,31,35,0.075);
+    border-radius: 3px;
+    border: 1px solid @colorPrimaryDarker;
+    /*padding: 12px 10px;*/
+    padding: 2px 8px;
+    box-shadow: inset 0 1px 2px rgba(27, 31, 35, 0.075);
 }
 
 j-textfield input:focus {
-	border-color: /*#4697e4*/@colorSecondary;
-	outline: none;
-	box-shadow: inset 0 1px 2px rgba(27,31,35,0.075),0 0 0 0.2em rgba(3,102,214,0.3);
+    border-color: /*#4697e4*/
+    @colorSecondary;
+    outline: none;
+    box-shadow: inset 0 1px 2px rgba(27, 31, 35, 0.075), 0 0 0 0.2em rgba(3, 102, 214, 0.3);
+}
+
+j-tag {
+    margin: 4px;
+    padding: 2px 5px;
+    border-radius: 3px;
+    box-shadow: inset 0 1px 2px rgba(27, 31, 35, 0.075), 0 0 0 0.2em rgba(3, 102, 214, 0.3);
+    border: 1px solid @colorSecondary;
+    background: @windowBackground;
+}
+
+j-tag > i.fa-close {
+    cursor: pointer;
+    margin-left: 4px;
+}
+
+j-timeline {
+    padding-left: 20px;
+    margin-top: 20px;
+    position: relative;
+    display: block !important;
+}
+
+j-timeline > div:not(:last-child):before {
+    width: 2px;
+    height: 100%;
+    position: absolute;
+    left: 0px;
+    top: -9px;
+    background: #5fa2dd;
+    content: '';
+}
+
+j-timeline > div:last-child:before {
+    width: 2px;
+    height: 100%;
+    position: absolute;
+    left: 0px;
+    top: -9px;
+    background: linear-gradient(to bottom, @colorSecondary 0%, rgba(0, 0, 0, 0) 100%);
+    content: '';
+}
+
+j-timeline > div {
+    padding-top: 0px;
+    position: relative;
+    padding-bottom: 15px;
+    padding: 15px;
+    margin-left: -20px;
+}
+
+j-timeline > div > .j-timeline-point {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    border: 2px solid @colorSecondary;
+    background: @windowBackground;
+    position: absolute;
+    left: -9px;
+    top: -10px;
+    display: inline-block;
 }

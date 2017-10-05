@@ -128,8 +128,10 @@ router.get('/list/:limit?/:offset?', function (req, res) {
         options.offset = parseInt(req.params.offset)
     }
 
-    delete options.where.callback;
-    delete options.where._;
+    if(options.where){
+        delete options.where.callback;
+        delete options.where._;
+    }
 
     var projects = global.model['projects'],
         issues = global.model['issues'],
@@ -201,8 +203,12 @@ router.get('/:identifier', function (req, res) {
         issue_statuses = global.model['issue_statuses'],
         users = global.model['users'],
         priority = global.model['enumerations'],
-        watchers = global.model['watchers'],
+        custom_values = global.model['custom_values'],
+        custom_fields = global.model['custom_fields'],
+        time_entries = global.model['time_entries'],
         issue_categories = global.model['issue_categories'];
+
+    //options.attributes = [[db.fn('SUM', db.col("time_entries.hours")), "spent_time"], {all: true}]
 
     options.include = [{
         model: projects,
@@ -228,62 +234,23 @@ router.get('/:identifier', function (req, res) {
         as: 'author',
         attributes: ["id", [db.fn('CONCAT', db.col("author.firstname"), " ", db.col("author.lastname")), "name"]]
     }, {
+        model: custom_values,
+        include: [{
+            model: custom_fields
+        }]
+    }, {
+        model: time_entries
+    }/*, {
         model: watchers,
         as: 'watchers',
         include: [{
             model: users,
             attributes: ["id", [db.fn('CONCAT', db.col("watchers->user.firstname"), " ", db.col("watchers->user.lastname")), "name"]]
         }]
-    }]
+    }*/]
 
 
     issues.findOne(options).then(data => {
-        for (var i = 0; i < data.length; i++) {
-            data[i] = valuesToArray(data[i])
-        }
-        res.status(200);
-        res.jsonp(data);
-    }).catch(function (error) {
-        res.status(500);
-        res.jsonp({
-            error: error,
-            stackError: error.stack
-        });
-    });
-});
-
-router.get('/:identifier/members', function (req, res) {
-    var db = req.app.get("db"),
-        options = {
-            where: {
-                '$project.identifier$': req.params.identifier
-            }
-        };
-
-    const members = db.import('../models/members');
-    const member_roles = db.import('../models/member_roles');
-    const projects = db.import('../models/projects');
-    const users = db.import('../models/users');
-    const roles = db.import('../models/roles');
-
-    options.include = [{
-        model: projects,
-        required: false,
-        attributes: []
-    }, {
-        model: member_roles,
-        required: true,
-        include: [{
-            model: roles,
-            required: true
-        }]
-    }, {
-        model: users,
-        required: true,
-        attributes: ['id', 'firstname', 'lastname', [db.fn('CONCAT', db.col("firstname"), " ", db.col("lastname")), "fullname"]]
-    }]
-
-    members.findAll(options).then(data => {
         /*for (var i = 0; i < data.length; i++) {
             data[i] = valuesToArray(data[i])
         }*/
@@ -297,54 +264,6 @@ router.get('/:identifier/members', function (req, res) {
         });
     });
 });
-
-/*router.get('/:identifier/issues', function (req, res) {
-    var db = req.app.get("db"),
-        options = {
-            where: JSON.parse(JSON.stringify(req.query))
-        };
-
-    options.where['$project.identifier$'] = parseInt(req.params.identifier)
-
-    if (req.query.orderby)
-        options.order = JSON.parse(req.query.orderby)
-
-    delete options.where.callback;
-    delete options.where._;
-
-    var projects = global.model['projects'],
-        issues = global.model['issues'],
-        trackers = global.model['trackers'],
-        issue_statuses = global.model['issue_statuses']
-
-    options.include = [{
-        model: projects,
-        required: false,
-        attributes: []
-    }, {
-        model: trackers,
-        attributes: ["id", "name"]
-    }, {
-        model: issue_statuses,
-        as: 'status',
-        attributes: []
-    }]
-
-    //options.group = ['tracker_id']
-
-    options.attributes = [[sequelize.fn('count', sequelize.col('issues.id')), 'tracker_count']]
-
-    issues.findAll(options).then(data => {
-        res.status(200);
-        res.jsonp(data);
-    }).catch(function (error) {
-        res.status(500);
-        res.jsonp({
-            error: error,
-            stackError: error.stack
-        });
-    });
-})*/
 
 router.get('/:identifier/issues/:limit?/:offset?', function (req, res) {
     var db = req.app.get("db"),
@@ -431,7 +350,7 @@ router.get('/:identifier/issues/:limit?/:offset?', function (req, res) {
         });
     });
 });
-
+/*
 router.post('/', function (req, res) {
     var db = req.app.get("db");
 
@@ -468,7 +387,7 @@ router.put('/', function (req, res) {
             stackError: error.stack
         });
     });
-});
+});*/
 
 global.notoken.push('/api/issue/total')
 global.notoken.push(/\/api\/issue\/list\/\w*/ig)

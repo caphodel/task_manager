@@ -1,11 +1,12 @@
 <div class="red-util-container" style="display: flex;">
-    <j-spacer></j-spacer><j-button red-permission="login"><i class="fa fa-plus"></i> New Project</j-button>
+    <j-spacer></j-spacer>
+    <j-button red-permission="login"><i class="fa fa-plus"></i> New Project</j-button>
 </div>
 
 <script>
     function red_project() {
         var $el = $('#red-tbl-project');
-        $el[0].param.sEcho++
+        $el[0].param.sEcho++;
         var echo = $el[0].param.sEcho;
 
         $.ajax({
@@ -14,22 +15,23 @@
             dataType: 'jsonp',
             sEcho: echo,
             success: function(data) {
-                if(this.sEcho == $el[0].param.sEcho)
+                if (this.sEcho == $el[0].param.sEcho) {
                     $el[0].param.iTotalRecords = data.total
-            },
-            error: function() {},
-            beforeSend: function setHeader(xhr) {
-                xhr.setRequestHeader('x-access-token', Cookies.get('token'));
-            }
-        });
-        $.ajax({
-            url: window.location.origin + ':8080/api/project/list/' + $el[0].param.iDisplayLength + '/' + $el[0].param.iDisplayStart,
-            type: 'GET',
-            dataType: 'jsonp',
-            sEcho: echo,
-            success: function(data) {
-                if(this.sEcho == $el[0].param.sEcho)
-                    $('#red-tbl-project')[0].generateData(data)
+                    $.ajax({
+                        url: window.location.origin + ':8080/api/project/list/' + $el[0].param.iDisplayLength + '/' + $el[0].param.iDisplayStart,
+                        type: 'GET',
+                        dataType: 'jsonp',
+                        sEcho: echo,
+                        success: function(data) {
+                            if (this.sEcho == $el[0].param.sEcho)
+                                $('#red-tbl-project')[0].generateData(data)
+                        },
+                        error: function() {},
+                        beforeSend: function setHeader(xhr) {
+                            xhr.setRequestHeader('x-access-token', Cookies.get('token'));
+                        }
+                    });
+                }
             },
             error: function() {},
             beforeSend: function setHeader(xhr) {
@@ -38,9 +40,9 @@
         });
     }
 
-    function red_project_custom(record){
-        record.id = '<a href="<?php echo base_url() ?>'+"projects/"+record.identifier+'">'+record.name+'</a>'
-        record.name = '<a href="<?php echo base_url() ?>'+"projects/"+record.identifier+'">'+record.description+'</a>'
+    function red_project_custom(record) {
+        record.id = '<a href="<?php echo base_url() ?>' + "projects/" + record.identifier + '">' + record.name + '</a>'
+        record.name = '<a href="<?php echo base_url() ?>' + "projects/" + record.identifier + '">' + record.description + '</a>'
         return record;
     }
 

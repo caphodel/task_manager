@@ -14,6 +14,9 @@ var projects = global.model['projects'],
     custom_fields = global.model['custom_fields'],
     custom_fields_projects = global.model['custom_fields_projects'],
     watchers = global.model['watchers'],
+    journals = global.model['journals'],
+    journal_details = global.model['journal_details'],
+    custom_values = global.model['custom_values'],
     members = global.model['members'];
 
 //set association for issues
@@ -24,6 +27,12 @@ issues.hasOne(trackers, {
 })
 issues.belongsTo(trackers, {
     foreignKey: "tracker_id"
+});
+issues.hasMany(time_entries, {
+    foreignKey: "issue_id"
+})
+time_entries.belongsTo(time_entries, {
+    foreignKey: "issue_id"
 });
 issues.hasMany(watchers, {
     foreignKey: 'watchable_id'
@@ -73,6 +82,24 @@ issues.belongsTo(enumerations, {
     foreignKey: "priority_id"
 });
 
+issues.hasMany(custom_values, {
+    foreignKey: 'customized_id'
+})
+custom_values.belongsTo(issues, {
+    foreignKey: "customized_id",
+    through: {
+        customized_type: "Issue"
+    }
+});
+
+custom_fields.hasOne(custom_values, {
+    foreignKey: "custom_field_id"
+})
+
+custom_values.belongsTo(custom_fields, {
+    foreignKey: "custom_field_id"
+});
+
 /**************** set association projects ****************/
 projects.hasMany(members, {
     foreignKey: 'project_id'
@@ -112,3 +139,27 @@ member_roles.hasOne(roles, {
 })
 
 member_roles.belongsTo(roles)
+
+/**************** set association journal ****************/
+issues.hasMany(journals, {
+    foreignKey: 'journalized_id'
+})
+
+journals.hasMany(journal_details, {
+    foreignKey: 'journal_id'
+})
+
+journals.hasOne(users, {
+    targetKey: 'user_id',
+    foreignKey: "id"
+})
+
+journals.belongsTo(users)
+
+custom_fields.hasMany(journal_details, {
+    foreignKey: "prop_key"
+})
+
+journal_details.belongsTo(custom_fields, {
+    foreignKey: "prop_key"
+});

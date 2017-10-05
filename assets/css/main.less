@@ -1,5 +1,4 @@
 // out: ./main.css, sourcemap: false, compress: false
-
 /* color */
 
 @color1: #0079C4;
@@ -7,6 +6,7 @@
 @color3: #D7D7D7;
 @color4: #6B92ED;
 @color5: #81ACFD;
+@color6: #e1e4e8;
 @background2: #FAFBFC;
 
 /* default */
@@ -19,19 +19,19 @@
     font-size: 12px;
 }
 
-
 /* fonts */
 
 .font-play {
     font-family: 'Play', sans-serif;
 }
 
-a{
+a {
     color: @color1;
     text-decoration: none;
+    cursor: pointer;
 }
 
-a:hover{
+a:hover {
     text-decoration: underline;
 }
 
@@ -139,7 +139,6 @@ j-button.active:hover:after{
     width: 100%;
 }*/
 
-
 /*j-button{
 	background: @color4 none repeat scroll 0 0;
 	border: 1px solid @color2;
@@ -173,39 +172,84 @@ j-button:active:after{
 
 .red-util-container {
     background: @background2;
-    border-bottom: 1px solid #e1e4e8;
+    border-bottom: 1px solid @color6;
     display: block;
     width: 100%;
     padding: 20px;
 }
 
-.red-content-container{
+.red-content-container {
     padding: 20px;
+    min-width: 850px;
 }
 
 .red-info-container {
     background: @background2;
-    border: 1px solid #e1e4e8;
+    border: 1px solid @color6;
     display: block;
     width: 100%;
-    padding: 20px;
+    padding: 10px;
 }
 
-.red-layout-table{
+.red-layout-table {
     border-collapse: collapse;
     border: 0;
     vertical-align: top;
     width: 100%;
 }
 
-.red-layout-table > tbody > tr > td{
+.red-layout-table > tbody > tr > td {
     vertical-align: top;
 }
 
-.red-layout-table > tbody > tr > td:not(:last-child){
+.red-layout-table > tbody > tr > td:not(:last-child) {
     padding-right: 20px;
 }
 
-.red-issue-tracker-name{
+.red-issue-tracker-name,
+.red-issue-project-name {
     font-size: 18px;
+}
+
+.red-issue-journal-detail{
+    padding-top: 10px;
+}
+
+.red-issue-journal-detail,
+.red-column-detail {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.red-issue-journal-detail > div,
+.red-column-detail > div {
+    display: inline-block;
+    width: 50%;
+    box-sizing: border-box;
+    vertical-align: top;
+}
+
+.red-issue-journal-note {
+    padding: 10px 0px 0px;
+}
+
+.red-card {
+    margin-top: 10px;
+    border: 1px solid @color6;
+    border-radius: 3px;
+}
+
+.red-card > * {
+    padding: 10px;
+}
+
+.red-card > j-toolbar {
+    background: @background2;
+    border-bottom: 1px solid @color6;
+}
+
+#red_issue_history > div:nth-child(odd){
+    background: @background2;
+    border-top: 1px solid @color6;
+    border-bottom: 1px solid @color6;
 }

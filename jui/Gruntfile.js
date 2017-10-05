@@ -29,6 +29,8 @@ module.exports = function (grunt) {
 					'js/pagination.js',
 					'js/custom.js',
 					'js/panel.js',
+					'js/tag.js',
+					'js/timeline.js',
 					'js/collapsible.js'
 				],
 				dest : '../assets/js/<%= pkg.name %>.ui.js'

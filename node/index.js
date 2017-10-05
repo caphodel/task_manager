@@ -74,6 +74,18 @@ router.use('/project', rProject);
 var rIssues = require('./router/issues');
 router.use('/issue', rIssues);
 
+var rWatchers = require('./router/watchers');
+router.use('/watcher', rWatchers);
+
+var rUserPreferences = require('./router/user_preferences');
+router.use('/user_preference', rUserPreferences);
+
+var rRoles = require('./router/roles');
+router.use('/role', rRoles);
+
+var rJounals = require('./router/journals');
+router.use('/journal', rJounals);
+
 app.use('/api', router);
 
 app.use(function (err, req, res, next) {

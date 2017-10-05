@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Issues extends CI_Controller {
+class Users extends CI_Controller {
 
     public function _remap($method)
     {
@@ -25,7 +25,7 @@ class Issues extends CI_Controller {
             $parameter1 = '';
         }
         $data = array('identifier' => $parameter1);
-		$this->load->view('issue/index', $data);
+		$this->load->view('base/base_layout', $data);
 	}
 
 	public function show($parameter1=null)
@@ -34,6 +34,6 @@ class Issues extends CI_Controller {
             $parameter1 = '';
         }
         $data = array('identifier' => $parameter1);
-		$this->load->view('issue/show', $data);
+		$this->load->view('user/show', $data);
 	}
 }

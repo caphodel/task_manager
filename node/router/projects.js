@@ -90,9 +90,9 @@ router.get('/list/:limit?/:offset?', function (req, res) {
 
         };
 
-    if (req.query.where){
+    if (req.query.where) {
         var where = req.query.where;
-        if(where.main){
+        if (where.main) {
             options.where = where.main
         }
     }
@@ -195,9 +195,46 @@ router.get('/:identifier', function (req, res) {
     projects = global.model['projects']
 
     projects.findOne(options).then(data => {
-        for (var i = 0; i < data.length; i++) {
-            data[i] = valuesToArray(data[i])
-        }
+        res.status(200);
+        res.jsonp(data);
+    }).catch(function (error) {
+        res.status(500);
+        res.jsonp({
+            error: error,
+            stackError: error.stack
+        });
+    });
+});
+
+router.get('/:identifier/role/:user_id', function (req, res) {
+    var db = req.app.get("db"),
+        options = {
+            where: {
+                '$project.identifier$': req.params.identifier,
+                '$members.user_id$': req.params.user_id
+            }
+        };
+
+    //const projects = db.import('../models/projects');
+    var member_roles = global.model['member_roles'],
+        roles = global.model['roles'],
+        members = global.model['members'],
+        projects = global.model['projects'];
+
+    options.include = [{
+        model: member_roles,
+        include: [{
+            model: roles
+        }]
+    }, {
+        model: projects
+    }];
+
+    members.findOne(options).then(data => {
+        /*if (data != null)
+            for (var i = 0; i < data.length; i++) {
+                data[i] = valuesToArray(data[i])
+            }*/
         res.status(200);
         res.jsonp(data);
     }).catch(function (error) {
@@ -314,14 +351,14 @@ router.get('/:identifier/issues/:limit?/:offset?', function (req, res) {
     if (req.query.orderby)
         options.order = JSON.parse(req.query.orderby)
 
-    if (req.query.groupby){
+    if (req.query.groupby) {
         options.attributes = [[sequelize.fn('count', sequelize.col('issues.id')), 'count']]
         options.group = JSON.parse(req.query.groupby)
     }
 
-    if (req.query.where){
+    if (req.query.where) {
         var where = req.query.where;
-        if(where.main){
+        if (where.main) {
             options.where = where.main
             options.where['$project.identifier$'] = req.params.identifier
         }

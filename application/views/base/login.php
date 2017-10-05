@@ -23,6 +23,8 @@
                 Cookies.set('token', data.token)
 				$('#red-form-login').remove();
 				$('#red-sign-in').text("Logged In")
+                if(red_previous_url!="")
+                    redLoad(red_previous_url, "#red-content")
 			} else {
 				alert(data.message)
 			}

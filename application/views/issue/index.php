@@ -1,12 +1,13 @@
 <div class="red-util-container" style="display: flex;">
-    <j-spacer></j-spacer><j-button red-permission="login"><i class="fa fa-plus"></i> New Task</j-button>
+    <j-spacer></j-spacer>
+    <j-button red-permission="login"><i class="fa fa-plus"></i> New Task</j-button>
 </div>
 
 <script>
     function red_issue() {
         var $el = $('#red-tbl-issue');
         $el[0].param.sEcho++
-        var echo = $el[0].param.sEcho;
+            var echo = $el[0].param.sEcho;
 
         $.ajax({
             url: window.location.origin + ':8080/api/issue/total',
@@ -15,35 +16,41 @@
             sEcho: echo,
             data: {
                 where: {
+                    <?php if($identifier!=''){ ?>
                     main: {
                         "$project.identifier$": "<?php echo $identifier;?>"
                     }
+                    <?php } ?>
                 }
             },
             success: function(data) {
-                if(this.sEcho == $el[0].param.sEcho)
+                if (this.sEcho == $el[0].param.sEcho) {
                     $el[0].param.iTotalRecords = data[0].total
-            },
-            error: function() {},
-            beforeSend: function setHeader(xhr) {
-                xhr.setRequestHeader('x-access-token', Cookies.get('token'));
-            }
-        });
-        $.ajax({
-            url: window.location.origin + ':8080/api/issue/list/' + $el[0].param.iDisplayLength + '/' + $el[0].param.iDisplayStart,
-            type: 'GET',
-            dataType: 'jsonp',
-            sEcho: echo,
-            data: {
-                where: {
-                    main: {
-                        "$project.identifier$": "<?php echo $identifier;?>"
-                    }
+
+                    $.ajax({
+                        url: window.location.origin + ':8080/api/issue/list/' + $el[0].param.iDisplayLength + '/' + $el[0].param.iDisplayStart,
+                        type: 'GET',
+                        dataType: 'jsonp',
+                        sEcho: echo,
+                        data: {
+                            where: {
+                                <?php if($identifier!=''){ ?>
+                                main: {
+                                    "$project.identifier$": "<?php echo $identifier;?>"
+                                }
+                                <?php } ?>
+                            }
+                        },
+                        success: function(data) {
+                            if (this.sEcho == $el[0].param.sEcho)
+                                $('#red-tbl-issue')[0].generateData(data)
+                        },
+                        error: function() {},
+                        beforeSend: function setHeader(xhr) {
+                            xhr.setRequestHeader('x-access-token', Cookies.get('token'));
+                        }
+                    });
                 }
-            },
-            success: function(data) {
-                if(this.sEcho == $el[0].param.sEcho)
-                    $('#red-tbl-issue')[0].generateData(data)
             },
             error: function() {},
             beforeSend: function setHeader(xhr) {
@@ -52,8 +59,8 @@
         });
     }
 
-    function red_issue_custom(record){
-        data = ['<a href="<?php echo base_url() ?>issues/'+record.id+'">'+record.id+'</a>', record.tracker.name, record.status.name, record.priority.name, '<a href="<?php echo base_url() ?>issues/'+record.id+'">'+record.subject+'</a>', '<a href="<?php echo base_url() ?>user/'+record.assigned_to.id+'">'+record.assigned_to.name+'</a>', record.updated_on.replace('T', ' ').replace('.000Z', '')];
+    function red_issue_custom(record) {
+        data = ['<a href="<?php echo base_url() ?>issues/' + record.id + '">' + record.id + '</a>', record.tracker.name, record.status.name, record.priority.name, '<a href="<?php echo base_url() ?>issues/' + record.id + '">' + record.subject + '</a>', (record.assigned_to != null ? ('<a href="<?php echo base_url() ?>user/' + record.assigned_to.id + '">' + record.assigned_to.name + '</a>') : ''), record.updated_on.replace('T', ' ').replace('.000Z', '')];
         return data;
     }
 

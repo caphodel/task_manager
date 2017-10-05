@@ -12,6 +12,7 @@
     <script src="<?php echo base_url() ?>assets/js/history.js"></script>
     <script src="<?php echo base_url() ?>assets/js/jwt-decode.min.js"></script>
     <script src="<?php echo base_url() ?>assets/js/defiant.min.js"></script>
+    <script src="<?php echo base_url() ?>assets/js/moment_min.js"></script>
     <title>Task Manager</title>
     <style>
         * {
@@ -338,7 +339,7 @@
         <nav class="j-menu">
             <j-button class="ripple j-ui" style="color: #ABACB1">Dashboard</j-button>
             <j-button href="<?php echo base_url() ?>projects" class="ripple j-ui" style="color: #ABACB1">Project</j-button>
-            <j-button id="red-btn-task" class="ripple j-ui" style="color: #ABACB1">Task</j-button>
+            <j-button href="<?php echo base_url() ?>issues" id="red-btn-task" class="ripple j-ui" style="color: #ABACB1">Task</j-button>
             <j-button class="ripple j-ui" style="color: #ABACB1">Calendar</j-button>
             <j-button class="ripple j-ui" style="color: #ABACB1">Document</j-button>
         </nav>
@@ -413,6 +414,27 @@
             }
         })();
 
+        function stringFormater(text) {
+            var exp = /(("(.*)":)?\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig;
+            var ret = text.replace(exp, "<a href='$1'>$1</a>");
+            //console.log(ret.match(/(href='"[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|]":)/))
+            //ret = ret.replace(/(href='"(.*)":)/, 'href=\'')
+            //ret = ret.replace(/(>&quote;(.*)&quote;:)/, '')
+            ret = ret.replace(/(#\d+)/g, "<a href='issues/$1'>$1</a>");
+            ret = ret.replace(/(href='issues\/#)/g, "href='<?php echo base_url() ?>issues/")
+            return ret;
+        }
+
+        red_string_generator = function(data, type) {
+            switch (type) {
+                case 'user':
+                case 'users':
+                case 'assigned_to':
+                case 'author':
+                    return "<a href='<?php echo base_url() ?>users/" + data[0] + "'>" + data[1] + "</a>"
+            }
+        }
+
         $('.j-menu-button').click(function() {
             $('.j-menu').css("visibility") == "visible" ? $('.j-menu').removeClass("slideInLeft").addClass("animated slideOutLeft").one('webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend', function() {
                 $('.j-menu').css("visibility", "hidden")
@@ -444,7 +466,10 @@
         })
 
         var redDomain = "<?php echo base_url() ?>",
-            red_token = "";
+            red_token = "",
+            red_user_permission = "",
+            red_project_identifier = "",
+            red_previous_url;
 
         function redAppend(url, el) {
             $.ajax({
@@ -455,16 +480,104 @@
             })
         }
 
+        function redDoCheck(callback) {
+            var admin = Cookies.get('token') != undefined ? (jwt_decode(Cookies.get('token')).admin == 1 ? ':admin' : '') : '';
+            callback((red_user_permission.permissions + admin))
+            $('[red-permission]:not([red-permission="login"])').each(function(i, val) {
+                var allowed = (red_user_permission.permissions + admin).match(new RegExp($(val).attr('red-permission')));
+                if (allowed != null) {
+
+                } else {
+                    $(val).remove()
+                }
+            })
+        }
+
+        function redProjectPermissionChecker(callback) {
+
+            var login = Cookies.get('token');
+            if (login != undefined) {
+                login = jwt_decode(login)
+                if (red_project_identifier != '') {
+                    $.ajax({
+                        url: window.location.origin + ':8080/api/project/' + red_project_identifier + '/role/' + login.id,
+                        type: 'GET',
+                        dataType: 'jsonp',
+                        success: function(data) {
+
+                            if (data == null) {
+                                $.ajax({
+                                    url: window.location.origin + ':8080/api/role/1',
+                                    type: 'GET',
+                                    dataType: 'jsonp',
+                                    success: function(data) {
+                                        red_user_permission = data
+                                        redDoCheck(callback)
+                                    },
+                                    error: function() {},
+                                    beforeSend: function setHeader(xhr) {
+                                        xhr.setRequestHeader('x-access-token', Cookies.get('token'));
+                                    }
+                                });
+                            } else {
+                                red_user_permission = data
+                                redDoCheck(callback)
+                            }
+                        },
+                        error: function() {},
+                        beforeSend: function setHeader(xhr) {
+                            xhr.setRequestHeader('x-access-token', Cookies.get('token'));
+                        }
+                    });
+                } else {
+                    $.ajax({
+                        url: window.location.origin + ':8080/api/role/1',
+                        type: 'GET',
+                        dataType: 'jsonp',
+                        success: function(data) {
+                            red_user_permission = data
+                            redDoCheck(callback)
+                        },
+                        error: function() {},
+                        beforeSend: function setHeader(xhr) {
+                            xhr.setRequestHeader('x-access-token', Cookies.get('token'));
+                        }
+                    });
+                }
+            } else {
+                $.ajax({
+                    url: window.location.origin + ':8080/api/role/2',
+                    type: 'GET',
+                    dataType: 'jsonp',
+                    success: function(data) {
+                        red_user_permission = data
+                        redDoCheck(callback)
+                    },
+                    error: function() {},
+                    beforeSend: function setHeader(xhr) {
+                        xhr.setRequestHeader('x-access-token', Cookies.get('token'));
+                    }
+                });
+            }
+            /*}
+            else{
+                redDoCheck()
+            }*/
+        }
+
         function redPermissionChecker() {
+            $('[red-permission="login"]').hide()
             var login = Cookies.get('token');
             if (login != undefined) {
                 if (!jwt_decode(login)) {
-                    $('[red-permission="login"').remove()
+                    $('[red-permission="login"]').remove()
                 } else {
                     $('#red-sign-in').text("Logged In")
+                    $('[red-permission="login"]').show()
                 }
             } else {
                 $('[red-permission="login"').remove()
+                $('[red-permission]').show()
             }
         }
 
@@ -530,6 +643,9 @@
 
                 if (!isExternal($(this).attr('href'))) {
 
+                    if ($(this).attr('href').match('/login') == null)
+                        red_previous_url = $(this).attr('href');
+
                     history.pushState(null, null, $(this).attr('href'));
 
                     // here can cause data loading, etc.
@@ -556,7 +672,7 @@
 
         $(document).ready(function() {
             var href = window.location.href.split(redDomain);
-            if (href.length > 1 && href[1] != ''){
+            if (href.length > 1 && href[1] != '') {
                 redLoad(redDomain + href[1], "#red-content")
             }
         })

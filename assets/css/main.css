@@ -15,6 +15,7 @@
 a {
   color: #0079c4;
   text-decoration: none;
+  cursor: pointer;
 }
 a:hover {
   text-decoration: underline;
@@ -145,13 +146,14 @@ j-button:active:after{
 }
 .red-content-container {
   padding: 20px;
+  min-width: 850px;
 }
 .red-info-container {
   background: #fafbfc;
   border: 1px solid #e1e4e8;
   display: block;
   width: 100%;
-  padding: 20px;
+  padding: 10px;
 }
 .red-layout-table {
   border-collapse: collapse;
@@ -165,6 +167,42 @@ j-button:active:after{
 .red-layout-table > tbody > tr > td:not(:last-child) {
   padding-right: 20px;
 }
-.red-issue-tracker-name {
+.red-issue-tracker-name,
+.red-issue-project-name {
   font-size: 18px;
+}
+.red-issue-journal-detail {
+  padding-top: 10px;
+}
+.red-issue-journal-detail,
+.red-column-detail {
+  display: flex;
+  flex-wrap: wrap;
+}
+.red-issue-journal-detail > div,
+.red-column-detail > div {
+  display: inline-block;
+  width: 50%;
+  box-sizing: border-box;
+  vertical-align: top;
+}
+.red-issue-journal-note {
+  padding: 10px 0px 0px;
+}
+.red-card {
+  margin-top: 10px;
+  border: 1px solid #e1e4e8;
+  border-radius: 3px;
+}
+.red-card > * {
+  padding: 10px;
+}
+.red-card > j-toolbar {
+  background: #fafbfc;
+  border-bottom: 1px solid #e1e4e8;
+}
+#red_issue_history > div:nth-child(odd) {
+  background: #fafbfc;
+  border-top: 1px solid #e1e4e8;
+  border-bottom: 1px solid #e1e4e8;
 }

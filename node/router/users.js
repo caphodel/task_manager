@@ -38,9 +38,7 @@ router.post('/', function (req, res) {
 router.put('/', function (req, res) {
     var db = req.app.get("db");
 
-    const users = db.import('../models/users');
-
-    req.body.hashed_password = md5(req.body.login + ":tame:" + req.body.password);
+    var users = global.model['users'];
 
     users.create(req.body).then(function (data) {
         res.status(200);
@@ -122,5 +120,34 @@ router.get('/list/:limit?/:offset?', function (req, res) {
         });
     });
 });
+
+router.get('/:user_id?', function (req, res) {
+    var db = req.app.get("db"),
+        options = {
+            where: {
+                id: req.params.user_id
+            }
+        };
+
+    delete options.where.callback;
+    delete options.where._;
+
+    var users = global.model['users'];
+
+    options.attributes = [{ all: true }, [db.fn('CONCAT', db.col("firstname"), " ", db.col("lastname")), "fullname"]]
+
+    users.findOne(options).then(data => {
+        res.status(200);
+        res.jsonp(data);
+    }).catch(function (error) {
+        res.status(500);
+        res.jsonp({
+            error: error,
+            stackError: error.stack
+        });
+    });
+});
+
+global.notoken.push(/\/api\/\user\/\w*/ig)
 
 module.exports = router;
