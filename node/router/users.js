@@ -107,7 +107,7 @@ router.get('/list/:limit?/:offset?', function (req, res) {
     users.findAll({
         where: options
     }).then(data => {
-        for (var i=0;i<data.length;i++){
+        for (var i = 0; i < data.length; i++) {
             data[i] = valuesToArray(data[i])
         }
         res.status(200);
@@ -125,7 +125,7 @@ router.get('/:user_id?', function (req, res) {
     var db = req.app.get("db"),
         options = {
             where: {
-                id: req.params.user_id
+                id: req.params.user_id.indexOf(',') > -1 ? req.params.user_id.split(',') : req.params.user_id
             }
         };
 
@@ -134,18 +134,32 @@ router.get('/:user_id?', function (req, res) {
 
     var users = global.model['users'];
 
-    options.attributes = [{ all: true }, [db.fn('CONCAT', db.col("firstname"), " ", db.col("lastname")), "fullname"]]
+    options.attributes = {
+        include: [[db.fn('CONCAT', db.col("firstname"), " ", db.col("lastname")), "fullname"]]
+    }
 
-    users.findOne(options).then(data => {
-        res.status(200);
-        res.jsonp(data);
-    }).catch(function (error) {
-        res.status(500);
-        res.jsonp({
-            error: error,
-            stackError: error.stack
+    if (req.params.user_id.indexOf(',') > -1)
+        users.findAll(options).then(data => {
+            res.status(200);
+            res.jsonp(data);
+        }).catch(function (error) {
+            res.status(500);
+            res.jsonp({
+                error: error,
+                stackError: error.stack
+            });
         });
-    });
+    else
+        users.findOne(options).then(data => {
+            res.status(200);
+            res.jsonp(data);
+        }).catch(function (error) {
+            res.status(500);
+            res.jsonp({
+                error: error,
+                stackError: error.stack
+            });
+        });
 });
 
 global.notoken.push(/\/api\/\user\/\w*/ig)

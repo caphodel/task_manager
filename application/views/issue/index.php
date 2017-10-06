@@ -9,6 +9,16 @@
         $el[0].param.sEcho++
             var echo = $el[0].param.sEcho;
 
+        var options = {
+            where: {
+                <?php if($identifier!=''){ ?>
+                main: {
+                    "$project.identifier$": "<?php echo $identifier;?>"
+                }
+                <?php } ?>
+            }
+        }
+
         $.ajax({
             url: window.location.origin + ':8080/api/issue/total',
             type: 'GET',
@@ -32,15 +42,7 @@
                         type: 'GET',
                         dataType: 'jsonp',
                         sEcho: echo,
-                        data: {
-                            where: {
-                                <?php if($identifier!=''){ ?>
-                                main: {
-                                    "$project.identifier$": "<?php echo $identifier;?>"
-                                }
-                                <?php } ?>
-                            }
-                        },
+                        data: options,
                         success: function(data) {
                             if (this.sEcho == $el[0].param.sEcho)
                                 $('#red-tbl-issue')[0].generateData(data)

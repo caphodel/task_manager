@@ -206,3 +206,39 @@ j-button:active:after{
   border-top: 1px solid #e1e4e8;
   border-bottom: 1px solid #e1e4e8;
 }
+.red-progress-bar {
+  border: 1px solid #6b92ed;
+  display: inline-block;
+  width: 100px;
+  height: 18px;
+  margin: 2px;
+}
+.red-progress-bar > div {
+  background: #81acfd;
+  display: block;
+  height: 100%;
+}
+.red-card-content > table.red-task td:first-child {
+  /*display: block;*/
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 550px;
+  overflow: hidden;
+}
+/*.red-issue-subtask{
+    display: flex;
+    flex-direction: column;
+}
+
+.red-issue-subtask > div{
+    display: flex;
+    flex-wrap: nowrap;
+}
+
+.red-issue-subtask > div > div{
+    text-overflow: ellipsis;
+}*/
+a[red-issue="1"] {
+  text-decoration: line-through;
+  color: #858c93;
+}

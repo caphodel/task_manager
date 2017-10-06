@@ -1,5 +1,6 @@
 <script>
     red_project_identifier = '<?php echo $identifier;?>';
+    $('#red-btn-task').attr('href', '<?php echo base_url() ?>projects/'+red_project_identifier+'/issues');
     redProjectPermissionChecker(function(permission) {
         /*if(permission.match(/(:view_project)(:admin)/))
             red_get_watcher();*/
@@ -95,6 +96,6 @@
     </table>
 </div>
 <script>
-    $('#red-btn-task').attr('href', "<?php echo base_url() ?>project/<?php echo $identifier;?>/issues");
+    $('#red-btn-task').attr('href', "<?php echo base_url() ?>projects/<?php echo $identifier;?>/issues?where[main][$status.is_closed$]=1");
 
 </script>

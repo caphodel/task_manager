@@ -414,12 +414,117 @@
             }
         })();
 
-        function stringFormater(text) {
-            var exp = /(("(.*)":)?\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig;
-            var ret = text.replace(exp, "<a href='$1'>$1</a>");
-            //console.log(ret.match(/(href='"[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|]":)/))
-            //ret = ret.replace(/(href='"(.*)":)/, 'href=\'')
-            //ret = ret.replace(/(>&quote;(.*)&quote;:)/, '')
+        function redJournalFormatter() {
+            var $data = $('.red-issue-journal-detail > div'),
+                assigned_to = [], status = [];
+
+            $data.each(function(i, val) {
+                val = $(val)
+                var text = val.html();
+
+                if (val.children('b').text() == 'status_id'){
+                    if (text.match('set to')!=null) {
+                        var id = text.split('set to ')
+                        status.push(id[1])
+                    } else {
+                        var id = text.split('changed from ')[1].split(' to ')
+                        status.push(id[0])
+                        status.push(id[1])
+                    }
+                }
+
+                if (val.children('b').text() == 'assigned_to_id') {
+                    if (text.match('set to')!=null) {
+                        var id = text.split('set to ')
+                        assigned_to.push(id[1])
+                    } else {
+                        var id = text.split('changed from ')[1].split(' to ')
+                        assigned_to.push(id[0])
+                        assigned_to.push(id[1])
+                    }
+                }
+
+                if (val.children('b').text() == 'done_ratio') {
+                    val.children('b').text('% Done')
+                }
+            })
+
+            if (assigned_to.length > 0) {
+                $.ajax({
+                    url: window.location.origin + ':8080/api/user/' + assigned_to.join(','),
+                    type: 'GET',
+                    dataType: 'jsonp',
+                    success: function(data) {
+                        $data.each(function(i, val) {
+                            val = $(val)
+                            var text = val.html();
+                            if (val.children('b').text() == 'assigned_to_id') {
+                                val.children('b').text('Assigned to')
+                                if (text.match('set to')) {
+                                    var id = text.split('set to ')
+                                    var user = JSON.search(data, '//*[id="'+id[1]+'"]')[0];
+                                    val.html(val.html().replace(id[1], red_string_generator([user.id, user.fullname], 'users')))
+                                } else {
+                                    var id = text.split('changed from ')[1].split(' to ')
+                                    var user = JSON.search(data, '//*[id="'+id[0]+'"]')[0];
+                                    val.html(val.html().replace(id[0], red_string_generator([user.id, user.fullname], 'users')))
+                                    user = JSON.search(data, '//*[id="'+id[1]+'"]')[0];
+                                    val.html(val.html().replace(id[1], red_string_generator([user.id, user.fullname], 'users')))
+                                }
+                            }
+                        })
+                    },
+                    error: function() {},
+                    beforeSend: function setHeader(xhr) {
+                        xhr.setRequestHeader('x-access-token', Cookies.get('token'));
+                    }
+                })
+            }
+
+            if (status.length > 0) {
+                $.ajax({
+                    url: window.location.origin + ':8080/api/status/' + status.join(','),
+                    type: 'GET',
+                    dataType: 'jsonp',
+                    success: function(data) {
+                        $data.each(function(i, val) {
+                            val = $(val)
+                            var text = val.html();
+                            if (val.children('b').text() == 'status_id') {
+                                val.children('b').text('Status')
+                                if (text.match('set to')) {
+                                    var id = text.split('set to ')
+                                    var status = JSON.search(data, '//*[id="'+id[1]+'"]')[0];
+                                    val.html(val.html().replace(id[1], status.name))
+                                } else {
+                                    var id = text.split('changed from ')[1].split(' to ')
+                                    var status = JSON.search(data, '//*[id="'+id[0]+'"]')[0];
+                                    val.html(val.html().replace(id[0], status.name))
+                                    status = JSON.search(data, '//*[id="'+id[1]+'"]')[0];
+                                    val.html(val.html().replace(id[1], status.name))
+                                }
+                            }
+                        })
+                    },
+                    error: function() {},
+                    beforeSend: function setHeader(xhr) {
+                        xhr.setRequestHeader('x-access-token', Cookies.get('token'));
+                    }
+                })
+            }
+        }
+
+        function stringFormatter(text) {
+            var exp = /(("(.*)":)?\b(https?|ftp|file):\/\/[-A-Z0-9+\(\)&@#\/%?=~_|!:,.;]*[-A-Z0-9+\(\)&@#\/%=~_|])/ig;
+            var ret = text.replace(exp, "<a href='$1'>$1</a>").replace(/href='(["'])(?:(?=(\\?))\2.)*?\1:/ig, "href='") //.replace(/(["'])((?:(?=(\\?))\2.)*?\1):/ig, "");
+
+            var data = ret.match(/(["'])(?:(?=(\\?))\2.)*?\1:(.*)<\/a>*?/ig);
+            if (data != null) {
+                for (var i = 0; i < data.length; i++) {
+                    ret = ret.replace(data[i], data[i].split('":')[0].split('"')[1] + '<\/a')
+                }
+            }
+
             ret = ret.replace(/(#\d+)/g, "<a href='issues/$1'>$1</a>");
             ret = ret.replace(/(href='issues\/#)/g, "href='<?php echo base_url() ?>issues/")
             return ret;
@@ -431,7 +536,9 @@
                 case 'users':
                 case 'assigned_to':
                 case 'author':
-                    return "<a href='<?php echo base_url() ?>users/" + data[0] + "'>" + data[1] + "</a>"
+                    return "<a href='<?php echo base_url() ?>users/" + data[0] + "'>" + data[1] + "</a>";
+                case 'issue':
+                    return "<a href='<?php echo base_url() ?>issues/" + data[0] + "' red-issue='" + data[2] + "'>" + data[1] + "</a>";
             }
         }
 
@@ -494,7 +601,6 @@
         }
 
         function redProjectPermissionChecker(callback) {
-
             var login = Cookies.get('token');
             if (login != undefined) {
                 login = jwt_decode(login)
@@ -559,10 +665,6 @@
                     }
                 });
             }
-            /*}
-            else{
-                redDoCheck()
-            }*/
         }
 
         function redPermissionChecker() {
@@ -591,27 +693,6 @@
             })
         }
 
-        /*$('#red-sign-in').click(function() {
-            redLoad("index.php/base/login?from_base", "#red-content")
-        })*/
-
-        /*$('#red-project').click(function() {
-            redLoad("index.php/project?from_base", "#red-content")
-        })*/
-
-        /*$.ajax({
-        	url: 'index.php/project/',
-        	success: function(data) {
-        		$('#content').append(data);
-        	}
-        })
-
-        $.ajax({
-        	url: 'index.php/base/login',
-        	success: function(data) {
-        		$('#content').append(data);
-        	}
-        })*/
         redPermissionChecker()
 
         function isExternal(url) {

@@ -29,6 +29,7 @@ app.set("salt", ":tame:");
 
 global.notoken = []
 global.model = {}
+
 const modelFolder = './models/';
 
 fs.readdirSync(modelFolder).forEach(file => {
@@ -85,6 +86,12 @@ router.use('/role', rRoles);
 
 var rJounals = require('./router/journals');
 router.use('/journal', rJounals);
+
+var rAllIssueRelation = require('./router/relations');
+router.use('/relation', rAllIssueRelation);
+
+var rIssueStatuses = require('./router/issue_statuses');
+router.use('/status', rIssueStatuses);
 
 app.use('/api', router);
 

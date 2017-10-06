@@ -31,12 +31,24 @@
                     <div class="red-card-content"></div>
                 </div>
                 <div class="red-issue-subtask red-card">
-                    <j-toolbar><span>Subtasks</span><j-spacer></j-spacer><j-button>Add</j-button></j-toolbar>
-                    <div class="red-card-content"></div>
+                    <j-toolbar><span>Subtasks</span>
+                        <j-spacer></j-spacer>
+                        <j-button>Add</j-button>
+                    </j-toolbar>
+                    <div class="red-card-content">
+                        <table class="red-task" style="border-collapse: collapse; border: 0px; width: 100%; text-align: center;">
+                        </table>
+                    </div>
                 </div>
                 <div class="red-issue-related red-card">
-                    <j-toolbar><span>Related tasks</span><j-spacer></j-spacer><j-button>Add</j-button></j-toolbar>
-                    <div class="red-card-content"></div>
+                    <j-toolbar><span>Related tasks</span>
+                        <j-spacer></j-spacer>
+                        <j-button>Add</j-button>
+                    </j-toolbar>
+                    <div class="red-card-content">
+                        <table class="red-task" style="border-collapse: collapse; border: 0px; width: 100%; text-align: center;">
+                        </table>
+                    </div>
                 </div>
                 <j-timeline id="red_issue_history">
                 </j-timeline>
@@ -73,7 +85,7 @@
                     } else {}
                 }
 
-                $('.red-issue-description .red-card-content').append(stringFormater(data.description.replace(/\n/g, "<br />")))
+                $('.red-issue-description .red-card-content').append(stringFormatter(data.description.replace(/\n/g, "<br />")))
 
                 var issue_detail = $('.red-issue-detail');
 
@@ -82,7 +94,7 @@
                 issue_detail.append('<div class="red-column-detail"><div><b>Priority:</b></div><div>' + data.priority.name + '</div></div>')
                 issue_detail.append('<div class="red-column-detail"><div><b>Due date:</b></div><div>' + data.due_date + '</div></div>')
                 issue_detail.append('<div class="red-column-detail"><div><b>Assigned to:</b></div><div>' + red_string_generator([data.assigned_to.id, data.assigned_to.name], 'users') + '</div></div>')
-                issue_detail.append('<div class="red-column-detail"><div><b>% Done:</b></div><div>' + data.done_ratio + '</div></div>')
+                issue_detail.append('<div class="red-column-detail"><div><b>% Done:</b></div><div><div class="red-progress-bar" title="' + data.done_ratio + '%"><div style="width: ' + data.done_ratio + '%"></div></div> <div style="display: inline-block;vertical-align: top;">' + data.done_ratio + '%</div></div></div>')
                 issue_detail.append('<div class="red-column-detail"><div><b>Category:</b></div><div>' + (data.category_id || '-') + '</div></div>')
                 var spent_time = 0.0;
                 if (data.time_entries == null) {
@@ -101,13 +113,18 @@
                 })
 
                 red_project_identifier = data.project.identifier;
+                $('#red-btn-task').attr('href', '<?php echo base_url() ?>projects/'+red_project_identifier+'/issues');
+
                 redProjectPermissionChecker(function(permission) {
+
                     if (permission.match(/view_watcher|admin/) != null) {
                         red_get_watcher(permission);
                     }
 
                     if (permission.match(/view_issues|admin/) != null) {
                         red_get_issue_journal(permission);
+                        red_get_issue_subtask();
+                        red_get_issue_relation();
                     }
                 });
             } else {
@@ -150,6 +167,53 @@
         });
     }
 
+    function red_get_issue_subtask() {
+        $.ajax({
+            url: window.location.origin + ':8080/api/issue/list',
+            type: 'GET',
+            data: {
+                where: {
+                    main: {
+                        parent_id: <?php echo $identifier;?>
+                    }
+                }
+            },
+            dataType: 'jsonp',
+            success: function(data) {
+                var $el = $('.red-issue-subtask > .red-card-content > table')
+                for (var i = 0; i < data.length; i++) {
+                    var val = data[i]
+                    $el.append('<tr><td style="text-align: left;">' + red_string_generator([val.id, val.tracker.name + ' #' + val.id, val.status.is_closed], 'issue') + stringFormatter(': ' + val.subject + '</td><td>' + val.status.name + '</td><td>' + red_string_generator([val.assigned_to.id, val.assigned_to.name], 'users')) + '</td><td><div class="red-progress-bar" title="' + val.done_ratio + '%"><div style="width: ' + val.done_ratio + '%"></div></div></td></tr>')
+                }
+
+            },
+            error: function() {},
+            beforeSend: function setHeader(xhr) {
+                xhr.setRequestHeader('x-access-token', Cookies.get('token'));
+            }
+        });
+    }
+
+    function red_get_issue_relation() {
+        $.ajax({
+            url: window.location.origin + ':8080/api/relation/<?php echo $identifier;?>',
+            type: 'GET',
+            dataType: 'jsonp',
+            success: function(data) {
+                var $el = $('.red-issue-related > .red-card-content > table')
+                for (var i = 0; i < data.length; i++) {
+                    var val = data[i].issue
+                    $el.append('<tr><td style="text-align: left;">Related to ' + red_string_generator([val.id, val.tracker.name + ' #' + val.id, val.status.is_closed], 'issue') + stringFormatter(': ' + val.subject + '</td><td>' + val.status.name) + '</td><td>' + val.created_on.split('T')[0] + '</td><td>' + val.due_date + '</td></tr>')
+                }
+
+            },
+            error: function() {},
+            beforeSend: function setHeader(xhr) {
+                xhr.setRequestHeader('x-access-token', Cookies.get('token'));
+            }
+        });
+    }
+
     function red_get_issue_journal(permission) {
         $.ajax({
             url: window.location.origin + ':8080/api/journal/list',
@@ -176,14 +240,15 @@
                         } else {
                             detail = val.custom_field.name
                         }
-                        if (val.old_value == "")
+                        if (val.old_value == "" || val.old_value == null)
                             $el.children('.red-issue-journal-detail').append('<div><b>' + detail + '</b> set to ' + val.value + '</div>')
                         else
                             $el.children('.red-issue-journal-detail').append('<div><b>' + detail + '</b> changed from ' + val.old_value + ' to ' + val.value + '</div>')
                     })
-                    $el.append('<div class="red-issue-journal-note">' + stringFormater(val.notes.replace(/\n/g, "<br />")) + '</div>')
+                    $el.append('<div class="red-issue-journal-note">' + stringFormatter(val.notes.replace(/\n/g, "<br />")) + '</div>')
                     $history[0].append($el)
                 })
+                redJournalFormatter();
             },
             error: function() {},
             beforeSend: function setHeader(xhr) {

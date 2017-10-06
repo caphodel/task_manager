@@ -4,6 +4,7 @@
 </div>
 
 <script>
+    $('#red-btn-task').attr('href', '<?php echo base_url() ?>issues');
     function red_project() {
         var $el = $('#red-tbl-project');
         $el[0].param.sEcho++;

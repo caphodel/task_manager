@@ -7,6 +7,7 @@
 @color4: #6B92ED;
 @color5: #81ACFD;
 @color6: #e1e4e8;
+@color7: #858C93;
 @background2: #FAFBFC;
 
 /* default */
@@ -252,4 +253,45 @@ j-button:active:after{
     background: @background2;
     border-top: 1px solid @color6;
     border-bottom: 1px solid @color6;
+}
+
+.red-progress-bar{
+    border: 1px solid @color4;
+    display: inline-block;
+    width: 100px;
+    height: 18px;
+    margin: 2px;
+}
+
+.red-progress-bar > div{
+    background: @color5;
+    display: block;
+    height: 100%;
+}
+
+.red-card-content > table.red-task td:first-child{
+    /*display: block;*/
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 550px;
+    overflow: hidden;
+}
+
+/*.red-issue-subtask{
+    display: flex;
+    flex-direction: column;
+}
+
+.red-issue-subtask > div{
+    display: flex;
+    flex-wrap: nowrap;
+}
+
+.red-issue-subtask > div > div{
+    text-overflow: ellipsis;
+}*/
+
+a[red-issue="1"]{
+    text-decoration: line-through;
+    color: @color7;
 }
