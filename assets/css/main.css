@@ -168,7 +168,8 @@ j-button:active:after{
   padding-right: 20px;
 }
 .red-issue-tracker-name,
-.red-issue-project-name {
+.red-issue-project-name,
+h1 {
   font-size: 18px;
 }
 .red-issue-journal-detail {

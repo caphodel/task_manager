@@ -97,6 +97,13 @@ router.get('/list/:limit?/:offset?', function (req, res) {
         }
     }
 
+    if (req.query.attribute) {
+        var attribute = req.query.attribute;
+        options.attributes = {
+            include: req.query.attribute.main
+        }
+    }
+
     if (req.query.orderby)
         options.order = JSON.parse(req.query.orderby)
 
@@ -112,7 +119,23 @@ router.get('/list/:limit?/:offset?', function (req, res) {
         options.offset = parseInt(req.params.offset)
     }
 
-    const projects = db.import('../models/projects');
+    var projects = global.model['projects'],
+        members = global.model['members'],
+        member_roles = global.model['member_roles'],
+        roles = global.model['roles']
+
+    options.include = [{
+        model: members,
+        attributes: req.query.attribute ? req.query.attribute.members ? req.query.attribute.members : [] : [],
+        include: [{
+            model: member_roles,
+            attributes: req.query.attribute ? req.query.attribute.member_roles ? req.query.attribute.member_roles : [] : [],
+            include: [{
+                model: roles,
+                attributes: req.query.attribute ? req.query.attribute.roles ? req.query.attribute.roles : [] : []
+            }]
+        }]
+    }]
 
     projects.findAll(options).then(data => {
         res.status(200);
@@ -192,7 +215,7 @@ router.get('/:identifier', function (req, res) {
         };
 
     //const projects = db.import('../models/projects');
-    projects = global.model['projects']
+    var projects = global.model['projects']
 
     projects.findOne(options).then(data => {
         res.status(200);
@@ -466,6 +489,7 @@ router.put('/', function (req, res) {
 });
 
 global.notoken.push('/api/project/total')
+global.notoken.push(/\/api\/\project\/\list/ig)
 global.notoken.push(/\/api\/project\/list\/\w*/ig)
 global.notoken.push(/\/api\/project\/\w*/ig)
 

@@ -18,8 +18,8 @@
             <td style="width: 75%">
                 <div class="red-card" style="margin-top: 0px;">
                     <j-toolbar>
-                        <h1 class="red-issue-subject" style="width: 100%;">
-                        </h1>
+                        <h5 class="red-issue-subject" style="width: 100%;">
+                        </h5>
                     </j-toolbar>
                     <p id="red-issue-author">
                         Added by <a></a>
