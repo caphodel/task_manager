@@ -3,7 +3,8 @@
     jui2.attrChange['j-table_paging'] = function(el, oldVal, newVal){
         if (newVal != null) {
             var $el = $(el);
-            $el.append('<j-toolbar class="j-table-pagination" style="align-items: baseline;"><j-button class="j-table-first"><i class="fa fa-fast-backward"></i></j-button> <j-button class="j-table-prev"><i class="fa fa-backward"></i></j-button> <j-textfield class="j-table-page" no-label="true" style="width: 60px;"></j-textfield> <j-button class="j-table-next"><i class="fa fa-forward"></i></j-button> <j-button class="j-table-last"><i class="fa fa-fast-forward"></i></j-button><j-spacer></j-spacer><span class="j-table-data-info"></span></j-toolbar>');
+
+            $el.append(jui2.tmpl['pagination']());
 
             $el.on('j-table.afterdraw', function(){
                 var last = (el.param.iDisplayStart+el.param.iDisplayLength);
@@ -47,6 +48,10 @@
                 el.param.iDisplayStart = el.param.iTotalRecords - mod;
                 el.generateData();
                 $el.children('.j-table-pagination').children('.j-table-page').val(Math.floor((el.param.iDisplayStart+el.param.iDisplayLength)/el.param.iDisplayLength))
+            })
+
+            $el.children('.j-table-pagination').children('.j-table-refresh').click(function(){
+                el.generateData();
             })
         }
         else{
