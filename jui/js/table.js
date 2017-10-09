@@ -139,6 +139,7 @@
 
     proto.generateData = function (data) {
         var $self = $(this),
+            self = this,
             $body = $self.children('.j-table').children('.j-table-body');
 
         this.aaData = data || this.aaData;
@@ -147,8 +148,11 @@
 
         $self.triggerHandler('j-table.beforedraw');
 
+        console.log('aaaaaa')
+
         $body.empty().append(jui2.tmpl['tableItems']({
-            rows: this.generatedData, //.splice(0, $self[0].getHeaderContainer().children().last().children().length)
+            rows: this.generatedData,
+            width: self.jui2.cellWidth
         }));
 
         $body.find('> div').click(function () {
@@ -374,7 +378,6 @@
 
         var scrollWidth = 0;
 
-        //console.log($(this).children().width() - $(this).children().children('.j-table-head').width())
         if (this.aaData.length > 0 && !this.jui2.initial) {
             $(this).children().children('.j-table-head').css('position', 'absolute')
             if ($('body').hasScrollBar()) {
@@ -571,8 +574,8 @@
                 if (typeof data == 'array') {
                     el.generateData_(data);
                 }
-                if (!data) {
-                    el.generateData_(eval(newVal));
+                else if (!data) {
+                    el.generateData_(eval(newVal), false);
                 }
             }
         } else {
@@ -588,8 +591,8 @@
                 if (typeof data == 'array' || typeof data == 'object') {
                     el.generateData_(data);
                 }
-                if (!data) {
-                    el.generateData_(eval(newVal).call());
+                else if (!data) {
+                    eval(newVal).call()
                 }
             }
             el.generateData()
@@ -607,7 +610,7 @@
                 if (typeof data == 'array') {
                     el.generateData_(data);
                 }
-                if (!data) {
+                else if (!data) {
                     $.getJSON(newVal, param, function (data) {
                         if (data.sEcho == el.param.sEcho) {
                             el.aaData = data.aaData;

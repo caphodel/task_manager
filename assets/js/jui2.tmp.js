@@ -155,7 +155,7 @@ this["jui2"]["tmpl"]["mask"] = Handlebars.template({"compiler":[6,">= 2.0.0-beta
 },"useData":true});
 
 this["jui2"]["tmpl"]["pagination"] = Handlebars.template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
-    return "<i class=\"fa fa-angle-left\"></i>\r\n<j-textfield class=\"j-gotopage\">Page</j-textfield>\r\n<span class=\"j-pageof\">of&nbsp;</span>\r\n<i class=\"fa fa-angle-right\"></i>\r\n<j-combofield class=\"j-itemPerPage\" value=\"10\" search=\"false\">Rows per page<j-table>\r\n  [[\"Items per page\"],[10],[25],[50],[100],[200]]\r\n</j-table>\r\n</j-combofield>\r\n<i class=\"fa fa-refresh\"></i>\r\n<j-spacer></j-spacer>\r\n<span class=\"j-total\">0 items</span>\r\n";
+    return "<j-toolbar class=\"j-table-pagination\" style=\"align-items: baseline;\">\r\n    <j-button class=\"j-table-first\"><i class=\"fa fa-fast-backward\"></i></j-button>\r\n    <j-button class=\"j-table-prev\"><i class=\"fa fa-backward\"></i></j-button>\r\n    <j-textfield class=\"j-table-page\" no-label=\"true\" style=\"width: 60px;\"></j-textfield>\r\n    <j-button class=\"j-table-next\"><i class=\"fa fa-forward\"></i></j-button>\r\n    <j-button class=\"j-table-last\"><i class=\"fa fa-fast-forward\"></i></j-button>\r\n    <j-button class=\"j-table-refresh\"><i class=\"fa fa-repeat\"></i></j-button>\r\n    <j-spacer></j-spacer><span class=\"j-table-data-info\"></span>\r\n</j-toolbar>\r\n";
 },"useData":true});
 
 this["jui2"]["tmpl"]["progressBar"] = Handlebars.template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
@@ -281,17 +281,25 @@ this["jui2"]["tmpl"]["tableItems"] = Handlebars.template({"1":function(depth0,he
     + alias3(((helper = (helper = helpers.index || (data && data.index)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"index","hash":{},"data":data}) : helper)))
     + "\" data-index=\""
     + alias3(((helper = (helper = helpers.index || (data && data.index)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"index","hash":{},"data":data}) : helper)))
-    + "\">\r\n"
+    + "\" style=\"min-wdith: 100%\">\r\n"
     + ((stack1 = helpers.each.call(depth0,depth0,{"name":"each","hash":{},"fn":this.program(2, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
     + "</div>\r\n";
 },"2":function(depth0,helpers,partials,data) {
     var stack1, helper;
 
-  return "	<div class=\"j-table-body-column j-table-body-column-"
+  return "	<div style=\""
+    + ((stack1 = helpers['if'].call(depth0,((stack1 = (depth0 != null ? depth0.width : depth0)) != null ? stack1['@index'] : stack1),{"name":"if","hash":{"includeZero":true},"fn":this.program(3, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
+    + "\" class=\"j-table-body-column j-table-body-column-"
     + this.escapeExpression(((helper = (helper = helpers.index || (data && data.index)) != null ? helper : helpers.helperMissing),(typeof helper === "function" ? helper.call(depth0,{"name":"index","hash":{},"data":data}) : helper)))
     + "\"><span>"
     + ((stack1 = this.lambda(depth0, depth0)) != null ? stack1 : "")
     + "</span></div>\r\n";
+},"3":function(depth0,helpers,partials,data) {
+    var stack1;
+
+  return "flex: 1 0 "
+    + this.escapeExpression(this.lambda(((stack1 = (depth0 != null ? depth0.width : depth0)) != null ? stack1['@index'] : stack1), depth0))
+    + "px;";
 },"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
     var stack1;
 

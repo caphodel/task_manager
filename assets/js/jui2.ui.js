@@ -1991,6 +1991,7 @@ jui2.method = {
 
     proto.generateData = function (data) {
         var $self = $(this),
+            self = this,
             $body = $self.children('.j-table').children('.j-table-body');
 
         this.aaData = data || this.aaData;
@@ -1999,8 +2000,11 @@ jui2.method = {
 
         $self.triggerHandler('j-table.beforedraw');
 
+        console.log('aaaaaa')
+
         $body.empty().append(jui2.tmpl['tableItems']({
-            rows: this.generatedData, //.splice(0, $self[0].getHeaderContainer().children().last().children().length)
+            rows: this.generatedData,
+            width: self.jui2.cellWidth
         }));
 
         $body.find('> div').click(function () {
@@ -2226,7 +2230,6 @@ jui2.method = {
 
         var scrollWidth = 0;
 
-        //console.log($(this).children().width() - $(this).children().children('.j-table-head').width())
         if (this.aaData.length > 0 && !this.jui2.initial) {
             $(this).children().children('.j-table-head').css('position', 'absolute')
             if ($('body').hasScrollBar()) {
@@ -2423,8 +2426,8 @@ jui2.method = {
                 if (typeof data == 'array') {
                     el.generateData_(data);
                 }
-                if (!data) {
-                    el.generateData_(eval(newVal));
+                else if (!data) {
+                    el.generateData_(eval(newVal), false);
                 }
             }
         } else {
@@ -2440,8 +2443,8 @@ jui2.method = {
                 if (typeof data == 'array' || typeof data == 'object') {
                     el.generateData_(data);
                 }
-                if (!data) {
-                    el.generateData_(eval(newVal).call());
+                else if (!data) {
+                    eval(newVal).call()
                 }
             }
             el.generateData()
@@ -2459,7 +2462,7 @@ jui2.method = {
                 if (typeof data == 'array') {
                     el.generateData_(data);
                 }
-                if (!data) {
+                else if (!data) {
                     $.getJSON(newVal, param, function (data) {
                         if (data.sEcho == el.param.sEcho) {
                             el.aaData = data.aaData;
@@ -2482,7 +2485,8 @@ jui2.method = {
     jui2.attrChange['j-table_paging'] = function(el, oldVal, newVal){
         if (newVal != null) {
             var $el = $(el);
-            $el.append('<j-toolbar class="j-table-pagination" style="align-items: baseline;"><j-button class="j-table-first"><i class="fa fa-fast-backward"></i></j-button> <j-button class="j-table-prev"><i class="fa fa-backward"></i></j-button> <j-textfield class="j-table-page" no-label="true" style="width: 60px;"></j-textfield> <j-button class="j-table-next"><i class="fa fa-forward"></i></j-button> <j-button class="j-table-last"><i class="fa fa-fast-forward"></i></j-button><j-spacer></j-spacer><span class="j-table-data-info"></span></j-toolbar>');
+
+            $el.append(jui2.tmpl['pagination']());
 
             $el.on('j-table.afterdraw', function(){
                 var last = (el.param.iDisplayStart+el.param.iDisplayLength);
@@ -2510,12 +2514,20 @@ jui2.method = {
 
             $el.children('.j-table-pagination').children('.j-table-prev').click(function(){
                 el.param.iDisplayStart -= el.param.iDisplayLength;
+
+                if(el.param.iDisplayStart<0)
+                    el.param.iDisplayStart = 0;
+
                 el.generateData();
                 $el.children('.j-table-pagination').children('.j-table-page').val(Math.floor((el.param.iDisplayStart+el.param.iDisplayLength)/el.param.iDisplayLength))
             })
 
             $el.children('.j-table-pagination').children('.j-table-next').click(function(){
                 el.param.iDisplayStart += el.param.iDisplayLength;
+
+                 if(el.param.iDisplayStart>el.param.iTotalRecords)
+                    el.param.iDisplayStart -= el.param.iDisplayLength;
+
                 el.generateData();
                 $el.children('.j-table-pagination').children('.j-table-page').val(Math.floor((el.param.iDisplayStart+el.param.iDisplayLength)/el.param.iDisplayLength))
             })
@@ -2526,6 +2538,10 @@ jui2.method = {
                 el.param.iDisplayStart = el.param.iTotalRecords - mod;
                 el.generateData();
                 $el.children('.j-table-pagination').children('.j-table-page').val(Math.floor((el.param.iDisplayStart+el.param.iDisplayLength)/el.param.iDisplayLength))
+            })
+
+            $el.children('.j-table-pagination').children('.j-table-refresh').click(function(){
+                el.generateData();
             })
         }
         else{

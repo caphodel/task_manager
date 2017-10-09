@@ -1,7 +1,7 @@
 {{#each rows}}
-<div style="display: flex;" class="j-table-body-row j-table-body-row-{{@index}}" data-index="{{@index}}">
+<div style="display: flex;" class="j-table-body-row j-table-body-row-{{@index}}" data-index="{{@index}}" style="min-wdith: 100%">
 	{{#each this}}
-	<div class="j-table-body-column j-table-body-column-{{@index}}"><span>{{{this}}}</span></div>
+	<div style="{{#if width.[@index] includeZero=true}}flex: 1 0 {{width.[@index]}}px;{{/if}}" class="j-table-body-column j-table-body-column-{{@index}}"><span>{{{this}}}</span></div>
 	{{/each}}
 </div>
 {{/each}}

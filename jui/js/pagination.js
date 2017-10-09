@@ -32,12 +32,20 @@
 
             $el.children('.j-table-pagination').children('.j-table-prev').click(function(){
                 el.param.iDisplayStart -= el.param.iDisplayLength;
+
+                if(el.param.iDisplayStart<0)
+                    el.param.iDisplayStart = 0;
+
                 el.generateData();
                 $el.children('.j-table-pagination').children('.j-table-page').val(Math.floor((el.param.iDisplayStart+el.param.iDisplayLength)/el.param.iDisplayLength))
             })
 
             $el.children('.j-table-pagination').children('.j-table-next').click(function(){
                 el.param.iDisplayStart += el.param.iDisplayLength;
+
+                 if(el.param.iDisplayStart>el.param.iTotalRecords)
+                    el.param.iDisplayStart -= el.param.iDisplayLength;
+
                 el.generateData();
                 $el.children('.j-table-pagination').children('.j-table-page').val(Math.floor((el.param.iDisplayStart+el.param.iDisplayLength)/el.param.iDisplayLength))
             })
