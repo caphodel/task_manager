@@ -11,11 +11,12 @@
                 if(last>el.param.iTotalRecords)
                     last = el.param.iTotalRecords
                 $el.children('.j-table-pagination').children('.j-table-data-info').html((el.param.iDisplayStart+1)+'-'+last+'/'+el.param.iTotalRecords);
+                $el.children('.j-table-pagination').children('.j-table-page').val(Math.floor((el.param.iDisplayStart+el.param.iDisplayLength)/el.param.iDisplayLength))
             })
 
-            $el.children('.j-table-pagination').children('.j-table-page').on('afterdraw', function(){
-                $el.children('.j-table-pagination').children('.j-table-page').val(1);
-            })
+            //$el.children('.j-table-pagination').children('.j-table-page').on('afterdraw', function(){
+                //$el.children('.j-table-pagination').children('.j-table-page').val(1);
+            //})
 
             /*$el.children('.j-table-pagination').children('.j-table-page').val(1)
 
@@ -37,7 +38,6 @@
                     el.param.iDisplayStart = 0;
 
                 el.generateData();
-                $el.children('.j-table-pagination').children('.j-table-page').val(Math.floor((el.param.iDisplayStart+el.param.iDisplayLength)/el.param.iDisplayLength))
             })
 
             $el.children('.j-table-pagination').children('.j-table-next').click(function(){
@@ -47,7 +47,7 @@
                     el.param.iDisplayStart -= el.param.iDisplayLength;
 
                 el.generateData();
-                $el.children('.j-table-pagination').children('.j-table-page').val(Math.floor((el.param.iDisplayStart+el.param.iDisplayLength)/el.param.iDisplayLength))
+                //$el.children('.j-table-pagination').children('.j-table-page').val(Math.floor((el.param.iDisplayStart+el.param.iDisplayLength)/el.param.iDisplayLength))
             })
 
             $el.children('.j-table-pagination').children('.j-table-last').click(function(){
@@ -55,7 +55,7 @@
                 mod = mod == 0 ? el.param.iDisplayLength : mod;
                 el.param.iDisplayStart = el.param.iTotalRecords - mod;
                 el.generateData();
-                $el.children('.j-table-pagination').children('.j-table-page').val(Math.floor((el.param.iDisplayStart+el.param.iDisplayLength)/el.param.iDisplayLength))
+                //$el.children('.j-table-pagination').children('.j-table-page').val(Math.floor((el.param.iDisplayStart+el.param.iDisplayLength)/el.param.iDisplayLength))
             })
 
             $el.children('.j-table-pagination').children('.j-table-refresh').click(function(){
