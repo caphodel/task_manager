@@ -1,6 +1,7 @@
 <div class="red-util-container" style="display: flex;">
     <h1 class="red-user-name"></h1>
     <j-spacer></j-spacer>
+    <j-button red-permission="admin"><i class="fa fa-pencil"></i> Edit</j-button>
 </div>
 <div class="red-content-container">
     <table class="red-layout-table">
@@ -13,19 +14,22 @@
                 </div>
             </td>
             <td style="width: 50%">
+                <div class="red-user-activity red-card">
+                    <j-toolbar><span>Activity</span></j-toolbar>
+                    <div class="red-card-content">
+                    </div>
+                </div>
             </td>
         </tr>
     </table>
 </div>
 <script>
-    /*redProjectPermissionChecker(function(permission){
-                if(permission.match(/admin/) != null){
-                    user_show();
-                }
-            });*/
 
-    user_show();
-    get_user_project();
+    redProjectPermissionChecker(function() {
+        user_show();
+        get_user_project();
+        get_user_total_activity()
+    })
 
     function user_show() {
         $.ajax({
@@ -33,7 +37,6 @@
             type: 'GET',
             dataType: 'jsonp',
             success: function(data) {
-                console.log(data)
                 $('.red-user-name').text(data.fullname)
                 $('.red-user-email').text(data.mail)
                 $('.red-user-created').text(data.created_on.split('T')[0])
@@ -61,11 +64,33 @@
                 }
             },
             success: function(data) {
-                console.log(data)
                 var $el = $('.red-user-projects > .red-card-content')
                 $.each(data, function(i, val) {
                     $el.append(red_string_generator([val.identifier, val.project_name], 'project') + ' (' + val.name + ', ' + val.created_on.split('T')[0] + ')<br/>')
                 })
+            },
+            error: function() {},
+            beforeSend: function setHeader(xhr) {
+                xhr.setRequestHeader('x-access-token', Cookies.get('token'));
+            }
+        });
+    }
+
+    function get_user_total_activity() {
+        $.ajax({
+            url: window.location.origin + ':8080/api/issue/total',
+            type: 'GET',
+            dataType: 'jsonp',
+            data: {
+                where: {
+                    main: {
+                        'author_id': <?php echo $identifier;?>
+                    }
+                }
+            },
+            success: function(data) {
+                var $el = $('.red-user-activity > .red-card-content')
+                $el.append('Reported tasks: ' + data[0].total)
             },
             error: function() {},
             beforeSend: function setHeader(xhr) {

@@ -29,6 +29,7 @@ app.set("salt", ":tame:");
 
 global.notoken = []
 global.model = {}
+global.save = {}
 
 const modelFolder = './models/';
 
@@ -92,6 +93,12 @@ router.use('/relation', rAllIssueRelation);
 
 var rIssueStatuses = require('./router/issue_statuses');
 router.use('/status', rIssueStatuses);
+
+var rCustomFields = require('./router/custom_fields');
+router.use('/custom_field', rCustomFields);
+
+var rCustomValues = require('./router/custom_values');
+router.use('/custom_value', rCustomValues);
 
 app.use('/api', router);
 

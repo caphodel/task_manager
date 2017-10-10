@@ -52,7 +52,7 @@
             success: function(data) {
                 $.each(data, function(i, val) {
                     if ($('.red-project-tracker-' + val.tracker.name.replace(/ /g, '_')).length == 0) {
-                        $('.red-project-task').append('<p class="red-project-tracker-' + val.tracker.name.replace(/ /g, '_') + '"><a href="<?php echo base_url() ?><?php echo $identifier;?>/issues?tracker_id=' + val.tracker.id + '">' + val.tracker.name + '</a>: </p>')
+                        $('.red-project-task').append('<p class="red-project-tracker-' + val.tracker.name.replace(/ /g, '_') + '"><a href="<?php echo base_url() ?>projects/<?php echo $identifier;?>/issues?tracker_id=' + val.tracker.id + '">' + val.tracker.name + '</a>: </p>')
                         $('.red-project-tracker-' + val.tracker.name.replace(/ /g, '_')).append(val.count + ' Open')
                     } else {
                         $('.red-project-tracker-' + val.tracker.name.replace(/ /g, '_')).append('/' + val.count)

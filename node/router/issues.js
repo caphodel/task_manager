@@ -11,25 +11,6 @@ var
             }
         }
         return null;
-    },
-    valuesToArray = function (obj) {
-        var data = {},
-            c = 0;
-        for (var key in obj.dataValues) {
-            if (obj.dataValues.hasOwnProperty(key)) {
-                if (typeof obj[key] != 'object') {
-                    data[c] = obj[key]
-                    c++
-                } else {
-                    if (typeof obj['_options'].includeNames != 'undefined') {
-                        if ( /*findValue(obj['_options'].includeNames, key)*/ obj['_options'].includeNames.indexOf(key) != -1) {
-                            data[key] = obj[key].dataValues
-                        }
-                    }
-                }
-            }
-        }
-        return data;
     };
 
 router.get('/total', function (req, res) {
@@ -43,10 +24,19 @@ router.get('/total', function (req, res) {
     if (req.query.orderby)
         options.order = JSON.parse(req.query.orderby)
 
-    if (req.query.where){
+    if (req.query.where) {
         var where = req.query.where;
-        if(where.main){
+        if (where.main) {
             options.where = where.main
+        }
+    }
+
+    if (req.query.fromGlobal) {
+        for (var prop in req.query.fromGlobal) {
+            if (req.query.fromGlobal.hasOwnProperty(prop)) {
+                options.where[prop] = global.save[req.query.fromGlobal[prop]]
+                //delete global.save[req.query.fromGlobal[prop]];
+            }
         }
     }
 
@@ -59,6 +49,9 @@ router.get('/total', function (req, res) {
         issue_statuses = global.model['issue_statuses'],
         users = global.model['users'],
         priority = global.model['enumerations'],
+        custom_values = global.model['custom_values'],
+        custom_fields = global.model['custom_fields'],
+        time_entries = global.model['time_entries'],
         issue_categories = global.model['issue_categories'];
 
     options.attributes = [[sequelize.fn('count', sequelize.col('issues.id')), 'total']]
@@ -73,6 +66,7 @@ router.get('/total', function (req, res) {
     }, {
         model: issue_statuses,
         as: 'status',
+        where: req.query.where ? req.query.where.status ? req.query.where.status : [] : [],
         attributes: ["id", "name", "is_closed"]
     }, {
         model: users,
@@ -86,6 +80,14 @@ router.get('/total', function (req, res) {
         model: users,
         as: 'author',
         attributes: ["id", [db.fn('CONCAT', db.col("author.firstname"), " ", db.col("author.lastname")), "name"]]
+    }, {
+        model: custom_values,
+        where: req.query.where ? req.query.where.custom_values ? req.query.where.custom_values : [] : [],
+        include: [{
+            model: custom_fields
+        }]
+    }, {
+        model: time_entries
     }]
 
     issues.findAll(options).then(data => {
@@ -103,18 +105,45 @@ router.get('/total', function (req, res) {
 router.get('/list/:limit?/:offset?', function (req, res) {
     var db = req.app.get("db"),
         options = {
+            where: {
 
-        };
+            }
+        }
 
-    if (req.query.where){
+    if (req.query.orderby)
+        options.order = JSON.parse(req.query.orderby)
+
+    if (req.query.where) {
         var where = req.query.where;
-        if(where.main){
+        if (where.main) {
             options.where = where.main
         }
     }
 
-    if (req.query.orderby)
-        options.order = JSON.parse(req.query.orderby)
+    if (req.query.fromGlobal) {
+        for (var prop in req.query.fromGlobal) {
+            if (req.query.fromGlobal.hasOwnProperty(prop)) {
+                options.where[prop] = global.save[req.query.fromGlobal[prop]]
+                //delete global.save[req.query.fromGlobal[prop]];
+            }
+        }
+    }
+
+    if (req.query.operator) {
+        for (var prop in req.query.operator) {
+            if (req.query.operator.hasOwnProperty(prop)) {
+                var operator = req.query.operator[prop]
+                switch (operator) {
+                    case '!':
+                        options.where[prop] = {
+                            $notIn: options.where[prop]
+                        }
+                        console.log(options)
+                        break;
+                }
+            }
+        }
+    }
 
     if (!req.params.limit) {
 
@@ -128,10 +157,8 @@ router.get('/list/:limit?/:offset?', function (req, res) {
         options.offset = parseInt(req.params.offset)
     }
 
-    if(options.where){
-        delete options.where.callback;
-        delete options.where._;
-    }
+    delete options.where.callback;
+    delete options.where._;
 
     var projects = global.model['projects'],
         issues = global.model['issues'],
@@ -139,7 +166,12 @@ router.get('/list/:limit?/:offset?', function (req, res) {
         issue_statuses = global.model['issue_statuses'],
         users = global.model['users'],
         priority = global.model['enumerations'],
+        custom_values = global.model['custom_values'],
+        custom_fields = global.model['custom_fields'],
+        time_entries = global.model['time_entries'],
         issue_categories = global.model['issue_categories'];
+
+    //options.attributes = [[sequelize.fn('count', sequelize.col('issues.id')), 'total']]
 
     options.include = [{
         model: projects,
@@ -151,6 +183,7 @@ router.get('/list/:limit?/:offset?', function (req, res) {
     }, {
         model: issue_statuses,
         as: 'status',
+        where: req.query.where ? req.query.where.status ? req.query.where.status : [] : [],
         attributes: ["id", "name", "is_closed"]
     }, {
         model: users,
@@ -164,6 +197,14 @@ router.get('/list/:limit?/:offset?', function (req, res) {
         model: users,
         as: 'author',
         attributes: ["id", [db.fn('CONCAT', db.col("author.firstname"), " ", db.col("author.lastname")), "name"]]
+    }, {
+        model: custom_values,
+        where: req.query.where ? req.query.where.custom_values ? req.query.where.custom_values : [] : [],
+        include: [{
+            model: custom_fields
+        }]
+    }, {
+        model: time_entries
     }]
 
     issues.findAll(options).then(data => {
@@ -186,9 +227,9 @@ router.get('/:identifier', function (req, res) {
             }
         };
 
-    if (req.query.where){
+    if (req.query.where) {
         var where = req.query.where;
-        if(where.main){
+        if (where.main) {
             options.where = where.main
             options.where.id = req.params.identifier
         }
@@ -207,8 +248,6 @@ router.get('/:identifier', function (req, res) {
         custom_fields = global.model['custom_fields'],
         time_entries = global.model['time_entries'],
         issue_categories = global.model['issue_categories'];
-
-    //options.attributes = [[db.fn('SUM', db.col("time_entries.hours")), "spent_time"], {all: true}]
 
     options.include = [{
         model: projects,
@@ -235,19 +274,15 @@ router.get('/:identifier', function (req, res) {
         attributes: ["id", [db.fn('CONCAT', db.col("author.firstname"), " ", db.col("author.lastname")), "name"]]
     }, {
         model: custom_values,
+        where: {
+            customized_type: 'Issue'
+        },
         include: [{
             model: custom_fields
         }]
     }, {
         model: time_entries
-    }/*, {
-        model: watchers,
-        as: 'watchers',
-        include: [{
-            model: users,
-            attributes: ["id", [db.fn('CONCAT', db.col("watchers->user.firstname"), " ", db.col("watchers->user.lastname")), "name"]]
-        }]
-    }*/]
+    }]
 
 
     issues.findOne(options).then(data => {
@@ -276,13 +311,13 @@ router.get('/:identifier/issues/:limit?/:offset?', function (req, res) {
     if (req.query.orderby)
         options.order = JSON.parse(req.query.orderby)
 
-    if (req.query.groupby){
+    if (req.query.groupby) {
         options.attributes = [[sequelize.fn('count', sequelize.col('issues.id')), 'count']]
         options.group = JSON.parse(req.query.groupby)
     }
 
-    if (req.query.where){
-        if(req.query.where.main){
+    if (req.query.where) {
+        if (req.query.where.main) {
             options.where = JSON.parse(JSON.stringify(req.query.where.main))
             options.where['$project.identifier$'] = req.params.identifier
         }

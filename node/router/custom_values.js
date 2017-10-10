@@ -2,21 +2,19 @@ var
     express = require('express'),
     md5 = require('md5'),
     router = express.Router(),
-    valuesToArray = function (obj) {
-        var data = []
-        for (var key in obj.dataValues) {
-            if (obj.dataValues.hasOwnProperty(key)) {
-                data.push(obj[key])
-            }
-        }
-        return data;
-    };
+    jsonQuery = require('json-query'),
+    bodyParser = require('body-parser');
 
 router.get('/total', function (req, res) {
     var db = req.app.get("db"),
         options = {
+            where: {
 
+            }
         };
+
+    if (req.query.orderby)
+        options.order = JSON.parse(req.query.orderby)
 
     if (req.query.where) {
         var where = req.query.where;
@@ -30,9 +28,9 @@ router.get('/total', function (req, res) {
 
     options.attributes = [[db.fn('count', db.col('id')), 'total']]
 
-    var journals = global.model['journals'];
+    var custom_values = global.model['custom_values'];
 
-    journals.findAll(options).then(data => {
+    custom_values.findAll(options).then(data => {
         res.status(200);
         res.jsonp(data);
     }).catch(function (error) {
@@ -42,13 +40,21 @@ router.get('/total', function (req, res) {
             stackError: error.stack
         });
     });
-});
+})
 
 router.get('/list/:limit?/:offset?', function (req, res) {
     var db = req.app.get("db"),
         options = {
+            where: {
 
+            },
+            attributes: {
+
+            }
         };
+
+    if (req.query.orderby)
+        options.order = JSON.parse(req.query.orderby)
 
     if (req.query.where) {
         var where = req.query.where;
@@ -57,15 +63,10 @@ router.get('/list/:limit?/:offset?', function (req, res) {
         }
     }
 
-    if (req.query.attribute) {
-        var attribute = req.query.attribute;
-        options.attributes = {
-            include: req.query.attribute.main
-        }
+    if (req.query.groupby) {
+        options.attributes.include = [[db.fn('count', db.col('id')), 'count']]
+        options.group = JSON.parse(req.query.groupby)
     }
-
-    delete options.where.callback;
-    delete options.where._;
 
     if (!req.params.limit) {
 
@@ -79,25 +80,25 @@ router.get('/list/:limit?/:offset?', function (req, res) {
         options.offset = parseInt(req.params.offset)
     }
 
-    var users = global.model['users'],
-        journals = global.model['journals'],
-        journal_details = global.model['journal_details'],
-        custom_fields = global.model['custom_fields'];
+    if (options.where) {
+        delete options.where.callback;
+        delete options.where._;
+    }
 
-    options.include = [{
-        model: users,
-        attributes: ['id', [db.fn('CONCAT', db.col("user.firstname"), " ", db.col("user.lastname")), "fullname"]]
-    }, {
-        model: journal_details,
-        include: [{
-            model: custom_fields/*,
-            attributes: ['id', 'name', 'field_format', 'possible_values']*/
-        }]
-    }]
+    var custom_values = global.model['custom_values'];
 
-    journals.findAll(options).then(data => {
+    custom_values.findAll(options).then(data => {
         res.status(200);
-        res.jsonp(data);
+        if(req.query.search){
+            var ret = jsonQuery('dataValues'+req.query.search, {
+                data: data
+            })
+            if(req.query.saveToGLobal)
+                global.save[req.query.saveToGLobal] = ret.value
+            res.jsonp(ret.value);
+        }
+        else
+            res.jsonp(data);
     }).catch(function (error) {
         res.status(500);
         res.jsonp({
@@ -105,10 +106,10 @@ router.get('/list/:limit?/:offset?', function (req, res) {
             stackError: error.stack
         });
     });
-});
+})
 
-global.notoken.push('/api/journal/total')
-global.notoken.push(/\/api\/\journal\/\list/ig)
-global.notoken.push(/\/api\/\journal\/\list\/\w*/ig)
+global.notoken.push('/api/custom_value/total')
+global.notoken.push('/api/custom_value/list')
+global.notoken.push(/\/api\/custom_value\/list\/\w*/ig)
 
 module.exports = router;

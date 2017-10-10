@@ -540,7 +540,7 @@
                 case 'issue':
                     return "<a href='<?php echo base_url() ?>issues/" + data[0] + "' red-issue='" + data[2] + "'>" + data[1] + "</a>";
                 case 'project':
-                    return "<a href='<?php echo base_url() ?>project/" + data[0] + "'>" + data[1] + "</a>";
+                    return "<a href='<?php echo base_url() ?>projects/" + data[0] + "'>" + data[1] + "</a>";
             }
         }
 
