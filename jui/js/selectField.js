@@ -126,7 +126,7 @@
         }*/
 
     proto.generateData = function (data) {
-        el.items.html(jui2.tmpl['selectItem']({
+        this.items.html(jui2.tmpl['selectItem']({
             rows: data
         }))
     }
