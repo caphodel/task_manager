@@ -129,6 +129,7 @@
         this.items.html(jui2.tmpl['selectItem']({
             rows: data
         }))
+        $(this).triggerHandler('itemsafterdraw');
     }
 
     proto.attachedCallback = function () {
@@ -166,9 +167,7 @@
     jui2.attrChange['j-selectfield_src-array'] = function (el, oldVal, newVal) {
         if (newVal != null) {
             var data = eval(newVal);
-            el.items.html(jui2.tmpl['selectItem']({
-                rows: data
-            }))
+            el.generateData(data)
         }
         /* else {
 
