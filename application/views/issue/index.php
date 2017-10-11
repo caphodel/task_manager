@@ -21,7 +21,7 @@
         var where = {
                 where: {
                     main: {
-                        "$status.is_closed$": 0
+
                     }
                 },
                 operator: param.operator || {}
@@ -35,6 +35,11 @@
                 groupby: '["customized_id"]',
                 operator: param.operator || {},
                 search: 0
+            }
+
+        if(param.status_id==undefined)
+            where.where.main = {
+                "$status.is_closed$": 0
             }
 
         cf = cf | false;
@@ -155,6 +160,9 @@
 </script>
 
 <div class="red-content-container">
+
+    <?php $this->view('issue/filter');?>
+
     <j-panel>
         <div class="j-header">
             Issues

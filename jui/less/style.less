@@ -57,6 +57,7 @@ j-table {
 }
 
 j-table > .j-table {
+    -js-display: flex;
     display: flex;
     flex-direction: column;
     color: @textColorPrimary;
@@ -192,6 +193,7 @@ j-table > .j-table {
 .j-pop > div:not(.j-menu-separator) {
     cursor: pointer;
     padding: 8px 0;
+    -js-display: flex;
     display: flex;
 }
 
@@ -230,6 +232,7 @@ j-table > .j-table {
 
 .j-header {
     padding: 14px 20px;
+    -js-display: flex;
     display: flex;
 }
 
@@ -259,6 +262,7 @@ j-spacer {
 
 j-toolbar {
     padding: 4px 5px;
+    -js-display: flex;
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
@@ -318,18 +322,19 @@ j-toolbar > * {
 
 /* j-textfield */
 
-j-textfield {
+j-textfield, j-selectfield {
     padding: 3px 8px;
     align-items: center;
+    -js-display: flex;
     display: flex;
 }
 
-j-textfield label {
+j-textfield label, j-selectfield label {
     width: 120px;
     font-weight: 700;
 }
 
-j-textfield input {
+j-textfield input, j-selectfield > .j-input-field {
     border-radius: 3px;
     border: 1px solid @colorPrimaryDarker;
     /*padding: 12px 10px;*/
@@ -337,11 +342,31 @@ j-textfield input {
     box-shadow: inset 0 1px 2px rgba(27, 31, 35, 0.075);
 }
 
-j-textfield input:focus {
+j-textfield input:focus, j-selectfield > .j-input-field:focus, j-selectfield > .j-input-field:active {
     border-color: /*#4697e4*/
     @colorSecondary;
     outline: none;
     box-shadow: inset 0 1px 2px rgba(27, 31, 35, 0.075), 0 0 0 0.2em rgba(3, 102, 214, 0.3);
+}
+
+j-selectfield > .j-input-field{
+    cursor: pointer;
+    width: 159px;
+    height: 24px;
+}
+
+.j-select-items{
+    min-width: 159px;
+    max-height: 320px;
+    overflow-y: auto;
+}
+
+j-selectfield > .j-input-field > input{
+    border: 0px;
+}
+
+j-selectfield > .j-select-items{
+    display: none;
 }
 
 j-tag {

@@ -204,6 +204,34 @@ this["jui2"]["tmpl"]["scroll"] = Handlebars.template({"compiler":[6,">= 2.0.0-be
     return "<div style=\"width:100%; display:block;\">\r\n	<div style=\"display: block; height: 0px;\">&nbsp;</div>\r\n</div>";
 },"useData":true});
 
+this["jui2"]["tmpl"]["selectField"] = Handlebars.template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
+    var stack1, helper, alias1=helpers.helperMissing, alias2="function";
+
+  return "<label class=\"j-label\">"
+    + ((stack1 = ((helper = (helper = helpers.label || (depth0 != null ? depth0.label : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"label","hash":{},"data":data}) : helper))) != null ? stack1 : "")
+    + "</label>\r\n<div class=\"j-border1 j-input-field j-transition1 j-focus-highlight1\" type=\""
+    + this.escapeExpression(((helper = (helper = helpers.type || (depth0 != null ? depth0.type : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"type","hash":{},"data":data}) : helper)))
+    + "\">\r\n    <!--input></input-->\r\n</div>\r\n<div class=\"j-select-items j-pop\">\r\n</div>\r\n";
+},"useData":true});
+
+this["jui2"]["tmpl"]["selectItem"] = Handlebars.template({"1":function(depth0,helpers,partials,data) {
+    var stack1, alias1=this.lambda, alias2=this.escapeExpression;
+
+  return "<div data-value=\""
+    + alias2(alias1((depth0 != null ? depth0['0'] : depth0), depth0))
+    + "\">\r\n    <i class=\"fa "
+    + alias2(alias1((depth0 != null ? depth0['2'] : depth0), depth0))
+    + "\" style=\"width: 32px; text-align: center;\"></i><div>"
+    + ((stack1 = alias1((depth0 != null ? depth0['1'] : depth0), depth0)) != null ? stack1 : "")
+    + "</div><i class=\"fa "
+    + alias2(alias1((depth0 != null ? depth0['3'] : depth0), depth0))
+    + "\" style=\"width: 32px; text-align: center;\"></i>\r\n</div>\r\n";
+},"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
+    var stack1;
+
+  return ((stack1 = helpers.each.call(depth0,(depth0 != null ? depth0.rows : depth0),{"name":"each","hash":{},"fn":this.program(1, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "");
+},"useData":true});
+
 this["jui2"]["tmpl"]["tableBase"] = Handlebars.template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
     return "<div class=\"j-table\">\r\n	<div class=\"j-table-head\">\r\n	</div>\r\n	<div class=\"j-table-body\">\r\n	</div>\r\n	<div class=\"j-table-head-pop j-pop j-ui\">\r\n		<div class=\"j-table-sort-asc\">\r\n			<i class=\"fa fa-long-arrow-up\" style=\"width: 48px; text-align: center;\"></i>\r\n			<div>Sort Ascending</div>\r\n			<i class=\"fa\" style=\"width: 48px; text-align: center;\"></i>\r\n		</div>\r\n		<div class=\"j-table-sort-desc\">\r\n			<i class=\"fa fa-long-arrow-down\" style=\"width: 48px; text-align: center;\"></i>\r\n			<div>Sort Descending</div>\r\n			<i class=\"fa\" style=\"width: 48px; text-align: center;\"></i>\r\n		</div>\r\n		<div class=\"j-menu-separator\">\r\n		</div>\r\n		<!--div>\r\n			<i class=\"fa fa-ellipsis-h\" style=\"width: 48px; text-align: center;\"></i>\r\n			<div>Columns</div>\r\n			<i class=\"fa fa-angle-right\" style=\"width: 48px; text-align: center;\"></i>\r\n\r\n			<div class=\"j-pop-children j-pop j-ui\">\r\n				<div>\r\n					<i class=\"fa\" style=\"width: 48px; text-align: center;\"></i>\r\n					<div>Project Number</div>\r\n					<i class=\"fa\" style=\"width: 48px; text-align: center;\"></i>\r\n				</div>\r\n				<div>\r\n					<i class=\"fa\" style=\"width: 48px; text-align: center;\"></i>\r\n					<div>Name</div>\r\n					<i class=\"fa\" style=\"width: 48px; text-align: center;\"></i>\r\n				</div>\r\n				<div>\r\n					<i class=\"fa\" style=\"width: 48px; text-align: center;\"></i>\r\n					<div>Description</div>\r\n					<i class=\"fa\" style=\"width: 48px; text-align: center;\"></i>\r\n				</div>\r\n			</div>\r\n		</div-->\r\n	</div>\r\n</div>\r\n";
 },"useData":true});

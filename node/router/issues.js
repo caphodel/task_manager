@@ -40,6 +40,26 @@ router.get('/total', function (req, res) {
         }
     }
 
+    if (req.query.operator) {
+        for (var prop in req.query.operator) {
+            if (req.query.operator.hasOwnProperty(prop)) {
+                var operator = req.query.operator[prop]
+                switch (operator) {
+                    case '!':
+                        if(typeof options.where[prop] == 'object')
+                            options.where[prop] = {
+                                $notIn: options.where[prop]
+                            }
+                        else
+                            options.where[prop] = {
+                                $ne: options.where[prop]
+                            }
+                        break;
+                }
+            }
+        }
+    }
+
     delete options.where.callback;
     delete options.where._;
 
@@ -138,7 +158,6 @@ router.get('/list/:limit?/:offset?', function (req, res) {
                         options.where[prop] = {
                             $notIn: options.where[prop]
                         }
-                        console.log(options)
                         break;
                 }
             }

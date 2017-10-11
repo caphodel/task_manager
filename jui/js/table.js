@@ -148,8 +148,6 @@
 
         $self.triggerHandler('j-table.beforedraw');
 
-        console.log('aaaaaa')
-
         $body.empty().append(jui2.tmpl['tableItems']({
             rows: this.generatedData,
             width: self.jui2.cellWidth
