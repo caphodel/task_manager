@@ -1799,6 +1799,7 @@ jui2.method = {
             self.items.hide();
             $self.attr('data-value', $el.attr('data-value'))
             $self.children('.j-input-field').html($el.children().eq(1).html())
+            $(self).triggerHandler('select')
         })
 
         self.jui_popper = new Popper($self.children('.j-input-field'), self.items[0], {

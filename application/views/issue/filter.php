@@ -49,3 +49,9 @@
     </div>
 </div>
 <br/>
+<script>
+    $('#red-issue-status').on('select', function() {
+        console.log($(this).val())
+    })
+
+</script>
