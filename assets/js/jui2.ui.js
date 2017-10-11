@@ -1794,7 +1794,7 @@ jui2.method = {
 
         self.items.appendTo('body')
 
-        self.items.on('click', '> div', function(){
+        self.items.on('click', '> div', function () {
             var $el = $(this)
             self.items.hide();
             $self.attr('data-value', $el.attr('data-value'))
@@ -1811,7 +1811,7 @@ jui2.method = {
         })
 
         $('body').click(function (e) {
-            if($(e.target).parents('.j-pop').length==0 && $(e.target).closest('#'+self.juiid).length == 0){
+            if ($(e.target).parents('.j-pop').length == 0 && $(e.target).closest('#' + self.juiid).length == 0) {
                 self.items.hide()
             }
         })
@@ -1838,7 +1838,7 @@ jui2.method = {
             },
             set: function (value) {
                 $(this).attr('data-value', value);
-                var text = this.items.children('[data-value="'+value+'"]').html() || ''
+                var text = this.items.children('[data-value="' + value + '"]').html() || ''
                 $(this).children('.j-input-field').html(text)
                 return value;
             }
@@ -1849,30 +1849,37 @@ jui2.method = {
         }
 
     };
+    /*
 
-    proto.addAutocompleteList = function (txt) {
-        var $el = $(this)
-        if (!localStorage.getItem('jui2list' + $(this).attr('id'))) localStorage.setItem('jui2list' + $(this).attr('id'), JSON.stringify([]));
-        var db = JSON.parse(localStorage.getItem("jui2list" + $(this).attr('id'))),
-            add = true;
-        $.each(db, function (i, val) {
-            if (val == txt)
-                add = false
-        })
-        if (add) {
-            db.push(txt);
-            $('#jui2list' + $el.attr('id')).remove();
-            $('<datalist id="jui2list' + $el.attr('id') + '">').appendTo('body')
+        proto.addAutocompleteList = function (txt) {
+            var $el = $(this)
+            if (!localStorage.getItem('jui2list' + $(this).attr('id'))) localStorage.setItem('jui2list' + $(this).attr('id'), JSON.stringify([]));
+            var db = JSON.parse(localStorage.getItem("jui2list" + $(this).attr('id'))),
+                add = true;
             $.each(db, function (i, val) {
-                if ($el.attr('autocompletefilter') != undefined) {
-                    if (val[1] == $el.attr('autocompletefilter'))
-                        $('#jui2list' + $el.attr('id')).append('<option value="' + val[0] + '">')
-                } else {
-                    $('#jui2list' + $el.attr('id')).append('<option value="' + val + '">')
-                }
+                if (val == txt)
+                    add = false
             })
-            localStorage.setItem('jui2list' + $(this).attr('id'), JSON.stringify(db));
-        }
+            if (add) {
+                db.push(txt);
+                $('#jui2list' + $el.attr('id')).remove();
+                $('<datalist id="jui2list' + $el.attr('id') + '">').appendTo('body')
+                $.each(db, function (i, val) {
+                    if ($el.attr('autocompletefilter') != undefined) {
+                        if (val[1] == $el.attr('autocompletefilter'))
+                            $('#jui2list' + $el.attr('id')).append('<option value="' + val[0] + '">')
+                    } else {
+                        $('#jui2list' + $el.attr('id')).append('<option value="' + val + '">')
+                    }
+                })
+                localStorage.setItem('jui2list' + $(this).attr('id'), JSON.stringify(db));
+            }
+        }*/
+
+    proto.generateData = function (data) {
+        el.items.html(jui2.tmpl['selectItem']({
+            rows: data
+        }))
     }
 
     proto.attachedCallback = function () {
@@ -1887,7 +1894,7 @@ jui2.method = {
         $(this).triggerHandler('afterdraw')
     }
 
-    proto.detachedCallback = function(){
+    proto.detachedCallback = function () {
         $(this.items).remove()
     }
 
@@ -1913,6 +1920,15 @@ jui2.method = {
             el.items.html(jui2.tmpl['selectItem']({
                 rows: data
             }))
+        }
+        /* else {
+
+                }*/
+    }
+
+    jui2.attrChange['j-selectfield_src-fn'] = function (el, oldVal, newVal) {
+        if (newVal != null) {
+            eval(newVal).call()
         }
         /* else {
 
