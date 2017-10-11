@@ -30,6 +30,34 @@
             ['!*', 'none']
         ];
 
+    var red_issue_filter = {
+        where: {
+            main: {
+                "$status.is_closed$": 0
+            }
+        }
+    }
+
+    red_status_list_value = function() {
+        $.ajax({
+            url: window.location.origin + ':8080/api/status/list',
+            type: 'GET',
+            dataType: 'jsonp',
+            success: function(data) {
+                var list = []
+                for(var i = 0; i < data.length ; i++){
+                    list.push([data[i].id, data[i].name])
+                }
+                $('#red-issue-status-value')[0].generateData(list);
+                $('#red-issue-status-value').val(list[0][0])
+            },
+            error: function() {},
+            beforeSend: function setHeader(xhr) {
+                xhr.setRequestHeader('x-access-token', Cookies.get('token'));
+            }
+        })
+    }
+
 </script>
 <div class="red-issue-filter red-card">
     <j-toolbar><span>Filter</span></j-toolbar>
@@ -40,6 +68,7 @@
                     <j-selectfield id="red-issue-status" src-array="red_status_list">Status</j-selectfield>
                 </td>
                 <td>
+                    <j-selectfield id="red-issue-status-value" style="display: none;" src-fn="red_status_list_value">Status</j-selectfield>
                 </td>
                 <td>
                     <j-selectfield id="red-add-filter" src-array="red_filter_list">Add filter</j-selectfield>
@@ -51,7 +80,21 @@
 <br/>
 <script>
     $('#red-issue-status').on('select', function() {
-        console.log($(this).val())
+        var value = $(this).val();
+        switch (value) {
+            case 'o':
+                red_issue_filter.where.main['$status.is_closed$'] = 0;
+                delete red_issue_filter.where.main.status_id;
+                $('#red-issue-status-value').hide()
+                break;
+            case '=':
+                red_issue_filter.where.main.status_id = $('#red-issue-status-value').val();
+                delete red_issue_filter.where.main['$status.is_closed$'];
+                $('#red-issue-status-value').show()
+                break;
+        }
+    }).on('afterdraw', function(){
+        $('#red-issue-status').val(red_status_list[0][0])
     })
 
 </script>

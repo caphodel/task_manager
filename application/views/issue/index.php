@@ -39,7 +39,7 @@
 
         if(param.status_id==undefined)
             where.where.main = {
-                "$status.is_closed$": 0
+
             }
 
         cf = cf | false;
@@ -116,7 +116,7 @@
             fromGlobal: {}
         }
 
-        dataOptions = $.extend(true, {}, options, red_issue_query_generator(), where)
+        dataOptions = $.extend(true, {}, options, red_issue_query_generator(), where, red_issue_filter)
 
         $.ajax({
             url: window.location.origin + ':8080/api/issue/total',
