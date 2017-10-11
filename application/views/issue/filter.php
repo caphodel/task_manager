@@ -15,7 +15,7 @@
         red_status_list = [
             ['o', 'open'],
             ['=', 'is'],
-            ['=', 'is not'],
+            ['!', 'is not'],
             ['c', 'closed'],
             ['*', 'all']
         ],
@@ -91,6 +91,21 @@
                 red_issue_filter.where.main.status_id = $('#red-issue-status-value').val();
                 delete red_issue_filter.where.main['$status.is_closed$'];
                 $('#red-issue-status-value').show()
+                break;
+            case '!':
+                red_issue_filter.where.main.status_id = $('#red-issue-status-value').val();
+                delete red_issue_filter.where.main['$status.is_closed$'];
+                $('#red-issue-status-value').show()
+                break;
+            case 'c':
+                red_issue_filter.where.main['$status.is_closed$'] = 1;
+                delete red_issue_filter.where.main.status_id;
+                $('#red-issue-status-value').hide()
+                break;
+            case '*':
+                delete red_issue_filter.where.main['$status.is_closed$'];
+                delete red_issue_filter.where.main.status_id;
+                $('#red-issue-status-value').hide()
                 break;
         }
     }).on('afterdraw', function(){
