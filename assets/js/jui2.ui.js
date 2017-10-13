@@ -263,6 +263,38 @@ function mousePositionElement(e, target) {
 		})
 	}
 
+    var $_val = $.fn.val;
+    $.fn.val = function(value){
+        var $self = $(this),
+            self = this;
+        if(value!=undefined){
+            $self.each(function(i, val){
+                if(val.tagName.match(/j-/i) != null){
+                    if(typeof val.val == 'function'){
+                        val.val(value);
+                    }
+                    else{
+                        val.deferredSelect = value;
+                    }
+                }
+                else{
+                    $_val.apply(self, arguments);
+                }
+            })
+        }
+
+        if($self[0].tagName.match(/j-/i) != null){
+            if(typeof $self[0].val == 'function'){
+                return self[0].val();
+            }
+            else
+                return $self[0].deferredSelect;
+        }
+        else{
+            return $_val.apply(self, arguments);
+        }
+    }
+
 	$.fn.offsetRelative = function(top){
 		var $this = $(this);
 		var $parent = $this.offsetParent();
@@ -1644,7 +1676,7 @@ jui2.method = {
             type: type
         });
 
-        $self.children().eq(0).click(function () {
+        $self.addClass('j-ui-flex').children().eq(0).click(function () {
             $(this).next().focus();
         })
 
@@ -1667,7 +1699,7 @@ jui2.method = {
          * $('#myWidget').val('myValue') // will set widget's value to 'myValue'
          */
 
-        Object.defineProperty(this.__proto__, 'value', {
+        /*Object.defineProperty(this.__proto__, 'value', {
             configurable: true,
             get: function () {
                 if ($(this).children('input')[0])
@@ -1680,13 +1712,26 @@ jui2.method = {
                     $(this).children('input')[0].value = value;
                 return $(this).children('input')[0].value
             }
-        });
+        });*/
 
         if (self.setup) {
             self.setup();
         }
 
     };
+
+    proto.val = function (value) {
+        if (value) {
+            if ($(this).children('input')[0])
+                $(this).children('input')[0].value = value;
+            return $(this).children('input')[0].value
+        } else {
+            if ($(this).children('input')[0])
+                return $(this).children('input')[0].value;
+            else
+                return '';
+        }
+    }
 
     proto.addAutocompleteList = function (txt) {
         var $el = $(this)
@@ -1723,6 +1768,9 @@ jui2.method = {
                 jui2.attrChange[attrName](this, false, newVal);
         }
         $(this).triggerHandler('afterdraw')
+        if(this.deferredValue){
+            $(this).children('input')[0].value = value
+        }
     }
 
     proto.attributeChangedCallback = function (attrName, oldVal, newVal) {
@@ -1735,9 +1783,10 @@ jui2.method = {
     jui2.attrChange['j-textfield_no-label'] = function (el, oldVal, newVal) {
         if (newVal != null) {
             $(el).children('label').remove()
-        }/* else {
+        }
+        /* else {
 
-        }*/
+                }*/
     }
 
     jui2.ui.textField = {
@@ -1782,7 +1831,7 @@ jui2.method = {
             type: type
         });
 
-        $self.children().eq(0).click(function () {
+        $self.addClass('j-ui-flex').children().eq(0).click(function () {
             $(this).next().focus();
         })
 
@@ -1803,7 +1852,12 @@ jui2.method = {
         })
 
         self.jui_popper = new Popper($self.children('.j-input-field'), self.items[0], {
-            placement: 'bottom-start'
+            placement: 'bottom-start',
+            modifiers: {
+                flip: {
+                    enabled: false
+                }
+            }
         })
 
         $self.on('click', function () {
@@ -1831,8 +1885,7 @@ jui2.method = {
          * $('#myWidget').val('myValue') // will set widget's value to 'myValue'
          */
 
-        Object.defineProperty(this.__proto__, 'value', {
-            configurable: true,
+        /*Object.defineProperty(this.__proto__, 'value', {
             get: function () {
                 return $(this).attr('data-value') || '';
             },
@@ -1840,15 +1893,34 @@ jui2.method = {
                 $(this).attr('data-value', value);
                 var text = this.items.children('[data-value="' + value + '"]').html() || ''
                 $(this).children('.j-input-field').html(text)
+                $(this).triggerHandler('select')
                 return value;
             }
-        });
+        });*/
 
         if (self.setup) {
             self.setup();
         }
 
     };
+
+    proto.val = function (value) {
+        if (value) {
+            $(this).attr('data-value', value);
+            if (this.items.children().length == 0) {
+                this.deferredSelect = value;
+                return value;
+            } else {
+                var text = this.items.children('[data-value="' + value + '"]').html() || '';
+                $(this).children('.j-input-field').html(text)
+                $(this).triggerHandler('select')
+                return $(this).attr('data-value');
+            }
+        } else {
+            return $(this).attr('data-value') || '';
+        }
+    }
+
     /*
 
         proto.addAutocompleteList = function (txt) {
@@ -1880,7 +1952,16 @@ jui2.method = {
         this.items.html(jui2.tmpl['selectItem']({
             rows: data
         }))
+
         $(this).triggerHandler('itemsafterdraw');
+
+        if (this.deferredSelect) {
+            var text = this.items.children('[data-value="' + this.deferredSelect + '"]').html() || '';
+            $(this).attr('data-value', this.deferredSelect);
+            $(this).children('.j-input-field').html(text);
+            $(this).triggerHandler('select');
+            delete this.deferredSelect;
+        }
     }
 
     proto.attachedCallback = function () {

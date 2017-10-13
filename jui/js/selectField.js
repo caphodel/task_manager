@@ -31,7 +31,7 @@
             type: type
         });
 
-        $self.children().eq(0).click(function () {
+        $self.addClass('j-ui-flex').children().eq(0).click(function () {
             $(this).next().focus();
         })
 
@@ -52,7 +52,12 @@
         })
 
         self.jui_popper = new Popper($self.children('.j-input-field'), self.items[0], {
-            placement: 'bottom-start'
+            placement: 'bottom-start',
+            modifiers: {
+                flip: {
+                    enabled: false
+                }
+            }
         })
 
         $self.on('click', function () {
@@ -80,8 +85,7 @@
          * $('#myWidget').val('myValue') // will set widget's value to 'myValue'
          */
 
-        Object.defineProperty(this.__proto__, 'value', {
-            configurable: true,
+        /*Object.defineProperty(this.__proto__, 'value', {
             get: function () {
                 return $(this).attr('data-value') || '';
             },
@@ -89,15 +93,34 @@
                 $(this).attr('data-value', value);
                 var text = this.items.children('[data-value="' + value + '"]').html() || ''
                 $(this).children('.j-input-field').html(text)
+                $(this).triggerHandler('select')
                 return value;
             }
-        });
+        });*/
 
         if (self.setup) {
             self.setup();
         }
 
     };
+
+    proto.val = function (value) {
+        if (value) {
+            $(this).attr('data-value', value);
+            if (this.items.children().length == 0) {
+                this.deferredSelect = value;
+                return value;
+            } else {
+                var text = this.items.children('[data-value="' + value + '"]').html() || '';
+                $(this).children('.j-input-field').html(text)
+                $(this).triggerHandler('select')
+                return $(this).attr('data-value');
+            }
+        } else {
+            return $(this).attr('data-value') || '';
+        }
+    }
+
     /*
 
         proto.addAutocompleteList = function (txt) {
@@ -129,7 +152,16 @@
         this.items.html(jui2.tmpl['selectItem']({
             rows: data
         }))
+
         $(this).triggerHandler('itemsafterdraw');
+
+        if (this.deferredSelect) {
+            var text = this.items.children('[data-value="' + this.deferredSelect + '"]').html() || '';
+            $(this).attr('data-value', this.deferredSelect);
+            $(this).children('.j-input-field').html(text);
+            $(this).triggerHandler('select');
+            delete this.deferredSelect;
+        }
     }
 
     proto.attachedCallback = function () {

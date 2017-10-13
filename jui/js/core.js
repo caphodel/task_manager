@@ -262,6 +262,38 @@ function mousePositionElement(e, target) {
 		})
 	}
 
+    var $_val = $.fn.val;
+    $.fn.val = function(value){
+        var $self = $(this),
+            self = this;
+        if(value!=undefined){
+            $self.each(function(i, val){
+                if(val.tagName.match(/j-/i) != null){
+                    if(typeof val.val == 'function'){
+                        val.val(value);
+                    }
+                    else{
+                        val.deferredSelect = value;
+                    }
+                }
+                else{
+                    $_val.apply(self, arguments);
+                }
+            })
+        }
+
+        if($self[0].tagName.match(/j-/i) != null){
+            if(typeof $self[0].val == 'function'){
+                return self[0].val();
+            }
+            else
+                return $self[0].deferredSelect;
+        }
+        else{
+            return $_val.apply(self, arguments);
+        }
+    }
+
 	$.fn.offsetRelative = function(top){
 		var $this = $(this);
 		var $parent = $this.offsetParent();

@@ -31,7 +31,7 @@
             type: type
         });
 
-        $self.children().eq(0).click(function () {
+        $self.addClass('j-ui-flex').children().eq(0).click(function () {
             $(this).next().focus();
         })
 
@@ -54,7 +54,7 @@
          * $('#myWidget').val('myValue') // will set widget's value to 'myValue'
          */
 
-        Object.defineProperty(this.__proto__, 'value', {
+        /*Object.defineProperty(this.__proto__, 'value', {
             configurable: true,
             get: function () {
                 if ($(this).children('input')[0])
@@ -67,13 +67,26 @@
                     $(this).children('input')[0].value = value;
                 return $(this).children('input')[0].value
             }
-        });
+        });*/
 
         if (self.setup) {
             self.setup();
         }
 
     };
+
+    proto.val = function (value) {
+        if (value) {
+            if ($(this).children('input')[0])
+                $(this).children('input')[0].value = value;
+            return $(this).children('input')[0].value
+        } else {
+            if ($(this).children('input')[0])
+                return $(this).children('input')[0].value;
+            else
+                return '';
+        }
+    }
 
     proto.addAutocompleteList = function (txt) {
         var $el = $(this)
@@ -110,6 +123,9 @@
                 jui2.attrChange[attrName](this, false, newVal);
         }
         $(this).triggerHandler('afterdraw')
+        if(this.deferredValue){
+            $(this).children('input')[0].value = value
+        }
     }
 
     proto.attributeChangedCallback = function (attrName, oldVal, newVal) {
@@ -122,9 +138,10 @@
     jui2.attrChange['j-textfield_no-label'] = function (el, oldVal, newVal) {
         if (newVal != null) {
             $(el).children('label').remove()
-        }/* else {
+        }
+        /* else {
 
-        }*/
+                }*/
     }
 
     jui2.ui.textField = {

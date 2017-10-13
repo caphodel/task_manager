@@ -4,69 +4,78 @@
 </div>
 
 <script>
+    var red_issue_where = null
+
     function red_issue_query_generator(cf) {
         var search = location.search.substring(1);
-        var param = JSON.parse('{"' + decodeURI(search).replace(/"/g, '\\"').replace(/&/g, '","').replace(/=/g, '":"') + '"}')
-        for (var i in param) {
-            if (param.hasOwnProperty(i)) {
-                data = i.match(/(\[.*?\])/g)
-                if (data != null) {
-                    param.operator = {}
-                    param.operator[data[0].replace(/\[|\]/g, '')] = param[i]
-                    delete param[i]
+        if (search == "")
+            return {
+                where: {}
+            }
+        else {
+            var param = JSON.parse(decodeURIComponent('{"' + decodeURI(search).replace(/"/g, '\\"').replace(/&/g, '","').replace(/=/g, '":"') + '"}'))
+            for (var i in param) {
+                if (param.hasOwnProperty(i)) {
+                    data = i.match(/(\[.*?\])/g)
+                    if (data != null) {
+                        param.operator = {}
+                        param.operator[data[0].replace(/\[|\]/g, '')] = param[i]
+                        delete param[i]
+                    }
                 }
             }
+
+            var where = {
+                    where: {
+                        main: {
+
+                        }
+                    },
+                    operator: param.operator || {}
+                },
+                custom_values = {
+                    where: {
+                        main: {
+                            customized_type: 'Issue'
+                        }
+                    },
+                    groupby: '["customized_id"]',
+                    operator: param.operator || {},
+                    search: 0
+                }
+
+            if (param.status_id == undefined)
+                where.where.main = {
+
+                }
+
+            cf = cf | false;
+
+            $.each(param, function(i, val) {
+                if (['tracker_id', 'status_id', 'priority_id', 'assigned_to_id'].indexOf(i) > -1) {
+                    where['where']['main'][i] = JSON.parse(val)
+                } else if (i.match('cf_') != null) {
+                    if (custom_values.where['main']['custom_field_id'] == undefined) {
+                        custom_values.where['main']['custom_field_id'] = []
+                        custom_values.where['main']['value'] = []
+                    }
+                    custom_values.where['main']['custom_field_id'].push(i.split('cf_')[1])
+                    custom_values.where['main']['value'].push(val);
+                    custom_values.search++;
+                }
+            })
+
+            if (cf) {
+                return custom_values
+            } else
+                return where;
         }
-
-        var where = {
-                where: {
-                    main: {
-
-                    }
-                },
-                operator: param.operator || {}
-            },
-            custom_values = {
-                where: {
-                    main: {
-                        customized_type: 'Issue'
-                    }
-                },
-                groupby: '["customized_id"]',
-                operator: param.operator || {},
-                search: 0
-            }
-
-        if(param.status_id==undefined)
-            where.where.main = {
-
-            }
-
-        cf = cf | false;
-
-        $.each(param, function(i, val) {
-            if (['tracker_id', 'status_id', 'priority_id', 'assigned_to_id'].indexOf(i) > -1) {
-                where['where']['main'][i] = JSON.parse(val)
-            } else if (i.match('cf_') != null) {
-                if (custom_values.where['main']['custom_field_id'] == undefined) {
-                    custom_values.where['main']['custom_field_id'] = []
-                    custom_values.where['main']['value'] = []
-                }
-                custom_values.where['main']['custom_field_id'].push(i.split('cf_')[1])
-                custom_values.where['main']['value'].push(val);
-                custom_values.search++;
-            }
-        })
-
-        if (cf) {
-            return custom_values
-        } else
-            return where;
-
     }
 
-    function red_get_issue_cf() {
-        var options = red_issue_query_generator(true)
+    var red_issue_cf_options = red_issue_query_generator(true);
+
+    function red_get_issue_cf(callback) {
+        var options = red_issue_cf_options;
         if (options.search > 0) {
             options.search = '[*count=' + options.search + '].customized_id';
             options.saveToGLobal = jui2.random(20, '#aA')
@@ -76,16 +85,19 @@
                 dataType: 'jsonp',
                 data: options,
                 success: function(data) {
-                    red_issue({
+                    red_issue_where = {
                         where: {
                             main: {
 
                             }
                         },
                         fromGlobal: {
-                            id: options.saveToGLobal
+                            '$issues.id$': options.saveToGLobal
                         }
-                    })
+                    }
+                    if (callback) {
+                        callback();
+                    }
                 },
                 error: function() {},
                 beforeSend: function setHeader(xhr) {
@@ -97,10 +109,9 @@
         }
     }
 
-    function red_issue(where) {
-        where = where || {
-            where: {}
-        }
+    function red_issue() {
+        where = red_issue_where;
+
         var $el = $('#red-tbl-issue');
         $el[0].param.sEcho++;
         var echo = $el[0].param.sEcho;
@@ -116,7 +127,7 @@
             fromGlobal: {}
         }
 
-        dataOptions = $.extend(true, {}, options, red_issue_query_generator(), where, red_issue_filter)
+        dataOptions = $.extend(true, {}, options, red_issue_query_generator(), where, red_issue_filter, red_issue_form_to_url())
 
         $.ajax({
             url: window.location.origin + ':8080/api/issue/total',
@@ -157,6 +168,15 @@
         return data;
     }
 
+    if (location.search.substring(1) != "") {
+        red_get_issue_cf(function() {
+            $('#red-tbl-issue').attr('src-fn', 'red_issue')
+        })
+    } else {
+        red_issue_where = {};
+        $('#red-tbl-issue').attr('src-fn', 'red_issue')
+    }
+
 </script>
 
 <div class="red-content-container">
@@ -167,7 +187,7 @@
         <div class="j-header">
             Issues
         </div>
-        <j-table id="red-tbl-issue" src-fn="red_get_issue_cf" paging="true" custom="red_issue_custom">
+        <j-table id="red-tbl-issue" paging="true" custom="red_issue_custom">
             [ ["#", "Tracker", "Status", "Priority", "Subject", "Assigned To", "Updated"] ]
         </j-table>
     </j-panel>

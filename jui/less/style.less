@@ -24,6 +24,21 @@
     background: @windowBackground;
 }
 
+.j-ui-flex {
+    webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    position: relative;
+    -js-display: inline-flex;
+    display: inline-flex;
+    vertical-align: top;
+    font-family: Verdana, sans-serif;
+    box-sizing: border-box;
+    font-size: 12px;
+    line-height: 18px;
+    background: @windowBackground;
+}
+
 /*.fa {
 	font:normal normal normal 14px/1 FontAwesome !important;
 }*/
@@ -322,19 +337,22 @@ j-toolbar > * {
 
 /* j-textfield */
 
-j-textfield, j-selectfield {
+j-textfield,
+j-selectfield {
     padding: 3px 8px;
     align-items: center;
     -js-display: flex;
     display: flex;
 }
 
-j-textfield label, j-selectfield label {
+j-textfield label,
+j-selectfield label {
     width: 120px;
     font-weight: 700;
 }
 
-j-textfield input, j-selectfield > .j-input-field {
+j-textfield input,
+j-selectfield > .j-input-field {
     border-radius: 3px;
     border: 1px solid @colorPrimaryDarker;
     /*padding: 12px 10px;*/
@@ -342,30 +360,34 @@ j-textfield input, j-selectfield > .j-input-field {
     box-shadow: inset 0 1px 2px rgba(27, 31, 35, 0.075);
 }
 
-j-textfield input:focus, j-selectfield > .j-input-field:focus, j-selectfield > .j-input-field:active {
+j-textfield input:focus,
+j-selectfield > .j-input-field:focus,
+j-selectfield > .j-input-field:active {
     border-color: /*#4697e4*/
     @colorSecondary;
     outline: none;
     box-shadow: inset 0 1px 2px rgba(27, 31, 35, 0.075), 0 0 0 0.2em rgba(3, 102, 214, 0.3);
 }
 
-j-selectfield > .j-input-field{
+j-selectfield > .j-input-field {
     cursor: pointer;
     width: 159px;
     height: 24px;
+    overflow: hidden;
+    white-space: nowrap;
 }
 
-.j-select-items{
+.j-select-items {
     min-width: 159px;
     max-height: 320px;
     overflow-y: auto;
 }
 
-j-selectfield > .j-input-field > input{
+j-selectfield > .j-input-field > input {
     border: 0px;
 }
 
-j-selectfield > .j-select-items{
+j-selectfield > .j-select-items {
     display: none;
 }
 

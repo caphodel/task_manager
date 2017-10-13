@@ -84,8 +84,17 @@ router.delete('/', function (req, res) {
 router.get('/list/:limit?/:offset?', function (req, res) {
     var db = req.app.get("db"),
         options = {
-            where: JSON.parse(JSON.stringify(req.query))
+            where: {
+
+            }
         };
+
+    if (req.query.where) {
+        var where = req.query.where;
+        if (where.main) {
+            options.where = where.main
+        }
+    }
 
     delete options.where.callback;
     delete options.where._;
@@ -102,14 +111,13 @@ router.get('/list/:limit?/:offset?', function (req, res) {
         options.offset = parseInt(req.params.offset)
     }
 
-    const users = db.import('../models/users');
+    var users = global.model['users'];
 
-    users.findAll({
-        where: options
-    }).then(data => {
-        for (var i = 0; i < data.length; i++) {
-            data[i] = valuesToArray(data[i])
-        }
+    options.attributes = {
+        include: [[db.fn('CONCAT', db.col("firstname"), " ", db.col("lastname")), "name"]]
+    }
+
+    users.findAll(options).then(data => {
         res.status(200);
         res.jsonp(data);
     }).catch(function (error) {
@@ -162,6 +170,8 @@ router.get('/:user_id?', function (req, res) {
         });
 });
 
+global.notoken.push('/api/user/list')
+global.notoken.push(/\/api\/user\/list\/\w*/ig)
 global.notoken.push(/\/api\/\user\/\w*/ig)
 
 module.exports = router;

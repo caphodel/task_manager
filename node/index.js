@@ -100,6 +100,12 @@ router.use('/custom_field', rCustomFields);
 var rCustomValues = require('./router/custom_values');
 router.use('/custom_value', rCustomValues);
 
+var rTrackers = require('./router/trackers');
+router.use('/tracker', rTrackers);
+
+var rEnumerations = require('./router/enumerations');
+router.use('/enumeration', rEnumerations);
+
 app.use('/api', router);
 
 app.use(function (err, req, res, next) {

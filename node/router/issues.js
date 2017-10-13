@@ -3,6 +3,7 @@ var
     md5 = require('md5'),
     router = express.Router(),
     bodyParser = require('body-parser'),
+    moment = require('moment'),
     sequelize = require("sequelize"),
     findValue = function (o, value) {
         for (var prop in o) {
@@ -16,8 +17,8 @@ var
 router.get('/total', function (req, res) {
     var db = req.app.get("db"),
         options = {
+            distinct: true,
             where: {
-
             }
         };
 
@@ -46,7 +47,7 @@ router.get('/total', function (req, res) {
                 var operator = req.query.operator[prop]
                 switch (operator) {
                     case '!':
-                        if(typeof options.where[prop] == 'object')
+                        if (typeof options.where[prop] == 'object')
                             options.where[prop] = {
                                 $notIn: options.where[prop]
                             }
@@ -55,10 +56,100 @@ router.get('/total', function (req, res) {
                                 $ne: options.where[prop]
                             }
                         break;
+                    case '=':
+                        if (typeof options.where[prop] == 'object')
+                            options.where[prop] = {
+                                $in: options.where[prop]
+                            }
+                        else
+                            options.where[prop] = {
+                                $eq: options.where[prop]
+                            }
+                        break;
+                    case '!*':
+                        options.where[prop] = {
+                            $in: [null, '']
+                        }
+                        break;
+                    case '*':
+                        delete options.where[prop];
+                        break;
+                    case '>=':
+                        options.where[prop] = {
+                            $gte: options.where[prop]
+                        };
+                        break;
+                    case '<=':
+                        options.where[prop] = {
+                            $lte: options.where[prop]
+                        };
+                        break;
+                    case '~':
+                        options.where[prop] = {
+                            $like: '%' + options.where[prop] + '%'
+                        };
+                        break;
+                    case '!~':
+                        options.where[prop] = {
+                            $notLike: '%' + options.where[prop] + '%'
+                        };
+                        break;
+                    case '=r':
+                        options.where[prop] = {
+                            $regexp: options.where[prop]
+                        };
+                        break;
+                    case '!r':
+                        options.where[prop] = {
+                            $notRegexp: options.where[prop]
+                        };
+                        break;
+                    case '>t-':
+                        options.where[prop] = {
+                            $gt: moment().subtract(options.where[prop], 'day').startOf('day').toDate()
+                        };
+                        break;
+                    case '<t-':
+                        options.where[prop] = {
+                            $lt: moment().subtract(options.where[prop], 'day').startOf('day').toDate()
+                        };
+                        break;
+                    case 't-':
+                        options.where[prop] = {
+                            $between: [moment().subtract(options.where[prop], 'day').startOf('day').toDate(), moment().subtract(options.where[prop], 'day').endOf('day').toDate()]
+                        };
+                        break;
+                    case 't':
+                        options.where[prop] = {
+                            $between: [moment().startOf('day').toDate(), moment().endOf('day').toDate()]
+                        };
+                        break;
+                    case 'w':
+                        options.where[prop] = {
+                            $between: [moment().startOf('week').toDate(), moment().endOf('week').toDate()]
+                        };
+                        break;
+                    case '>t+':
+                        options.where[prop] = {
+                            $gt: moment().add(options.where[prop], 'day').startOf('day').toDate()
+                        };
+                        break;
+                    case '<t+':
+                        options.where[prop] = {
+                            $between: [moment().startOf('day').toDate(), moment().add(options.where[prop], 'day').startOf('day').toDate()]
+                        };
+                        break;
+                    case 't+':
+                        options.where[prop] = {
+                            $between: [moment().add(options.where[prop], 'day').startOf('day').toDate(), moment().add(options.where[prop], 'day').endOf('day').toDate()]
+                        };
+                        break;
                 }
             }
         }
     }
+
+    //options.group = ['issues.id']
 
     delete options.where.callback;
     delete options.where._;
@@ -74,45 +165,66 @@ router.get('/total', function (req, res) {
         time_entries = global.model['time_entries'],
         issue_categories = global.model['issue_categories'];
 
-    options.attributes = [[sequelize.fn('count', sequelize.col('issues.id')), 'total']]
+    options.attributes = ['id' /*, [sequelize.fn('count', sequelize.col('issues.id')), 'total']*/ ]
 
     options.include = [{
         model: projects,
         required: false,
-        attributes: ["id", "identifier", "name"]
+        attributes: [],
+        where: {
+            'id': {
+                $not: null
+            }
+        }
     }, {
         model: trackers,
-        attributes: ["id", "name"]
+        attributes: []
     }, {
         model: issue_statuses,
         as: 'status',
-        where: req.query.where ? req.query.where.status ? req.query.where.status : [] : [],
-        attributes: ["id", "name", "is_closed"]
+        where: req.query.where ? req.query.where.status ? req.query.where.status : null : null,
+        attributes: []
     }, {
         model: users,
         as: 'assigned_to',
-        attributes: ["id", [db.fn('CONCAT', db.col("assigned_to.firstname"), " ", db.col("assigned_to.lastname")), "name"]]
+        attributes: []
     }, {
         model: priority,
         as: 'priority',
-        attributes: ["id", "name"]
+        attributes: []
     }, {
         model: users,
         as: 'author',
-        attributes: ["id", [db.fn('CONCAT', db.col("author.firstname"), " ", db.col("author.lastname")), "name"]]
-    }, {
+        attributes: []
+    }/*, {
         model: custom_values,
-        where: req.query.where ? req.query.where.custom_values ? req.query.where.custom_values : [] : [],
+        where: req.query.where ? req.query.where.custom_values ? req.query.where.custom_values : null : null,
         include: [{
-            model: custom_fields
-        }]
-    }, {
-        model: time_entries
+            model: custom_fields,
+            attributes: []
+        }],
+        attributes: []
+    }*/, {
+        model: time_entries,
+        attributes: []
     }]
 
-    issues.findAll(options).then(data => {
+    if(options.where['$status.is_closed$']!=undefined){
+        options.include[2].where = {
+            'is_closed': options.where['$status.is_closed$']
+        }
+        delete options.where['$status.is_closed$'];
+    }
+
+    /*options.where['project_id'] = {
+        $in: db.literal('(select id from projects)'),
+    }*/
+
+    issues.count(options).then(data => {
         res.status(200);
-        res.jsonp(data);
+        res.jsonp([{
+            total: data
+        }]);
     }).catch(function (error) {
         res.status(500);
         res.jsonp({
@@ -125,9 +237,8 @@ router.get('/total', function (req, res) {
 router.get('/list/:limit?/:offset?', function (req, res) {
     var db = req.app.get("db"),
         options = {
-            where: {
-
-            }
+            where: {},
+            order: []
         }
 
     if (req.query.orderby)
@@ -155,9 +266,102 @@ router.get('/list/:limit?/:offset?', function (req, res) {
                 var operator = req.query.operator[prop]
                 switch (operator) {
                     case '!':
+                        if (typeof options.where[prop] == 'object')
+                            options.where[prop] = {
+                                $notIn: options.where[prop]
+                            }
+                        else
+                            options.where[prop] = {
+                                $ne: options.where[prop]
+                            }
+                        break;
+                    case '=':
+                        if (typeof options.where[prop] == 'object')
+                            options.where[prop] = {
+                                $in: options.where[prop]
+                            }
+                        else
+                            options.where[prop] = {
+                                $eq: options.where[prop]
+                            }
+                        break;
+                    case '!*':
                         options.where[prop] = {
-                            $notIn: options.where[prop]
+                            $in: [null, '']
                         }
+                        break;
+                    case '*':
+                        delete options.where[prop];
+                        break;
+                    case '>=':
+                        options.where[prop] = {
+                            $gte: options.where[prop]
+                        };
+                        break;
+                    case '<=':
+                        options.where[prop] = {
+                            $lte: options.where[prop]
+                        };
+                        break;
+                    case '~':
+                        options.where[prop] = {
+                            $like: '%' + options.where[prop] + '%'
+                        };
+                        break;
+                    case '!~':
+                        options.where[prop] = {
+                            $notLike: '%' + options.where[prop] + '%'
+                        };
+                        break;
+                    case '=r':
+                        options.where[prop] = {
+                            $regexp: options.where[prop]
+                        };
+                        break;
+                    case '!r':
+                        options.where[prop] = {
+                            $notRegexp: options.where[prop]
+                        };
+                        break;
+                    case '>t-':
+                        options.where[prop] = {
+                            $gt: moment().subtract(options.where[prop], 'day').startOf('day').toDate()
+                        };
+                        break;
+                    case '<t-':
+                        options.where[prop] = {
+                            $lt: moment().subtract(options.where[prop], 'day').startOf('day').toDate()
+                        };
+                        break;
+                    case 't-':
+                        options.where[prop] = {
+                            $between: [moment().subtract(options.where[prop], 'day').startOf('day').toDate(), moment().subtract(options.where[prop], 'day').endOf('day').toDate()]
+                        };
+                        break;
+                    case 't':
+                        options.where[prop] = {
+                            $between: [moment().startOf('day').toDate(), moment().endOf('day').toDate()]
+                        };
+                        break;
+                    case 'w':
+                        options.where[prop] = {
+                            $between: [moment().startOf('week').toDate(), moment().endOf('week').toDate()]
+                        };
+                        break;
+                    case '>t+':
+                        options.where[prop] = {
+                            $gt: moment().add(options.where[prop], 'day').startOf('day').toDate()
+                        };
+                        break;
+                    case '<t+':
+                        options.where[prop] = {
+                            $between: [moment().startOf('day').toDate(), moment().add(options.where[prop], 'day').startOf('day').toDate()]
+                        };
+                        break;
+                    case 't+':
+                        options.where[prop] = {
+                            $between: [moment().add(options.where[prop], 'day').startOf('day').toDate(), moment().add(options.where[prop], 'day').endOf('day').toDate()]
+                        };
                         break;
                 }
             }
@@ -195,14 +399,19 @@ router.get('/list/:limit?/:offset?', function (req, res) {
     options.include = [{
         model: projects,
         required: false,
-        attributes: ["id", "identifier", "name"]
+        attributes: ["id", "identifier", "name"],
+        where: {
+            'id': {
+                $not: null
+            }
+        }
     }, {
         model: trackers,
         attributes: ["id", "name"]
     }, {
         model: issue_statuses,
         as: 'status',
-        where: req.query.where ? req.query.where.status ? req.query.where.status : [] : [],
+        where: req.query.where ? req.query.where.status ? req.query.where.status : null : null,
         attributes: ["id", "name", "is_closed"]
     }, {
         model: users,
@@ -218,13 +427,23 @@ router.get('/list/:limit?/:offset?', function (req, res) {
         attributes: ["id", [db.fn('CONCAT', db.col("author.firstname"), " ", db.col("author.lastname")), "name"]]
     }, {
         model: custom_values,
-        where: req.query.where ? req.query.where.custom_values ? req.query.where.custom_values : [] : [],
+        //where: req.query.where ? req.query.where.custom_values ? req.query.where.custom_values : null : null,
         include: [{
             model: custom_fields
         }]
     }, {
         model: time_entries
     }]
+
+    if(options.order.length == 0)
+        options.order = [['id', 'DESC']]
+
+    if(options.where['$status.is_closed$']!=undefined){
+        options.include[2].where = {
+            'is_closed': options.where['$status.is_closed$']
+        }
+        delete options.where['$status.is_closed$'];
+    }
 
     issues.findAll(options).then(data => {
         res.status(200);
