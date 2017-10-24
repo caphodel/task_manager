@@ -283,12 +283,14 @@ function mousePositionElement(e, target) {
             })
         }
 
-        if($self[0].tagName.match(/j-/i) != null){
-            if(typeof $self[0].val == 'function'){
-                return self[0].val();
+        if($self[0] != undefined){
+            if($self[0].tagName.match(/j-/i) != null){
+                if(typeof $self[0].val == 'function'){
+                    return self[0].val();
+                }
+                else
+                    return $self[0].deferredSelect;
             }
-            else
-                return $self[0].deferredSelect;
         }
         else{
             return $_val.apply(self, arguments);
@@ -2494,6 +2496,8 @@ jui2.method = {
         if (this.aaData.length > 0) {
             this.jui2.calcMaxWidth = false
         }
+
+        console.log(self.jui2.cellWidth[5])
 
         var maxWidthKey = $.maxKey(self.jui2.cellWidth);
 

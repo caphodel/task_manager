@@ -106,6 +106,9 @@ router.use('/tracker', rTrackers);
 var rEnumerations = require('./router/enumerations');
 router.use('/enumeration', rEnumerations);
 
+var rQueries = require('./router/queries');
+router.use('/query', rQueries);
+
 app.use('/api', router);
 
 app.use(function (err, req, res, next) {

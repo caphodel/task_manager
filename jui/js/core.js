@@ -282,12 +282,14 @@ function mousePositionElement(e, target) {
             })
         }
 
-        if($self[0].tagName.match(/j-/i) != null){
-            if(typeof $self[0].val == 'function'){
-                return self[0].val();
+        if($self[0] != undefined){
+            if($self[0].tagName.match(/j-/i) != null){
+                if(typeof $self[0].val == 'function'){
+                    return self[0].val();
+                }
+                else
+                    return $self[0].deferredSelect;
             }
-            else
-                return $self[0].deferredSelect;
         }
         else{
             return $_val.apply(self, arguments);

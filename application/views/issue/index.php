@@ -168,9 +168,28 @@
         return data;
     }
 
+    function url_to_form(data){
+
+    }
+
     if (location.search.substring(1) != "") {
-        red_get_issue_cf(function() {
+        /*red_get_issue_cf(function() {
             $('#red-tbl-issue').attr('src-fn', 'red_issue')
+        })*/
+        var search = location.search.substring(1);
+        var param = JSON.parse(decodeURIComponent('{"' + decodeURI(search).replace(/"/g, '\\"').replace(/&/g, '","').replace(/=/g, '":"') + '"}'))
+        $.ajax({
+            url: window.location.origin + ':8080/api/query/'+param.query_id,
+            type: 'GET',
+            dataType: 'jsonp',
+            success: function(data) {
+                var param = red_issue_query_to_param(data.filters);
+
+            },
+            error: function() {},
+            beforeSend: function setHeader(xhr) {
+                xhr.setRequestHeader('x-access-token', Cookies.get('token'));
+            }
         })
     } else {
         red_issue_where = {};

@@ -96,6 +96,9 @@ router.get('/list/:limit?/:offset?', function (req, res) {
         }
     }
 
+    if (req.query.orderby)
+        options.order = JSON.parse(req.query.orderby)
+
     delete options.where.callback;
     delete options.where._;
 

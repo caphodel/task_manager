@@ -18,8 +18,7 @@ router.get('/total', function (req, res) {
     var db = req.app.get("db"),
         options = {
             distinct: true,
-            where: {
-            }
+            where: {}
         };
 
     if (req.query.orderby)
@@ -168,48 +167,50 @@ router.get('/total', function (req, res) {
     options.attributes = ['id' /*, [sequelize.fn('count', sequelize.col('issues.id')), 'total']*/ ]
 
     options.include = [{
-        model: projects,
-        required: false,
-        attributes: [],
-        where: {
-            'id': {
-                $not: null
+            model: projects,
+            required: false,
+            attributes: [],
+            where: {
+                'id': {
+                    $not: null
+                }
             }
-        }
     }, {
-        model: trackers,
-        attributes: []
-    }, {
-        model: issue_statuses,
-        as: 'status',
-        where: req.query.where ? req.query.where.status ? req.query.where.status : null : null,
-        attributes: []
-    }, {
-        model: users,
-        as: 'assigned_to',
-        attributes: []
-    }, {
-        model: priority,
-        as: 'priority',
-        attributes: []
-    }, {
-        model: users,
-        as: 'author',
-        attributes: []
-    }/*, {
-        model: custom_values,
-        where: req.query.where ? req.query.where.custom_values ? req.query.where.custom_values : null : null,
-        include: [{
-            model: custom_fields,
+            model: trackers,
             attributes: []
-        }],
-        attributes: []
-    }*/, {
-        model: time_entries,
-        attributes: []
+    }, {
+            model: issue_statuses,
+            as: 'status',
+            where: req.query.where ? req.query.where.status ? req.query.where.status : null : null,
+            attributes: []
+    }, {
+            model: users,
+            as: 'assigned_to',
+            attributes: []
+    }, {
+            model: priority,
+            as: 'priority',
+            attributes: []
+    }, {
+            model: users,
+            as: 'author',
+            attributes: []
+    }
+        /*, {
+                model: custom_values,
+                where: req.query.where ? req.query.where.custom_values ? req.query.where.custom_values : null : null,
+                include: [{
+                    model: custom_fields,
+                    attributes: []
+                }],
+                attributes: []
+            }*/
+        , {
+            model: time_entries,
+            attributes: []
     }]
 
-    if(options.where['$status.is_closed$']!=undefined){
+    if (options.where['$status.is_closed$'] != undefined) {
         options.include[2].where = {
             'is_closed': options.where['$status.is_closed$']
         }
@@ -435,10 +436,10 @@ router.get('/list/:limit?/:offset?', function (req, res) {
         model: time_entries
     }]
 
-    if(options.order.length == 0)
+    if (options.order.length == 0)
         options.order = [['id', 'DESC']]
 
-    if(options.where['$status.is_closed$']!=undefined){
+    if (options.where['$status.is_closed$'] != undefined) {
         options.include[2].where = {
             'is_closed': options.where['$status.is_closed$']
         }
@@ -522,11 +523,16 @@ router.get('/:identifier', function (req, res) {
         model: time_entries
     }]
 
-
+    db.query("SELECT issue.*, `status`.`name` as `status.status_name`, `journal`.`notes` as `journal.notes` FROM issues as issue left outer join issue_statuses as `status` on status.id = issue.status_id left outer join journals as journal on journal.journalized_id = issue.id where issue.id="+req.params.identifier, {
+        type: sequelize.QueryTypes.SELECT,
+        raw: true
+    })
+    .then(data => {
+        res.status(200);
+        res.jsonp(data);
+    })
+/*
     issues.findOne(options).then(data => {
-        /*for (var i = 0; i < data.length; i++) {
-            data[i] = valuesToArray(data[i])
-        }*/
         res.status(200);
         res.jsonp(data);
     }).catch(function (error) {
@@ -535,7 +541,7 @@ router.get('/:identifier', function (req, res) {
             error: error,
             stackError: error.stack
         });
-    });
+    });*/
 });
 
 router.get('/:identifier/issues/:limit?/:offset?', function (req, res) {

@@ -23,6 +23,7 @@
             events: {},
             calcMaxWidth: true,
             cellWidth: [],
+            minWidth: [],
             scrollbarWidth: 0,
             initial: true,
             headerOffset: 0

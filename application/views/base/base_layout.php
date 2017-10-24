@@ -325,6 +325,10 @@
             vertical-align: -15%;
         }
 
+        .red-issue-filter td{
+            width: 33.3%;
+        }
+
     </style>
     <!--link href="assets/css/responsive.css" rel="stylesheet" type="text/css" /-->
 
