@@ -95,7 +95,7 @@ router.get('/total', function (req, res) {
 
 router.get('/list/:limit?/:offset?', function (req, res) {
     hash = crypto.createHmac('sha256', req.app.get("salt"))
-        .update(req.originalUrl)
+        .update(req.originalUrl.split(req.app.get('port'))[1])
         .digest('hex')
     checkCache(hash + '.cch', req, res, function (req, res) {
         console.log('not found')

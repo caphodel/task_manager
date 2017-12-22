@@ -33,6 +33,7 @@ var sequelize = new Sequelize('tame', 'root', '', {
 
 app.use(cors());
 global.db = sequelize;
+app.set("port", "8080");
 app.set("db", sequelize);
 app.set("salt", ":tame:");
 

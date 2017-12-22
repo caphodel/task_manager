@@ -47,7 +47,7 @@
 				<div class="red-issue-subtask red-card">
 					<j-toolbar><span>Subtasks</span>
 						<j-spacer></j-spacer>
-						<j-button>Add</j-button>
+						<j-button red-permission="manage_subtasks|admin">Add</j-button>
 					</j-toolbar>
 					<div class="red-card-content">
 						<table class="red-task" style="border-collapse: collapse; border: 0px; width: 100%; text-align: center;">
@@ -57,7 +57,7 @@
 				<div class="red-issue-related red-card">
 					<j-toolbar><span>Related tasks</span>
 						<j-spacer></j-spacer>
-						<j-button id="red-issue-btn-add-relation">Add</j-button>
+						<j-button red-permission="manage_issue_relations|admin" id="red-issue-btn-add-relation">Add</j-button>
 					</j-toolbar>
 					<div class="red-card-content">
 						<table class="red-task" style="border-collapse: collapse; border: 0px; width: 100%; text-align: center;">
@@ -88,7 +88,9 @@
 	</j-toolbar>
 	<j-textfield id="red-issue-relation-task">Task #</j-textfield><br/>
 	<j-toolbar style="background: #fff; border: 0px;">
-		<j-spacer></j-spacer><j-button onclick="red_issue_relation()">Add</j-button><j-button onclick="red_issue_relation_close()">Close</j-button>
+		<j-spacer></j-spacer>
+		<j-button onclick="red_issue_relation()">Add</j-button>
+		<j-button onclick="red_issue_relation_close()">Close</j-button>
 	</j-toolbar>
 </script>
 
@@ -96,12 +98,30 @@
 	var red_issue_update_fields = [],
 		red_issue_fields = []
 
-	function red_issue_relation(){
+	function red_issue_relation() {
 		var value = $('#red-issue-relation-task').val();
+		$.ajax({
+			url: window.location.origin + ':8080/api/relation/<?php echo $identifier;?>/'+value,
+			type: 'GET',
+			dataType: 'jsonp',
+			success: function(data) {
+				var $el = $('.red-issue-related > .red-card-content > table').empty()
+				for (var i = 0; i < data.length; i++) {
+					var val = data[i].issue
+					$el.append('<tr><td style="text-align: left;">Related to ' + red_string_generator([val.id, val.tracker.name + ' #' + val.id, val.status.is_closed], 'issue') + stringFormatter(': ' + val.subject + '</td><td>' + val.status.name) + '</td><td>' + val.created_on.split('T')[0] + '</td><td>' + val.due_date + '</td></tr>')
+				}
+			},
+			fail: function(xhr, status, error) {
+
+			},
+			beforeSend: function setHeader(xhr) {
+				xhr.setRequestHeader('x-access-token', Cookies.get('token'));
+			}
+		});
 		$('#red-issue-modal-relation').remove()
 	}
 
-	function red_issue_relation_close(){
+	function red_issue_relation_close() {
 		$('#red-issue-modal-relation').remove()
 	}
 
