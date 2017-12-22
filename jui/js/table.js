@@ -26,7 +26,8 @@
             minWidth: [],
             scrollbarWidth: 0,
             initial: true,
-            headerOffset: 0
+            headerOffset: 0,
+            setBodyWidth: false
         }
 
         this.param = {
@@ -386,19 +387,27 @@
                 this.jui2.scrollbarWidth = 0;
             }
         }
+
         /*else if($(this).children().width() - $(this).children().children('.j-table-head').width() == $.scrollbarWidth()){
             scrollWidth = 0;
         }*/
 
         //if(this.jui2.initial && $(this).children().width() < Math.round(count) && this.aaData.length > 0){
-        if (count != $(this).children().width())
-            self.jui2.cellWidth[self.jui2.cellWidth.length - 1] = self.jui2.cellWidth[self.jui2.cellWidth.length - 1] - scrollWidth;
+        /*if (count != $(this).children().width())
+            self.jui2.cellWidth[self.jui2.cellWidth.length - 1] = self.jui2.cellWidth[self.jui2.cellWidth.length - 1] - scrollWidth;*/
         //}
 
-        $.each(self.jui2.cellWidth, function (i, val) {
+        /*$.each(self.jui2.cellWidth, function (i, val) {
             $header.find('> div > div:nth-child(' + (i + 1) + ')').css("flex", "1 0 " + val + "px") //.outerWidth(val)
             $body.find('> div > div:nth-child(' + (i + 1) + ')').css("flex", "1 0 " + val + "px") //.outerWidth(val)
-        })
+        })*/
+
+        if (this.jui2.setBodyWidth) {
+            $.each(self.jui2.cellWidth, function (i, val) {
+                $header.find('> div > div:nth-child(' + (i + 1) + ')').css("flex", "1 0 " + val + "px") //.outerWidth(val)
+                $body.find('> div > div:nth-child(' + (i + 1) + ')').css("flex", "1 0 " + val + "px") //.outerWidth(val)
+            })
+        }
 
         if ($(this).children().width() - $(this).children().children('.j-table-head').width() == $.scrollbarWidth()) {
             scrollWidth = -$.scrollbarWidth();
@@ -424,8 +433,25 @@
         })
 
         if (this.aaData.length > 0 && this.jui2.initial) {
-            $(this).children().children('.j-table-head').css('transform', 'translateY(0px)').css('position', 'absolute')
-            this.jui2.initial = false
+            $(this).children().children('.j-table-head').css('transform', 'translateY(0px)').css('position', 'absolute');
+            $.each(self.jui2.cellWidth, function (i, val) {
+                $header.find('> div > div:nth-child(' + (i + 1) + ')').css("flex", "1 0 " + val + "px") //.outerWidth(val)
+                $body.find('> div > div:nth-child(' + (i + 1) + ')').css("flex", "1 0 " + val + "px") //.outerWidth(val)
+            })
+            this.jui2.setBodyWidth = true
+            /*$(this).find('> .j-table > .j-table-head > .j-table-head-row > div').filter(function(){return this.offsetWidth < this.scrollWidth }).each(function(i, val){
+                $(val).css("flex", "1 0 " + (val.scrollWidth+10) + "px")
+                $body.find('> div > div:nth-child(' + ($(val).index() + 1) + ')').css("flex", "1 0 " + (val.scrollWidth+10) + "px")
+                var max = self.jui2.cellWidth.indexOf(Math.max.apply(null, self.jui2.cellWidth));
+
+                self.jui2.cellWidth[max] -= (val.scrollWidth+10) - self.jui2.cellWidth[$(val).index()]
+
+                self.jui2.cellWidth[$(val).index()] = (val.scrollWidth+10)
+
+                $header.find('> div > div:nth-child(' + (max + 1) + ')').css("flex", "1 0 " + self.jui2.cellWidth[max] + "px") //.outerWidth(val)
+                $body.find('> div > div:nth-child(' + (max + 1) + ')').css("flex", "1 0 " + self.jui2.cellWidth[max] + "px") //.outerWidth(val)
+            })*/
+            this.jui2.initial = false;
         }
     }
 
@@ -572,8 +598,7 @@
             el.generateData = function (data) {
                 if (typeof data == 'array') {
                     el.generateData_(data);
-                }
-                else if (!data) {
+                } else if (!data) {
                     el.generateData_(eval(newVal), false);
                 }
             }
@@ -589,8 +614,7 @@
             el.generateData = function (data) {
                 if (typeof data == 'array' || typeof data == 'object') {
                     el.generateData_(data);
-                }
-                else if (!data) {
+                } else if (!data) {
                     eval(newVal).call()
                 }
             }
@@ -608,8 +632,7 @@
             el.generateData = function (data) {
                 if (typeof data == 'array') {
                     el.generateData_(data);
-                }
-                else if (!data) {
+                } else if (!data) {
                     $.getJSON(newVal, param, function (data) {
                         if (data.sEcho == el.param.sEcho) {
                             el.aaData = data.aaData;

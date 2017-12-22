@@ -5,7 +5,16 @@ var Sequelize = require("sequelize"),
     app = express(),
     router = express.Router(),
     cors = require('cors'),
-    fs = require('fs');
+    fs = require('fs'),
+    winston = require('winston');
+
+var logger = winston.createLogger({
+    level: 'info',
+    transports: [
+        new winston.transports.File({ filename: 'error.log', level: 'error' }),
+        new winston.transports.File({ filename: 'info.log', level: 'info' })
+  ]
+});
 
 var sequelize = new Sequelize('tame', 'root', '', {
     host: 'localhost',
@@ -19,7 +28,7 @@ var sequelize = new Sequelize('tame', 'root', '', {
         timestamps: false,
         underscored: true
     },
-    logging: console.log
+    logging: (msg) => logger.info(msg)
 })
 
 app.use(cors());

@@ -40,8 +40,6 @@ router.get('/list/:limit?/:offset?', function (req, res) {
 
     var issue_statuses = global.model['issue_statuses'];
 
-    console.log(options)
-
     issue_statuses.findAll(options).then(data => {
         res.status(200);
         res.jsonp(data);

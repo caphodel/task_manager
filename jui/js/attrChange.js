@@ -52,42 +52,13 @@
 			}
 		},
 		disabled: function(el, oldVal, newVal){
-			if(newVal != null){
-				jui2.method.disable(el);
-				$el = $(el)
-				var ev1 = 0, ev2 = 0, ev = 0
-				if($el.data( "events" ) != undefined)
-					ev1 = $el.data( "events" ).length;
-				if(jQuery._data( $el[0], "events" ))
-					ev2 = jQuery._data( $el[0], "events" ).length == undefined ? 1 : 0;
-				ev = (ev1 ? ev1 : 0) + (ev2 ? ev2 : 0)
-				if(['J-TABLE2', 'J-TABLE', 'J-GANTT'].indexOf($el.prop("tagName")) < 0 && ev > 0){
-					$el.data( "_events", $.extend(true, {}, $el.data( "events" ), jQuery._data( $el[0], "events" )))
-					$el.data( "events", [] )
-					jQuery._data( $el[0], "events", [] )
-					try {
-						$el.unbind();
-					}
-					catch(err) {
-					}
-				}
+			if(newVal == 'disabled' || newVal == 'true'){
+				el.jui2.disabled = true
+                $(el).children('.j-input-field').attr('readonly', 'readonly')
 			}
 			else if(newVal == null){
-				jui2.method.enable(el);
-				$el = $(el)
-				if(['J-TABLE2', 'J-TABLE', 'J-GANTT'].indexOf($el.prop("tagName")) < 0){
-					$.each($el.data("_events"), function(i, val){
-					  $.each(val, function(i2, val2){
-						//if(val2.delegateCount == 1){
-							//$el.delegate(val2.selector, val2.type, val2.handler );
-						//}else
-							$el.on(val2.type, val2.handler, val2.data, val2.selector );
-					  })
-					})
-
-					$el.data( "events", $.extend(true, {}, $el.data( "_events" )))
-					jQuery._data( $el[0], "events", $.extend(true, {}, $el.data( "_events" )))
-				}
+				el.jui2.disabled = false;
+                $(el).children('.j-input-field').removeAttr('readonly')
 			}
 		},
 		icon: function(el, oldVal, newVal){

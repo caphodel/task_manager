@@ -4,7 +4,7 @@
 		<div class="j-header">
 			Login
 		</div>
-		<j-textfield style="display: flex;" class="j-ui" id="username" type="text">Username</j-textfield>
+		<j-textfield style="display: flex;" class="j-ui" id="user" type="text">Username</j-textfield>
 		<j-textfield style="display: flex;" class="j-ui" id="password" type="password">Password</j-textfield>
 
 		<j-toolbar>
@@ -16,15 +16,19 @@
 <script>
 	$("#red-btn-login").click(function() {
 		$.post(window.location.origin + ":8080/api/auth", {
-			username: $("#username").val(),
+			username: $("#user").val(),
 			password: $("#password").val()
 		}, function(data, textStatus) {
 			if (data.success) {
                 Cookies.set('token', data.token)
 				$('#red-form-login').remove();
 				$('#red-sign-in').text("Logged In")
-                if(red_previous_url!="")
-                    redLoad(red_previous_url, "#red-content")
+                if(red_previous_url!=""){
+                    /*history.pushState(null, null, $(this).attr('href'));
+                    redLoad(red_previous_url, "#red-content")*/
+                    //window.location =
+                    window.history.back();
+                }
 			} else {
 				alert(data.message)
 			}

@@ -118,11 +118,12 @@
 
         var options = {
             where: {
-                main: {
-                    <?php if($identifier!=''){ ?>
-                    "$project.identifier$": "<?php echo $identifier;?>"
-                    <?php } ?>
+                main: {}
+                <?php if($identifier!=''){ ?>,
+                project: {
+                    "identifier": "<?php echo $identifier;?>"
                 }
+                <?php } ?>
             },
             fromGlobal: {}
         }
@@ -130,7 +131,7 @@
         dataOptions = $.extend(true, {}, options, red_issue_query_generator(), where, red_issue_filter, red_issue_form_to_url())
 
         $.ajax({
-            url: window.location.origin + ':8080/api/issue/total',
+            url: window.location.origin + ':8080/api/issue/total/' + $el[0].param.iDisplayLength + '/' + $el[0].param.iDisplayStart,
             type: 'GET',
             dataType: 'jsonp',
             sEcho: echo,
@@ -140,11 +141,11 @@
                     $el[0].param.iTotalRecords = data[0].total
 
                     $.ajax({
-                        url: window.location.origin + ':8080/api/issue/list/' + $el[0].param.iDisplayLength + '/' + $el[0].param.iDisplayStart,
+                        url: window.location.origin + ':8080/api/issue/listfromid/' + data[0].id,
                         type: 'GET',
                         dataType: 'jsonp',
                         sEcho: echo,
-                        data: dataOptions,
+                        //data: dataOptions,
                         success: function(data) {
                             if (this.sEcho == $el[0].param.sEcho)
                                 $('#red-tbl-issue')[0].generateData(data)
@@ -168,7 +169,7 @@
         return data;
     }
 
-    function url_to_form(data){
+    function url_to_form(data) {
 
     }
 
@@ -179,7 +180,7 @@
         var search = location.search.substring(1);
         var param = JSON.parse(decodeURIComponent('{"' + decodeURI(search).replace(/"/g, '\\"').replace(/&/g, '","').replace(/=/g, '":"') + '"}'))
         $.ajax({
-            url: window.location.origin + ':8080/api/query/'+param.query_id,
+            url: window.location.origin + ':8080/api/query/' + param.query_id,
             type: 'GET',
             dataType: 'jsonp',
             success: function(data) {
@@ -200,14 +201,35 @@
 
 <div class="red-content-container">
 
-    <?php $this->view('issue/filter');?>
+    <table class="red-layout-table">
+        <tr>
+            <td style="width: 75%">
+                <?php $this->view('issue/filter');?>
 
-    <j-panel>
-        <div class="j-header">
-            Issues
-        </div>
-        <j-table id="red-tbl-issue" paging="true" custom="red_issue_custom">
-            [ ["#", "Tracker", "Status", "Priority", "Subject", "Assigned To", "Updated"] ]
-        </j-table>
-    </j-panel>
+                <j-panel>
+                    <div class="j-header">
+                        Issues
+                    </div>
+                    <j-table id="red-tbl-issue" paging="true" custom="red_issue_custom">
+                        [ ["#", "Tracker", "Status", "Priority", "Subject", "Assigned To", "Updated"] ]
+                    </j-table>
+                </j-panel>
+            </td>
+            <td style="min-width: 200px;">
+                <div class="red-info-container" style="/*position: absolute; top: 180px; right: 20px; min-width: 200px; max-width: 400px;*/">
+                    <div class="red-issue-tools">
+                        <j-toolbar><span>Tasks</span>
+                            <j-spacer></j-spacer>
+                        </j-toolbar>
+                        <a href="<?php echo base_url() ?>issues/">View all tasks</a>
+                    </div>
+                    <div class="red-issue-watchers" red-permission="login">
+                        <j-toolbar><span>Custom Queries</span>
+                            <j-spacer></j-spacer>
+                        </j-toolbar>
+                    </div>
+                </div>
+            </td>
+        </tr>
+    </table>
 </div>

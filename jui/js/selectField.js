@@ -23,6 +23,12 @@
             label = label || '',
             type = $self.attr('type') || 'text';
 
+        this.jui2 = {
+            disabled: false,
+            multipleSelect: false,
+            multipleSelectStatus: false
+        }
+
         if (this.innerHTML.trim() == '')
             this.innerHTML = label
 
@@ -45,28 +51,91 @@
 
         self.items.on('click', '> div', function () {
             var $el = $(this)
-            self.items.hide();
-            $self.attr('data-value', $el.attr('data-value'))
-            $self.children('.j-input-field').html($el.children().eq(1).html())
-            $(self).triggerHandler('select')
+            if (self.jui2.multipleSelectStatus == false) {
+                self.items.hide();
+                $self.attr('data-value', $el.attr('data-value'))
+                $self.children('.j-input-field').html($el.children().eq(1).html())
+                $(self).triggerHandler('select')
+            } else {
+                if ($el.children('.j-select-multiple.fa-square-o').length > 0)
+                    $el.children('.j-select-multiple.fa-square-o').removeClass('fa-square-o').addClass('fa-check-square-o')
+                else
+                    $el.children('.j-select-multiple.fa-check-square-o').removeClass('fa-check-square-o').addClass('fa-square-o')
+
+                var elSelected = $el.parent().children('div').filter(function (i) {
+                    return $(this).children('.j-select-multiple.fa-check-square-o').length > 0
+                }).toArray()
+
+                $self.attr('data-value', JSON.stringify(elSelected.reduce(function (val, el) {
+                    return val.concat([$(el).attr('data-value')])
+                }, [])))
+
+                $self.children('.j-input-field').html(elSelected.reduce(function (val, el) {
+                    return val.concat([$(el).children('div').text()])
+                }, []).join(', '))
+                $(self).triggerHandler('select')
+            }
         })
 
         self.jui_popper = new Popper($self.children('.j-input-field'), self.items[0], {
             placement: 'bottom-start',
             modifiers: {
                 flip: {
-                    enabled: false
+                    enabled: true
                 }
+            },
+            eventsEnabled: false
+        })
+
+        $self.on('click', '> .j-input-field', function () {
+            if (self.jui2.multipleSelectStatus == false && self.jui2.disabled == false) {
+                self.items.toggle()
+                self.jui_popper.update()
             }
         })
 
-        $self.on('click', function () {
-            self.items.toggle()
+        $('body').click(function (e) {
+            if ($(e.target).parents('.j-pop').length == 0 && $(e.target).closest('#' + self.juiid).length == 0 && self.jui2.multipleSelectStatus == false) {
+                self.items.hide()
+            }
         })
 
-        $('body').click(function (e) {
-            if ($(e.target).parents('.j-pop').length == 0 && $(e.target).closest('#' + self.juiid).length == 0) {
-                self.items.hide()
+        $self.on('click', ' > .j-selectfield-multiple-toggle', function () {
+            if(!self.jui2.disabled){
+                self.jui2.multipleSelectStatus = self.jui2.multipleSelectStatus == true ? false : true;
+                if (self.jui2.multipleSelectStatus) {
+                    self.items.insertAfter($self.children('.j-input-field')).show()
+                    self.jui_popper.destroy()
+                    $self.children('.j-input-field').hide()
+                    self.generate(function(){
+                        var val = $self.val()
+                        self.items.children('div').filter(function(i){
+                            return $(this).attr('data-value') == val
+                        }).click()
+                    })
+                } else {
+
+                    var selected = $(self.items.children('div').filter(function (i) {
+                        return $(this).children('.j-select-multiple.fa-check-square-o').length > 0
+                    }).toArray()[0])
+
+                    $self.children('.j-input-field').html(selected.text())
+
+                    $self.attr('data-value', selected.attr('data-value'));
+
+                    self.items.appendTo('body').hide()
+                    self.jui_popper = new Popper($self.children('.j-input-field'), self.items[0], {
+                        placement: 'bottom-start',
+                        modifiers: {
+                            flip: {
+                                enabled: true
+                            }
+                        },
+                        eventsEnabled: false
+                    })
+                    $self.children('.j-input-field').show()
+                    self.generate()
+                }
             }
         })
 
@@ -114,10 +183,17 @@
                 var text = this.items.children('[data-value="' + value + '"]').html() || '';
                 $(this).children('.j-input-field').html(text)
                 $(this).triggerHandler('select')
+
                 return $(this).attr('data-value');
             }
         } else {
-            return $(this).attr('data-value') || '';
+
+            if (this.jui2.multipleSelectStatus == true) {
+                return JSON.parse($(this).attr('data-value'));
+
+            } else {
+                return $(this).attr('data-value') || '';
+            }
         }
     }
 
@@ -149,7 +225,7 @@
         }*/
 
     proto.generateData = function (data) {
-        this.items.html(jui2.tmpl['selectItem']({
+        this.items.html(jui2.tmpl[this.jui2.multipleSelectStatus ? 'selectMultipleItem' : 'selectItem']({
             rows: data
         }))
 
@@ -187,6 +263,10 @@
             jui2.attrChange[attrName](this, false, newVal);
     }
 
+    proto.generate = function () {
+
+    }
+
     jui2.attrChange['j-selectfield_no-label'] = function (el, oldVal, newVal) {
         if (newVal != null) {
             $(el).children('label').remove()
@@ -198,21 +278,55 @@
 
     jui2.attrChange['j-selectfield_src-array'] = function (el, oldVal, newVal) {
         if (newVal != null) {
-            var data = eval(newVal);
-            el.generateData(data)
-        }
-        /* else {
+            el.generate = function (cb) {
+                var data = eval(newVal);
+                el.generateData(data)
+                if (el.attributes['data-value']) {
+                    var value = el.attributes['data-value'].nodeValue
+                    value = data.filter(function (val) {
+                        return val[0] == value
+                    });
 
-                }*/
+                    $(el).children('.j-input-field').html(value[0][1])
+                }
+                if (cb)
+                    cb()
+            }
+            el.generate()
+        } else {
+            el.generate = function () {}
+        }
     }
 
     jui2.attrChange['j-selectfield_src-fn'] = function (el, oldVal, newVal) {
+        var $el = $(el)
         if (newVal != null) {
-            eval(newVal).call()
+            el.generate = function (cb) {
+                eval(newVal).call(function (value) {
+                    $el.children('.j-input-field').html(value)
+                    if (cb)
+                        cb()
+                })
+            }
+            el.generate()
+        } else {
+            el.generate = function () {}
         }
-        /* else {
+    }
 
-                }*/
+    jui2.attrChange['j-selectfield_multiple-select'] = function (el, oldVal, newVal) {
+        var $el = $(el)
+        if (newVal != null) {
+            el.jui2.multipleSelect = eval(newVal)
+
+        } else {
+            el.jui2.multipleSelect = false
+        }
+
+        if (el.jui2.multipleSelect) {
+            $el.children('.j-selectfield-multiple-toggle').remove()
+            $el.append('<i class="fa fa-plus-square-o j-selectfield-multiple-toggle" style="width: 32px; text-align: center; cursor: pointer; line-height: 24px;"></i>')
+        }
     }
 
     jui2.ui.selectField = {

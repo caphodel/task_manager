@@ -22,6 +22,7 @@ module.exports = function (grunt) {
 					'js/method.js',
 					'js/attrChange.js',
 					'js/base.js',
+					'js/keycodes.js',
 					'js/button.js',
 					'js/textField.js',
 					'js/selectField.js',
@@ -32,6 +33,8 @@ module.exports = function (grunt) {
 					'js/panel.js',
 					'js/tag.js',
 					'js/timeline.js',
+					'js/datefield.js',
+					'js/textarea.js',
 					'js/collapsible.js'
 				],
 				dest : '../assets/js/<%= pkg.name %>.ui.js'

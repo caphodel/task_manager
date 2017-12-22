@@ -20,21 +20,22 @@
             line-height: 18px;
         }
 
-        #header j-button {
+        #header a {
             color: #ABACB1;
             border: 0px;
             background: #24292E;
+            text-decoration: none;
         }
 
-        #header>.j-menu>j-button,
-        #header>.j-menu-alt>j-button {
+        #header>.j-menu>a,
+        #header>.j-menu-alt>a {
             font-family: "Lato", sans-serif !important;
             font-size: 16px !important;
             font-weight: 600 !important;
         }
 
-        #header>.j-menu>j-button,
-        #header>.j-menu-alt>j-button {
+        #header>.j-menu>a,
+        #header>.j-menu-alt>a {
             padding: 20px;
             cursor: pointer;
         }
@@ -44,11 +45,11 @@
             cursor: pointer;
         }
 
-        #header>.j-menu>j-button:hover,
+        #header>.j-menu>a:hover,
         #header>i:hover,
         j-button:hover,
-        #header>.j-menu-alt>j-button:hover,
-        #header>.j-menu-alt>j-button:hover>*,
+        #header>.j-menu-alt>a:hover,
+        #header>.j-menu-alt>a:hover>*,
         #header>.j-menu-alt>i:hover {
             color: #4ABFDF !important;
         }
@@ -325,7 +326,7 @@
             vertical-align: -15%;
         }
 
-        .red-issue-filter td{
+        .red-issue-filter td {
             width: 33.3%;
         }
 
@@ -341,20 +342,20 @@
     <div id="header" style="height: 60px; border: 0px; box-shadow: 0 0.5px 0 0 #ffffff inset, 0 1px 2px 0 #B3B3B3;flex: 1 1 0;-webkit-box-flex: 1;-webkit-flex: 1;align-items: center;display: flex;">
         <!--i class="j-menu-button fa fa-bars fa-2x ripple" style="color: #ABACB1;"></i-->
         <nav class="j-menu">
-            <j-button class="ripple j-ui" style="color: #ABACB1">Dashboard</j-button>
-            <j-button href="<?php echo base_url() ?>projects" class="ripple j-ui" style="color: #ABACB1">Project</j-button>
-            <j-button href="<?php echo base_url() ?>issues" id="red-btn-task" class="ripple j-ui" style="color: #ABACB1">Task</j-button>
-            <j-button class="ripple j-ui" style="color: #ABACB1">Calendar</j-button>
-            <j-button class="ripple j-ui" style="color: #ABACB1">Document</j-button>
+            <a class="ripple j-ui" style="color: #ABACB1">Dashboard</a>
+            <a href="<?php echo base_url() ?>projects" class="ripple j-ui" style="color: #ABACB1">Project</a>
+            <a href="<?php echo base_url() ?>issues" id="red-btn-task" class="ripple j-ui" style="color: #ABACB1">Task</a>
+            <a class="ripple j-ui" style="color: #ABACB1">Calendar</a>
+            <a class="ripple j-ui" style="color: #ABACB1">Document</a>
         </nav>
         <j-spacer style="flex: 1 1 0; -webkit-box-flex: 1; -webkit-flex: 1;"></j-spacer>
         <nav class="j-menu-alt">
             <!--j-button class="j-ui ripple" data-label="Notification">
 				<i class="fa fa-bell fa-lg j-ui" style="" data-badge="10"></i>
 			</j-button-->
-            <j-button href="<?php echo base_url() ?>login" id="red-sign-in" class="j-ui ripple">
+            <a href="<?php echo base_url() ?>login" id="red-sign-in" class="j-ui ripple">
                 Sign In
-            </j-button>
+            </a>
             <!--div style="width: 200px;" id="user-info"></div-->
         </nav>
         <!--i class="j-menu-button-alt fa fa-ellipsis-v fa-2x ripple" style="color: #ABACB1;"></i-->
@@ -375,7 +376,6 @@
 			</tr>
 		</tbody>
 	</table-->
-
     <script>
         var getWindowSize = (function() {
             var docEl = document.documentElement,
@@ -420,14 +420,15 @@
 
         function redJournalFormatter() {
             var $data = $('.red-issue-journal-detail > div'),
-                assigned_to = [], status = [];
+                assigned_to = [],
+                status = [];
 
             $data.each(function(i, val) {
                 val = $(val)
                 var text = val.html();
 
-                if (val.children('b').text() == 'status_id'){
-                    if (text.match('set to')!=null) {
+                if (val.children('b').text() == 'status_id') {
+                    if (text.match('set to') != null) {
                         var id = text.split('set to ')
                         status.push(id[1])
                     } else {
@@ -438,7 +439,7 @@
                 }
 
                 if (val.children('b').text() == 'assigned_to_id') {
-                    if (text.match('set to')!=null) {
+                    if (text.match('set to') != null) {
                         var id = text.split('set to ')
                         assigned_to.push(id[1])
                     } else {
@@ -466,13 +467,13 @@
                                 val.children('b').text('Assigned to')
                                 if (text.match('set to')) {
                                     var id = text.split('set to ')
-                                    var user = JSON.search(data, '//*[id="'+id[1]+'"]')[0];
+                                    var user = JSON.search(data, '//*[id="' + id[1] + '"]')[0];
                                     val.html(val.html().replace(id[1], red_string_generator([user.id, user.fullname], 'users')))
                                 } else {
                                     var id = text.split('changed from ')[1].split(' to ')
-                                    var user = JSON.search(data, '//*[id="'+id[0]+'"]')[0];
+                                    var user = JSON.search(data, '//*[id="' + id[0] + '"]')[0];
                                     val.html(val.html().replace(id[0], red_string_generator([user.id, user.fullname], 'users')))
-                                    user = JSON.search(data, '//*[id="'+id[1]+'"]')[0];
+                                    user = JSON.search(data, '//*[id="' + id[1] + '"]')[0];
                                     val.html(val.html().replace(id[1], red_string_generator([user.id, user.fullname], 'users')))
                                 }
                             }
@@ -498,13 +499,13 @@
                                 val.children('b').text('Status')
                                 if (text.match('set to')) {
                                     var id = text.split('set to ')
-                                    var status = JSON.search(data, '//*[id="'+id[1]+'"]')[0];
+                                    var status = JSON.search(data, '//*[id="' + id[1] + '"]')[0];
                                     val.html(val.html().replace(id[1], status.name))
                                 } else {
                                     var id = text.split('changed from ')[1].split(' to ')
-                                    var status = JSON.search(data, '//*[id="'+id[0]+'"]')[0];
+                                    var status = JSON.search(data, '//*[id="' + id[0] + '"]')[0];
                                     val.html(val.html().replace(id[0], status.name))
-                                    status = JSON.search(data, '//*[id="'+id[1]+'"]')[0];
+                                    status = JSON.search(data, '//*[id="' + id[1] + '"]')[0];
                                     val.html(val.html().replace(id[1], status.name))
                                 }
                             }
@@ -584,187 +585,8 @@
             red_project_identifier = "",
             red_previous_url;
 
-        function redAppend(url, el) {
-            $.ajax({
-                url: url,
-                success: function(data) {
-                    $(el).append(data);
-                }
-            })
-        }
-
-        function redDoCheck(callback) {
-            var admin = Cookies.get('token') != undefined ? (jwt_decode(Cookies.get('token')).admin == 1 ? ':admin' : '') : '';
-            callback((red_user_permission.permissions + admin))
-            $('[red-permission]:not([red-permission="login"])').each(function(i, val) {
-                var allowed = (red_user_permission.permissions + admin).match(new RegExp($(val).attr('red-permission')));
-                if (allowed != null) {
-
-                } else {
-                    $(val).remove()
-                }
-            })
-        }
-
-        function redProjectPermissionChecker(callback) {
-            var login = Cookies.get('token');
-            if (login != undefined) {
-                login = jwt_decode(login)
-                if (red_project_identifier != '') {
-                    $.ajax({
-                        url: window.location.origin + ':8080/api/project/' + red_project_identifier + '/role/' + login.id,
-                        type: 'GET',
-                        dataType: 'jsonp',
-                        success: function(data) {
-
-                            if (data == null) {
-                                $.ajax({
-                                    url: window.location.origin + ':8080/api/role/1',
-                                    type: 'GET',
-                                    dataType: 'jsonp',
-                                    success: function(data) {
-                                        red_user_permission = data
-                                        redDoCheck(callback)
-                                    },
-                                    error: function() {},
-                                    beforeSend: function setHeader(xhr) {
-                                        xhr.setRequestHeader('x-access-token', Cookies.get('token'));
-                                    }
-                                });
-                            } else {
-                                red_user_permission = data
-                                redDoCheck(callback)
-                            }
-                        },
-                        error: function() {},
-                        beforeSend: function setHeader(xhr) {
-                            xhr.setRequestHeader('x-access-token', Cookies.get('token'));
-                        }
-                    });
-                } else {
-                    $.ajax({
-                        url: window.location.origin + ':8080/api/role/1',
-                        type: 'GET',
-                        dataType: 'jsonp',
-                        success: function(data) {
-                            red_user_permission = data
-                            redDoCheck(callback)
-                        },
-                        error: function() {},
-                        beforeSend: function setHeader(xhr) {
-                            xhr.setRequestHeader('x-access-token', Cookies.get('token'));
-                        }
-                    });
-                }
-            } else {
-                $.ajax({
-                    url: window.location.origin + ':8080/api/role/2',
-                    type: 'GET',
-                    dataType: 'jsonp',
-                    success: function(data) {
-                        red_user_permission = data
-                        redDoCheck(callback)
-                    },
-                    error: function() {},
-                    beforeSend: function setHeader(xhr) {
-                        xhr.setRequestHeader('x-access-token', Cookies.get('token'));
-                    }
-                });
-            }
-        }
-
-        function redPermissionChecker() {
-            $('[red-permission="login"]').hide()
-            var login = Cookies.get('token');
-            if (login != undefined) {
-                if (!jwt_decode(login)) {
-                    $('[red-permission="login"]').remove()
-                } else {
-                    $('#red-sign-in').text("Logged In")
-                    $('[red-permission="login"]').show()
-                }
-            } else {
-                $('[red-permission="login"').remove()
-                $('[red-permission]').show()
-            }
-        }
-
-        function redLoad(url, el) {
-            $.ajax({
-                url: url,
-                success: function(data) {
-                    $(el).empty().append(data);
-                    redPermissionChecker()
-                }
-            })
-        }
-
-        redPermissionChecker()
-
-        function isExternal(url) {
-            var match = url.match(/^([^:\/?#]+:)?(?:\/\/([^\/?#]*))?([^?#]+)?(\?[^#]*)?(#.*)?/);
-            if (typeof match[1] === "string" && match[1].length > 0 && match[1].toLowerCase() !== location.protocol) return true;
-            if (typeof match[2] === "string" && match[2].length > 0 && match[2].replace(new RegExp(":(" + {
-                    "http:": 80,
-                    "https:": 443
-                }[location.protocol] + ")?$"), "") !== location.host) return true;
-            return false;
-        }
-
-        $(function() {
-            // we get a normal Location object
-
-            /*
-             * Note, this is the only difference when using this library,
-             * because the object window.location cannot be overriden,
-             * so library the returns generated "location" object within
-             * an object window.history, so get it out of "history.location".
-             * For browsers supporting "history.pushState" get generated
-             * object "location" with the usual "window.location".
-             */
-            var location = window.history.location || window.location;
-
-            // looking for all the links and hang on the event, all references in this document
-            $(document).on('click tap', 'a, j-button[href]', function() {
-                // keep the link in the browser history
-
-                if (!isExternal($(this).attr('href'))) {
-
-                    if ($(this).attr('href').match('/login') == null)
-                        red_previous_url = $(this).attr('href');
-
-                    history.pushState(null, null, $(this).attr('href'));
-
-                    // here can cause data loading, etc.
-                    redLoad($(this).attr('href'), "#red-content")
-
-                    // do not give a default action
-                    return false;
-                } else {
-                    return true
-                }
-            });
-
-            // hang on popstate event triggered by pressing back/forward in browser
-            $(window).on('popstate', function(e) {
-
-                // here can cause data loading, etc.
-
-                // just post
-                //console.log("We returned to the page with a link: " + location.href);
-                if (location.href.split("task_manager/")[1] != "")
-                    redLoad(location.href, "#red-content");
-            });
-        });
-
-        $(document).ready(function() {
-            var href = window.location.href.split(redDomain);
-            if (href.length > 1 && href[1] != '') {
-                redLoad(redDomain + href[1], "#red-content")
-            }
-        })
-
     </script>
+    <script src="<?php echo base_url() ?>assets/js/app.js"></script>
 </body>
 
 </html>

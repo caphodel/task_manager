@@ -74,6 +74,17 @@ function mousePositionElement(e, target) {
 	};
 }
 
+var waitForEl = function(selector, callback) {
+  if (jQuery(selector).length) {
+    callback();
+  } else {
+    setTimeout(function() {
+      waitForEl(selector, callback);
+    }, 100);
+  }
+};
+
+
 (function($) {
 
     $.fn.getTransform = function(){
@@ -1327,42 +1338,13 @@ jui2.method = {
 			}
 		},
 		disabled: function(el, oldVal, newVal){
-			if(newVal != null){
-				jui2.method.disable(el);
-				$el = $(el)
-				var ev1 = 0, ev2 = 0, ev = 0
-				if($el.data( "events" ) != undefined)
-					ev1 = $el.data( "events" ).length;
-				if(jQuery._data( $el[0], "events" ))
-					ev2 = jQuery._data( $el[0], "events" ).length == undefined ? 1 : 0;
-				ev = (ev1 ? ev1 : 0) + (ev2 ? ev2 : 0)
-				if(['J-TABLE2', 'J-TABLE', 'J-GANTT'].indexOf($el.prop("tagName")) < 0 && ev > 0){
-					$el.data( "_events", $.extend(true, {}, $el.data( "events" ), jQuery._data( $el[0], "events" )))
-					$el.data( "events", [] )
-					jQuery._data( $el[0], "events", [] )
-					try {
-						$el.unbind();
-					}
-					catch(err) {
-					}
-				}
+			if(newVal == 'disabled' || newVal == 'true'){
+				el.jui2.disabled = true
+                $(el).children('.j-input-field').attr('readonly', 'readonly')
 			}
 			else if(newVal == null){
-				jui2.method.enable(el);
-				$el = $(el)
-				if(['J-TABLE2', 'J-TABLE', 'J-GANTT'].indexOf($el.prop("tagName")) < 0){
-					$.each($el.data("_events"), function(i, val){
-					  $.each(val, function(i2, val2){
-						//if(val2.delegateCount == 1){
-							//$el.delegate(val2.selector, val2.type, val2.handler );
-						//}else
-							$el.on(val2.type, val2.handler, val2.data, val2.selector );
-					  })
-					})
-
-					$el.data( "events", $.extend(true, {}, $el.data( "_events" )))
-					jQuery._data( $el[0], "events", $.extend(true, {}, $el.data( "_events" )))
-				}
+				el.jui2.disabled = false;
+                $(el).children('.j-input-field').removeAttr('readonly')
 			}
 		},
 		icon: function(el, oldVal, newVal){
@@ -1557,6 +1539,141 @@ jui2.method = {
 
 }(jQuery))
 ;
+;/****js/keycodes.js****/
+
+(function($){
+	jui2.nextChar = function (c) {
+		return String.fromCharCode(c.charCodeAt(0) + 1);
+	}
+
+	jui2.keycodes = {
+		'backspace': 8,
+		'tab': 9,
+		'enter': 13,
+		'enter': 16,
+		'ctrl': 17,
+		'alt': 18,
+		'pause/break': 19,
+		'capslock': 20,
+		'esc': 27, 'escape': 27,
+		'space': 32,
+		'pageup': 33,
+		'pagedown': 34,
+		'end': 35,
+		'home': 36,
+		'left': 37,
+		'up': 38,
+		'right': 39,
+		'down': 40,
+		'printscreen': 44,
+		'insert': 45, 'ins' : 45,
+		'delete': 46, 'del' : 46,
+		'0' : 48,
+		'1' : 49,
+		'2' : 50,
+		'3' : 51,
+		'4' : 52,
+		'5' : 53,
+		'6' : 54,
+		'7' : 55,
+		'8' : 56,
+		'9' : 57,
+		'a' : 65,
+		'b' : 66,
+		'c' : 67,
+		'd' : 68,
+		'e' : 69,
+		'f' : 70,
+		'g' : 71,
+		'h' : 72,
+		'i' : 73,
+		'j' : 74,
+		'k' : 75,
+		'l' : 76,
+		'm' : 77,
+		'n' : 78,
+		'o' : 79,
+		'p' : 80,
+		'q' : 81,
+		'r' : 82,
+		's' : 83,
+		't' : 84,
+		'u' : 85,
+		'v' : 86,
+		'w' : 87,
+		'x' : 88,
+		'y' : 89,
+		'z' : 90,
+		'96' : 96,
+		'97' : 97,
+		'98' : 98,
+		'99' : 99,
+		'100' : 100,
+		'101' : 101,
+		'102' : 102,
+		'103' : 103,
+		'104' : 104,
+		'105' : 105,
+		'106' : 106,
+		'107' : 107,
+		'108' : 108,
+		'109' : 109,
+		'110' : 110,
+		'111' : 111,
+		'.' : 190
+	}
+
+	/**
+	 * Bind a series of keycodes into element to prevent user type a character outside the defined keycodes
+	 * @param  {jQuery} el jQuery selector, object or HTMLElement
+	 * @param {String} keycodes A series of keycodes with comma separated values, ex. 'backspace,space,[a-z]' will only allow user typing backspace, space and character a to z into the element
+	 */
+	jui2.keycodes.bind = function(el, keycodes){
+		keycodes = keycodes.replace(/\s+/g, '')
+		keycodes = '["'+keycodes.replace(/,/g, '","').replace(/\"\[/g,'["').replace(/(\]\")/g,'"]')+'"]'
+		keycodes = keycodes.replace(/(\]\")/g,'"]')
+		keycodes = eval(keycodes)
+		var tmp = []
+		$.each(keycodes, function(i, val){
+			if(typeof val == 'object')
+				if(isNaN(val[0])){
+					var first = val[0].lowerCase(), last = val[1].lowerCase()
+					while(first!=last){
+						tmp.push(jui2.keycodes[first])
+						first = jui2.nextChar(first)
+					}
+					tmp.push(jui2.keycodes[first])
+				}
+				else{
+					for(var z = parseInt(val[0]);z<=parseInt(val[1]);z++){
+						tmp.push(jui2.keycodes[z])
+					}
+				}
+			else
+				tmp.push(jui2.keycodes[val])
+		})
+		var ctrlDown = false,
+		ctrlKey = 17, vKey = 86, cKey = 67, xKey = 88;
+		$(el).keydown(function (e) {
+			if(e.keyCode == ctrlKey){
+				ctrlDown = true;
+			}else{
+				if(ctrlDown && (e.keyCode == vKey || e.keyCode == cKey || e.keyCode == xKey)){
+					return;
+				}
+				else{
+					if($.inArray(e.keyCode, tmp)>=0){
+						return
+					}
+					else
+						e.preventDefault();
+				}
+			}
+		}).keyup(function(e){
+      if (e.keyCode == ctrlKey) ctrlDown = false;
+    });
+	}
+}(jQuery));
 ;/****js/button.js****/
 /**
  * @classdesc Button custom web component
@@ -1622,6 +1739,18 @@ jui2.method = {
 	      jui2.attrChange[attrName](this, oldVal, newVal);*/
 		this.attrChangedCb(false, attrName, oldVal, newVal)
 	}
+
+    proto.setText = function(text){
+        $(this).contents().last()[0].textContent = ' '+text;
+    }
+
+    proto.setIcon = function(cls, style){
+        var el = $(this).children('i')
+        if(el.length==0)
+            $('<i class="fa '+cls+'" style="'+style+'"></i>').appendTo(this)
+        else
+            el.attr('class', 'fa '+cls);
+    }
 
    /**
  	* Fires when button clicked
@@ -1773,6 +1902,9 @@ jui2.method = {
         if(this.deferredValue){
             $(this).children('input')[0].value = value
         }
+        if(this.attributes['data-value']){
+            $(this).children('input')[0].value = this.attributes['data-value'].nodeValue
+        }
     }
 
     proto.attributeChangedCallback = function (attrName, oldVal, newVal) {
@@ -1825,6 +1957,12 @@ jui2.method = {
             label = label || '',
             type = $self.attr('type') || 'text';
 
+        this.jui2 = {
+            disabled: false,
+            multipleSelect: false,
+            multipleSelectStatus: false
+        }
+
         if (this.innerHTML.trim() == '')
             this.innerHTML = label
 
@@ -1847,28 +1985,91 @@ jui2.method = {
 
         self.items.on('click', '> div', function () {
             var $el = $(this)
-            self.items.hide();
-            $self.attr('data-value', $el.attr('data-value'))
-            $self.children('.j-input-field').html($el.children().eq(1).html())
-            $(self).triggerHandler('select')
+            if (self.jui2.multipleSelectStatus == false) {
+                self.items.hide();
+                $self.attr('data-value', $el.attr('data-value'))
+                $self.children('.j-input-field').html($el.children().eq(1).html())
+                $(self).triggerHandler('select')
+            } else {
+                if ($el.children('.j-select-multiple.fa-square-o').length > 0)
+                    $el.children('.j-select-multiple.fa-square-o').removeClass('fa-square-o').addClass('fa-check-square-o')
+                else
+                    $el.children('.j-select-multiple.fa-check-square-o').removeClass('fa-check-square-o').addClass('fa-square-o')
+
+                var elSelected = $el.parent().children('div').filter(function (i) {
+                    return $(this).children('.j-select-multiple.fa-check-square-o').length > 0
+                }).toArray()
+
+                $self.attr('data-value', JSON.stringify(elSelected.reduce(function (val, el) {
+                    return val.concat([$(el).attr('data-value')])
+                }, [])))
+
+                $self.children('.j-input-field').html(elSelected.reduce(function (val, el) {
+                    return val.concat([$(el).children('div').text()])
+                }, []).join(', '))
+                $(self).triggerHandler('select')
+            }
         })
 
         self.jui_popper = new Popper($self.children('.j-input-field'), self.items[0], {
             placement: 'bottom-start',
             modifiers: {
                 flip: {
-                    enabled: false
+                    enabled: true
                 }
+            },
+            eventsEnabled: false
+        })
+
+        $self.on('click', '> .j-input-field', function () {
+            if (self.jui2.multipleSelectStatus == false && self.jui2.disabled == false) {
+                self.items.toggle()
+                self.jui_popper.update()
             }
         })
 
-        $self.on('click', function () {
-            self.items.toggle()
+        $('body').click(function (e) {
+            if ($(e.target).parents('.j-pop').length == 0 && $(e.target).closest('#' + self.juiid).length == 0 && self.jui2.multipleSelectStatus == false) {
+                self.items.hide()
+            }
         })
 
-        $('body').click(function (e) {
-            if ($(e.target).parents('.j-pop').length == 0 && $(e.target).closest('#' + self.juiid).length == 0) {
-                self.items.hide()
+        $self.on('click', ' > .j-selectfield-multiple-toggle', function () {
+            if(!self.jui2.disabled){
+                self.jui2.multipleSelectStatus = self.jui2.multipleSelectStatus == true ? false : true;
+                if (self.jui2.multipleSelectStatus) {
+                    self.items.insertAfter($self.children('.j-input-field')).show()
+                    self.jui_popper.destroy()
+                    $self.children('.j-input-field').hide()
+                    self.generate(function(){
+                        var val = $self.val()
+                        self.items.children('div').filter(function(i){
+                            return $(this).attr('data-value') == val
+                        }).click()
+                    })
+                } else {
+
+                    var selected = $(self.items.children('div').filter(function (i) {
+                        return $(this).children('.j-select-multiple.fa-check-square-o').length > 0
+                    }).toArray()[0])
+
+                    $self.children('.j-input-field').html(selected.text())
+
+                    $self.attr('data-value', selected.attr('data-value'));
+
+                    self.items.appendTo('body').hide()
+                    self.jui_popper = new Popper($self.children('.j-input-field'), self.items[0], {
+                        placement: 'bottom-start',
+                        modifiers: {
+                            flip: {
+                                enabled: true
+                            }
+                        },
+                        eventsEnabled: false
+                    })
+                    $self.children('.j-input-field').show()
+                    self.generate()
+                }
             }
         })
 
@@ -1916,10 +2117,17 @@ jui2.method = {
                 var text = this.items.children('[data-value="' + value + '"]').html() || '';
                 $(this).children('.j-input-field').html(text)
                 $(this).triggerHandler('select')
+
                 return $(this).attr('data-value');
             }
         } else {
-            return $(this).attr('data-value') || '';
+
+            if (this.jui2.multipleSelectStatus == true) {
+                return JSON.parse($(this).attr('data-value'));
+
+            } else {
+                return $(this).attr('data-value') || '';
+            }
         }
     }
 
@@ -1951,7 +2159,7 @@ jui2.method = {
         }*/
 
     proto.generateData = function (data) {
-        this.items.html(jui2.tmpl['selectItem']({
+        this.items.html(jui2.tmpl[this.jui2.multipleSelectStatus ? 'selectMultipleItem' : 'selectItem']({
             rows: data
         }))
 
@@ -1989,6 +2197,10 @@ jui2.method = {
             jui2.attrChange[attrName](this, false, newVal);
     }
 
+    proto.generate = function () {
+
+    }
+
     jui2.attrChange['j-selectfield_no-label'] = function (el, oldVal, newVal) {
         if (newVal != null) {
             $(el).children('label').remove()
@@ -2000,21 +2212,55 @@ jui2.method = {
 
     jui2.attrChange['j-selectfield_src-array'] = function (el, oldVal, newVal) {
         if (newVal != null) {
-            var data = eval(newVal);
-            el.generateData(data)
-        }
-        /* else {
+            el.generate = function (cb) {
+                var data = eval(newVal);
+                el.generateData(data)
+                if (el.attributes['data-value']) {
+                    var value = el.attributes['data-value'].nodeValue
+                    value = data.filter(function (val) {
+                        return val[0] == value
+                    });
 
-                }*/
+                    $(el).children('.j-input-field').html(value[0][1])
+                }
+                if (cb)
+                    cb()
+            }
+            el.generate()
+        } else {
+            el.generate = function () {}
+        }
     }
 
     jui2.attrChange['j-selectfield_src-fn'] = function (el, oldVal, newVal) {
+        var $el = $(el)
         if (newVal != null) {
-            eval(newVal).call()
+            el.generate = function (cb) {
+                eval(newVal).call(function (value) {
+                    $el.children('.j-input-field').html(value)
+                    if (cb)
+                        cb()
+                })
+            }
+            el.generate()
+        } else {
+            el.generate = function () {}
         }
-        /* else {
+    }
 
-                }*/
+    jui2.attrChange['j-selectfield_multiple-select'] = function (el, oldVal, newVal) {
+        var $el = $(el)
+        if (newVal != null) {
+            el.jui2.multipleSelect = eval(newVal)
+
+        } else {
+            el.jui2.multipleSelect = false
+        }
+
+        if (el.jui2.multipleSelect) {
+            $el.children('.j-selectfield-multiple-toggle').remove()
+            $el.append('<i class="fa fa-plus-square-o j-selectfield-multiple-toggle" style="width: 32px; text-align: center; cursor: pointer; line-height: 24px;"></i>')
+        }
     }
 
     jui2.ui.selectField = {
@@ -2155,9 +2401,11 @@ jui2.method = {
             events: {},
             calcMaxWidth: true,
             cellWidth: [],
+            minWidth: [],
             scrollbarWidth: 0,
             initial: true,
-            headerOffset: 0
+            headerOffset: 0,
+            setBodyWidth: false
         }
 
         this.param = {
@@ -2497,8 +2745,6 @@ jui2.method = {
             this.jui2.calcMaxWidth = false
         }
 
-        console.log(self.jui2.cellWidth[5])
-
         var maxWidthKey = $.maxKey(self.jui2.cellWidth);
 
         var count = 0;
@@ -2519,19 +2765,27 @@ jui2.method = {
                 this.jui2.scrollbarWidth = 0;
             }
         }
+
         /*else if($(this).children().width() - $(this).children().children('.j-table-head').width() == $.scrollbarWidth()){
             scrollWidth = 0;
         }*/
 
         //if(this.jui2.initial && $(this).children().width() < Math.round(count) && this.aaData.length > 0){
-        if (count != $(this).children().width())
-            self.jui2.cellWidth[self.jui2.cellWidth.length - 1] = self.jui2.cellWidth[self.jui2.cellWidth.length - 1] - scrollWidth;
+        /*if (count != $(this).children().width())
+            self.jui2.cellWidth[self.jui2.cellWidth.length - 1] = self.jui2.cellWidth[self.jui2.cellWidth.length - 1] - scrollWidth;*/
         //}
 
-        $.each(self.jui2.cellWidth, function (i, val) {
+        /*$.each(self.jui2.cellWidth, function (i, val) {
             $header.find('> div > div:nth-child(' + (i + 1) + ')').css("flex", "1 0 " + val + "px") //.outerWidth(val)
             $body.find('> div > div:nth-child(' + (i + 1) + ')').css("flex", "1 0 " + val + "px") //.outerWidth(val)
-        })
+        })*/
+
+        if (this.jui2.setBodyWidth) {
+            $.each(self.jui2.cellWidth, function (i, val) {
+                $header.find('> div > div:nth-child(' + (i + 1) + ')').css("flex", "1 0 " + val + "px") //.outerWidth(val)
+                $body.find('> div > div:nth-child(' + (i + 1) + ')').css("flex", "1 0 " + val + "px") //.outerWidth(val)
+            })
+        }
 
         if ($(this).children().width() - $(this).children().children('.j-table-head').width() == $.scrollbarWidth()) {
             scrollWidth = -$.scrollbarWidth();
@@ -2557,8 +2811,25 @@ jui2.method = {
         })
 
         if (this.aaData.length > 0 && this.jui2.initial) {
-            $(this).children().children('.j-table-head').css('transform', 'translateY(0px)').css('position', 'absolute')
-            this.jui2.initial = false
+            $(this).children().children('.j-table-head').css('transform', 'translateY(0px)').css('position', 'absolute');
+            $.each(self.jui2.cellWidth, function (i, val) {
+                $header.find('> div > div:nth-child(' + (i + 1) + ')').css("flex", "1 0 " + val + "px") //.outerWidth(val)
+                $body.find('> div > div:nth-child(' + (i + 1) + ')').css("flex", "1 0 " + val + "px") //.outerWidth(val)
+            })
+            this.jui2.setBodyWidth = true
+            /*$(this).find('> .j-table > .j-table-head > .j-table-head-row > div').filter(function(){return this.offsetWidth < this.scrollWidth }).each(function(i, val){
+                $(val).css("flex", "1 0 " + (val.scrollWidth+10) + "px")
+                $body.find('> div > div:nth-child(' + ($(val).index() + 1) + ')').css("flex", "1 0 " + (val.scrollWidth+10) + "px")
+                var max = self.jui2.cellWidth.indexOf(Math.max.apply(null, self.jui2.cellWidth));
+
+                self.jui2.cellWidth[max] -= (val.scrollWidth+10) - self.jui2.cellWidth[$(val).index()]
+
+                self.jui2.cellWidth[$(val).index()] = (val.scrollWidth+10)
+
+                $header.find('> div > div:nth-child(' + (max + 1) + ')').css("flex", "1 0 " + self.jui2.cellWidth[max] + "px") //.outerWidth(val)
+                $body.find('> div > div:nth-child(' + (max + 1) + ')').css("flex", "1 0 " + self.jui2.cellWidth[max] + "px") //.outerWidth(val)
+            })*/
+            this.jui2.initial = false;
         }
     }
 
@@ -2705,8 +2976,7 @@ jui2.method = {
             el.generateData = function (data) {
                 if (typeof data == 'array') {
                     el.generateData_(data);
-                }
-                else if (!data) {
+                } else if (!data) {
                     el.generateData_(eval(newVal), false);
                 }
             }
@@ -2722,8 +2992,7 @@ jui2.method = {
             el.generateData = function (data) {
                 if (typeof data == 'array' || typeof data == 'object') {
                     el.generateData_(data);
-                }
-                else if (!data) {
+                } else if (!data) {
                     eval(newVal).call()
                 }
             }
@@ -2741,8 +3010,7 @@ jui2.method = {
             el.generateData = function (data) {
                 if (typeof data == 'array') {
                     el.generateData_(data);
-                }
-                else if (!data) {
+                } else if (!data) {
                     $.getJSON(newVal, param, function (data) {
                         if (data.sEcho == el.param.sEcho) {
                             el.aaData = data.aaData;
@@ -3051,6 +3319,401 @@ jui2.method = {
 
 }(jQuery))
 ;
+;/****js/datefield.js****/
+/**
+ * @classdesc DateField custom web component
+ * @class dateField
+ * @property {string} icon Button icon, using font awesome. Ex. fa-calendar etc. For icon list see <a href="">http://fortawesome.github.io/Font-Awesome/icons/</a>
+ * @example <caption>Basic usage: <br/><j-datefield>Username</j-datefield></caption>
+ * <j-datefield>Username</j-datefield>
+ * @example <caption>Textfield with icon: <br/><j-datefield icon="fa-user">Username</j-datefield></caption>
+ * <j-datefield icon="fa-user">Username</j-datefield>
+ */
+
+/*global jui2 localStorage document Object jQuery HTMLElement Popper*/
+
+(function ($) {
+    /** @constructor */
+    var proto = Object.create(HTMLElement.prototype)
+
+    proto.createdCallback = function () {
+
+        jui2.ui.base.proto.createdCallback.call(this, jui2.ui.dateField);
+
+        var $self = $(this),
+            self = this,
+            label = label || '',
+            type = $self.attr('type') || 'text';
+
+        if (this.innerHTML.trim() == '')
+            this.innerHTML = label
+
+        this.innerHTML = jui2.tmpl['dateField']({
+            label: this.innerHTML,
+            type: type
+        });
+
+        self.jui2 = {
+            disabled: false
+        }
+
+        $self.addClass('j-ui-flex').children().eq(0).click(function () {
+            $(this).next().focus();
+        })
+
+        for (var i in jui2.method) {
+            this[i] = jui2.method[i];
+        }
+
+		if(!$self.attr('format')){
+			$self.attr('format', 'DD/MM/YYYY')
+		}
+
+        self.format = $self.attr('format');
+
+        self.items = $self.children('.j-pop')
+
+        self.items.appendTo('body')
+
+        self.items.on('click', '> div td', function () {
+            var $el = $(this)
+            self.items.hide();
+            $self.attr('data-value', $el.attr('data-value'))
+            $self.children('.j-input-field').html($el.attr('data-value'))
+            $(self).triggerHandler('select')
+        })
+
+        self.items.on('click', '.fa-chevron-right', function () {
+            var $el = $(this)
+            self.show(moment($el.parent().children('span').text(), 'MMM YYYY').add(1, 'month').format(self.format), self.format)
+        })
+
+        self.items.on('click', '.fa-chevron-left', function () {
+            var $el = $(this)
+            self.show(moment($el.parent().children('span').text(), 'MMM YYYY').subtract(1, 'month').format(self.format), self.format)
+        })
+
+        self.jui_popper = new Popper($self.children('.j-input-field'), self.items[0], {
+            placement: 'bottom-start',
+            modifiers: {
+                flip: {
+                    enabled: true
+                }
+            },
+            eventsEnabled: false
+        })
+
+        $self.on('click', function () {
+            if(!self.jui2.disabled){
+                self.show(false, self.format)
+                self.items.toggle()
+                self.jui_popper.update()
+            }
+        })
+
+        $('body').click(function (e) {
+            if ($(e.target).parents('.j-pop').length == 0 && $(e.target).closest('#' + self.juiid).length == 0) {
+                self.items.hide()
+            }
+        })
+
+        this.attrChangedCb(['disabled', 'icon', 'placeholder', 'readonly', 'width', 'mandatory', 'autocomplete', 'autocompletefilter'])
+
+        /**
+         * Set and get widget value
+         * @param {mixed} value can be empty
+         * @returns {mixed}
+         * @method val
+         * @memberof dateField
+         * @instance
+         * @example <caption>nopreview</caption>
+         * var value = $('#myWidget').val() // will return widget's value to variable value
+         * @example <caption>nopreview</caption>
+         * $('#myWidget').val('myValue') // will set widget's value to 'myValue'
+         */
+
+        /*Object.defineProperty(this.__proto__, 'value', {
+            get: function () {
+                return $(this).attr('data-value') || '';
+            },
+            set: function (value) {
+                $(this).attr('data-value', value);
+                var text = this.items.children('[data-value="' + value + '"]').html() || ''
+                $(this).children('.j-input-field').html(text)
+                $(this).triggerHandler('date')
+                return value;
+            }
+        });*/
+
+        if (self.setup) {
+            self.setup();
+        }
+
+    };
+
+    proto.getArrayofDate = function (dt, format) {
+        var start = moment(dt, format).startOf('month').startOf('week');
+        var end = moment(dt, format).endOf('month').endOf('week');
+        var today = moment(dt, format);
+
+        var days = [];
+        var day = start;
+
+        while (day <= end) {
+            days.push([day.format(format), day.format('DD'), today.isSame(day, 'month')]);
+            day = day.clone().add(1, 'd');
+        }
+
+        return days
+    }
+
+    proto.val = function (value) {
+        if (value) {
+            $(this).attr('data-value', value);
+            if (this.items.children().length == 0) {
+                this.deferredDate = value;
+                return value;
+            } else {
+                var text = this.items.children('[data-value="' + value + '"]').html() || '';
+                $(this).children('.j-input-field').html(text)
+                $(this).triggerHandler('date')
+                return $(this).attr('data-value');
+            }
+        } else {
+            return $(this).attr('data-value') || '';
+        }
+    }
+
+    proto.show = function(dt, format){
+        format = format || this.format
+        dt = dt || $(this).val() || moment().format(format)
+        var self = this;
+        var date = this.getArrayofDate(dt, format)
+
+        var i = 0;
+        var el = '<table><tr>'+date.reduce(function(data, val){
+            i++;
+            if(i==8){
+                i = 1
+                return data+'</tr><tr><td data-value="'+val[0]+'" data-thismonth="'+val[2]+'">'+val[1]+'</td>'
+            }
+            else{
+                return data+'<td data-value="'+val[0]+'" data-thismonth="'+val[2]+'">'+val[1]+'</td>'
+            }
+        }, '')+'</tr></table>'
+        self.items.find('.j-date-items-header > span').text(moment(dt, format).format('MMM YYYY'))
+        self.items.find('.j-date-items-container').empty().append(el);
+    }
+
+    proto.generateData = function (data) {
+        this.items.html(jui2.tmpl['dateItem']({
+            rows: data
+        }))
+
+        $(this).triggerHandler('dateitemafterdraw');
+    }
+
+    proto.attachedCallback = function () {
+        for (var i in this.attributes) {
+            var attrName = this.attributes[i].nodeName,
+                newVal = this.attributes[i].nodeValue;
+            if (jui2.attrChange[this.tagName.toLowerCase() + '_' + attrName])
+                jui2.attrChange[this.tagName.toLowerCase() + '_' + attrName](this, false, newVal);
+            else if (jui2.attrChange[attrName] && this.enabledAttrChange.indexOf(attrName) > -1)
+                jui2.attrChange[attrName](this, false, newVal);
+        }
+        $(this).triggerHandler('afterdraw')
+        if(this.attributes['data-value']){
+            $(this).children('.j-input-field').text(this.attributes['data-value'].nodeValue)
+        }
+    }
+
+    proto.detachedCallback = function () {
+        $(this.items).remove()
+    }
+
+    proto.attributeChangedCallback = function (attrName, oldVal, newVal) {
+        if (jui2.attrChange[this.tagName.toLowerCase() + '_' + attrName])
+            jui2.attrChange[this.tagName.toLowerCase() + '_' + attrName](this, false, newVal);
+        else if (jui2.attrChange[attrName] && this.enabledAttrChange.indexOf(attrName) > -1)
+            jui2.attrChange[attrName](this, false, newVal);
+    }
+
+    jui2.attrChange['j-datefield_no-label'] = function (el, oldVal, newVal) {
+        if (newVal != null) {
+            $(el).children('label').remove()
+        }
+        /* else {
+
+                }*/
+    }
+
+    jui2.ui.dateField = {
+        widget: document.registerElement('j-datefield', {
+            prototype: proto
+        }),
+        proto: proto
+    }
+
+}(jQuery));
+;/****js/textarea.js****/
+/**
+ * @classdesc TextArea custom web component
+ * @class textArea
+ * @property {string} icon Button icon, using font awesome. Ex. fa-calendar etc. For icon list see <a href="">http://fortawesome.github.io/Font-Awesome/icons/</a>
+ * @example <caption>Basic usage: <br/><j-textarea>Username</j-textarea></caption>
+ * <j-textarea>Username</j-textarea>
+ * @example <caption>Textarea with icon: <br/><j-textarea icon="fa-user">Username</j-textarea></caption>
+ * <j-textarea icon="fa-user">Username</j-textarea>
+ */
+
+/*global jui2 localStorage document Object jQuery HTMLElement*/
+
+(function ($) {
+    /** @constructor */
+    var proto = Object.create(HTMLElement.prototype)
+
+    proto.createdCallback = function () {
+
+        jui2.ui.base.proto.createdCallback.call(this, jui2.ui.textArea);
+
+        var $self = $(this),
+            self = this,
+            label = label || '',
+            type = $self.attr('type') || 'text';
+
+        if (this.innerHTML.trim() == '')
+            this.innerHTML = label
+
+        this.innerHTML = jui2.tmpl['textArea']({
+            label: this.innerHTML,
+            type: type
+        });
+
+        $self.addClass('j-ui-flex').children().eq(0).click(function () {
+            $(this).next().focus();
+        })
+
+        for (var i in jui2.method) {
+            this[i] = jui2.method[i];
+        }
+
+        this.attrChangedCb(['disabled', 'icon', 'placeholder', 'readonly', 'width', 'mandatory', 'autocomplete', 'autocompletefilter'])
+
+        /**
+         * Set and get widget value
+         * @param {mixed} value can be empty
+         * @returns {mixed}
+         * @method val
+         * @memberof textArea
+         * @instance
+         * @example <caption>nopreview</caption>
+         * var value = $('#myWidget').val() // will return widget's value to variable value
+         * @example <caption>nopreview</caption>
+         * $('#myWidget').val('myValue') // will set widget's value to 'myValue'
+         */
+
+        /*Object.defineProperty(this.__proto__, 'value', {
+            configurable: true,
+            get: function () {
+                if ($(this).children('input')[0])
+                    return $(this).children('input')[0].value;
+                else
+                    return '';
+            },
+            set: function (value) {
+                if ($(this).children('input')[0])
+                    $(this).children('input')[0].value = value;
+                return $(this).children('input')[0].value
+            }
+        });*/
+
+        if (self.setup) {
+            self.setup();
+        }
+
+    };
+
+    proto.val = function (value) {
+        if (value) {
+            if ($(this).children('textarea')[0])
+                $(this).children('textarea')[0].value = value;
+            return $(this).children('textarea')[0].value
+        } else {
+            if ($(this).children('textarea')[0])
+                return $(this).children('textarea')[0].value;
+            else
+                return '';
+        }
+    }
+
+    proto.addAutocompleteList = function (txt) {
+        var $el = $(this)
+        if (!localStorage.getItem('jui2list' + $(this).attr('id'))) localStorage.setItem('jui2list' + $(this).attr('id'), JSON.stringify([]));
+        var db = JSON.parse(localStorage.getItem("jui2list" + $(this).attr('id'))),
+            add = true;
+        $.each(db, function (i, val) {
+            if (val == txt)
+                add = false
+        })
+        if (add) {
+            db.push(txt);
+            $('#jui2list' + $el.attr('id')).remove();
+            $('<datalist id="jui2list' + $el.attr('id') + '">').appendTo('body')
+            $.each(db, function (i, val) {
+                if ($el.attr('autocompletefilter') != undefined) {
+                    if (val[1] == $el.attr('autocompletefilter'))
+                        $('#jui2list' + $el.attr('id')).append('<option value="' + val[0] + '">')
+                } else {
+                    $('#jui2list' + $el.attr('id')).append('<option value="' + val + '">')
+                }
+            })
+            localStorage.setItem('jui2list' + $(this).attr('id'), JSON.stringify(db));
+        }
+    }
+
+    proto.attachedCallback = function () {
+        for (var i in this.attributes) {
+            var attrName = this.attributes[i].nodeName,
+                newVal = this.attributes[i].nodeValue;
+            if (jui2.attrChange[this.tagName.toLowerCase() + '_' + attrName])
+                jui2.attrChange[this.tagName.toLowerCase() + '_' + attrName](this, false, newVal);
+            else if (jui2.attrChange[attrName] && this.enabledAttrChange.indexOf(attrName) > -1)
+                jui2.attrChange[attrName](this, false, newVal);
+        }
+        $(this).triggerHandler('afterdraw')
+        if(this.deferredValue){
+            $(this).children('textarea')[0].value = value
+        }
+        if(this.attributes['data-value']){
+            $(this).children('textarea')[0].value = this.attributes['data-value'].nodeValue
+        }
+    }
+
+    proto.attributeChangedCallback = function (attrName, oldVal, newVal) {
+        if (jui2.attrChange[this.tagName.toLowerCase() + '_' + attrName])
+            jui2.attrChange[this.tagName.toLowerCase() + '_' + attrName](this, false, newVal);
+        else if (jui2.attrChange[attrName] && this.enabledAttrChange.indexOf(attrName) > -1)
+            jui2.attrChange[attrName](this, false, newVal);
+    }
+
+    jui2.attrChange['j-textarea_no-label'] = function (el, oldVal, newVal) {
+        if (newVal != null) {
+            $(el).children('label').remove()
+        }
+        /* else {
+
+                }*/
+    }
+
+    jui2.ui.textArea = {
+        widget: document.registerElement('j-textarea', {
+            prototype: proto
+        }),
+        proto: proto
+    }
+
+}(jQuery));
 ;/****js/collapsible.js****/
 (function($){
 

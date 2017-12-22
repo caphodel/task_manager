@@ -1,0 +1,14 @@
+<script>
+    $('#red-issue-update').on('click.disableUpdateAssign', function() {
+        if ($('#red-issue-author a').text().trim() != '') {
+            if (jwt_decode(Cookies.get('token')).fullname == $('#red-issue-author a').text().trim()) {
+
+            } else {
+                waitForEl('#red-issue-update-assigned_to_id', function() {
+                    $('#red-issue-update-assigned_to_id').attr('disabled', 'disabled');
+                });
+            }
+        }
+    })
+
+</script>

@@ -1,1 +1,1 @@
-<label class="j-label">{{{label}}}</label>{{#isnt label ""}}: {{/isnt}}<textarea class="j-border1 j-input-field"></textarea>
+<label class="j-label">{{{label}}}</label><textarea class="j-border1 j-input-field j-transition1 j-focus-highlight1"></textarea>

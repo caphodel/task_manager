@@ -132,6 +132,16 @@ this["jui2"]["tmpl"]["dataViewData"] = Handlebars.template({"1":function(depth0,
   return ((stack1 = helpers.each.call(depth0,(depth0 != null ? depth0.data : depth0),{"name":"each","hash":{},"fn":this.program(1, data, 0, blockParams, depths),"inverse":this.noop,"data":data})) != null ? stack1 : "");
 },"useData":true,"useDepths":true});
 
+this["jui2"]["tmpl"]["dateField"] = Handlebars.template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
+    var stack1, helper, alias1=helpers.helperMissing, alias2="function";
+
+  return "<label class=\"j-label\">"
+    + ((stack1 = ((helper = (helper = helpers.label || (depth0 != null ? depth0.label : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"label","hash":{},"data":data}) : helper))) != null ? stack1 : "")
+    + "</label>\r\n<div class=\"j-border1 j-input-field j-transition1 j-focus-highlight1\" type=\""
+    + this.escapeExpression(((helper = (helper = helpers.type || (depth0 != null ? depth0.type : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"type","hash":{},"data":data}) : helper)))
+    + "\">\r\n    <!--input></input-->\r\n</div>\r\n<div class=\"j-date-items j-pop\">\r\n    <div class=\"j-date-items-header j-header\" style=\"padding: 8px 8px\">\r\n        <i class=\"fa fa-chevron-left\"></i>\r\n        <span class=\"j-spacer\" style=\"text-align: center;\"></span>\r\n        <i class=\"fa fa-chevron-right\"></i>\r\n    </div>\r\n    <div class=\"j-date-items-container\" style=\"padding: 8px !important\">\r\n    </div>\r\n</div>\r\n";
+},"useData":true});
+
 this["jui2"]["tmpl"]["dateTime"] = Handlebars.template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
     var helper, alias1=helpers.helperMissing, alias2="function", alias3=this.escapeExpression;
 
@@ -223,9 +233,27 @@ this["jui2"]["tmpl"]["selectItem"] = Handlebars.template({"1":function(depth0,he
     + alias2(alias1((depth0 != null ? depth0['2'] : depth0), depth0))
     + "\" style=\"width: 32px; text-align: center;\"></i><div>"
     + ((stack1 = alias1((depth0 != null ? depth0['1'] : depth0), depth0)) != null ? stack1 : "")
-    + "</div><i class=\"fa "
+    + "</div><!--i class=\"fa "
     + alias2(alias1((depth0 != null ? depth0['3'] : depth0), depth0))
-    + "\" style=\"width: 32px; text-align: center;\"></i>\r\n</div>\r\n";
+    + "\" style=\"width: 32px; text-align: center;\"></i-->\r\n</div>\r\n";
+},"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
+    var stack1;
+
+  return ((stack1 = helpers.each.call(depth0,(depth0 != null ? depth0.rows : depth0),{"name":"each","hash":{},"fn":this.program(1, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "");
+},"useData":true});
+
+this["jui2"]["tmpl"]["selectMultipleItem"] = Handlebars.template({"1":function(depth0,helpers,partials,data) {
+    var stack1, alias1=this.lambda, alias2=this.escapeExpression;
+
+  return "<div data-value=\""
+    + alias2(alias1((depth0 != null ? depth0['0'] : depth0), depth0))
+    + "\">\r\n    <i class=\"fa fa-square-o j-select-multiple\" style=\"width: 32px; text-align: center;\"></i><i class=\"fa "
+    + alias2(alias1((depth0 != null ? depth0['2'] : depth0), depth0))
+    + "\" style=\"width: 32px; text-align: center;\"></i><div>"
+    + ((stack1 = alias1((depth0 != null ? depth0['1'] : depth0), depth0)) != null ? stack1 : "")
+    + "</div><!--i class=\"fa "
+    + alias2(alias1((depth0 != null ? depth0['3'] : depth0), depth0))
+    + "\" style=\"width: 32px; text-align: center;\"></i-->\r\n</div>\r\n";
 },"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
     var stack1;
 
@@ -338,16 +366,12 @@ this["jui2"]["tmpl"]["tag"] = Handlebars.template({"compiler":[6,">= 2.0.0-beta.
     return "";
 },"useData":true});
 
-this["jui2"]["tmpl"]["textArea"] = Handlebars.template({"1":function(depth0,helpers,partials,data) {
-    return ": ";
-},"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
-    var stack1, helper, alias1=helpers.helperMissing;
+this["jui2"]["tmpl"]["textArea"] = Handlebars.template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
+    var stack1, helper;
 
   return "<label class=\"j-label\">"
-    + ((stack1 = ((helper = (helper = helpers.label || (depth0 != null ? depth0.label : depth0)) != null ? helper : alias1),(typeof helper === "function" ? helper.call(depth0,{"name":"label","hash":{},"data":data}) : helper))) != null ? stack1 : "")
-    + "</label>"
-    + ((stack1 = (helpers.isnt || (depth0 && depth0.isnt) || alias1).call(depth0,(depth0 != null ? depth0.label : depth0),"",{"name":"isnt","hash":{},"fn":this.program(1, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
-    + "<textarea class=\"j-border1 j-input-field\"></textarea>\r\n";
+    + ((stack1 = ((helper = (helper = helpers.label || (depth0 != null ? depth0.label : depth0)) != null ? helper : helpers.helperMissing),(typeof helper === "function" ? helper.call(depth0,{"name":"label","hash":{},"data":data}) : helper))) != null ? stack1 : "")
+    + "</label><textarea class=\"j-border1 j-input-field j-transition1 j-focus-highlight1\"></textarea>\r\n";
 },"useData":true});
 
 this["jui2"]["tmpl"]["textField"] = Handlebars.template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {

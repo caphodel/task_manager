@@ -1,11 +1,11 @@
 /**
- * @classdesc TextField custom web component
- * @class textField
+ * @classdesc TextArea custom web component
+ * @class textArea
  * @property {string} icon Button icon, using font awesome. Ex. fa-calendar etc. For icon list see <a href="">http://fortawesome.github.io/Font-Awesome/icons/</a>
- * @example <caption>Basic usage: <br/><j-textfield>Username</j-textfield></caption>
- * <j-textfield>Username</j-textfield>
- * @example <caption>Textfield with icon: <br/><j-textfield icon="fa-user">Username</j-textfield></caption>
- * <j-textfield icon="fa-user">Username</j-textfield>
+ * @example <caption>Basic usage: <br/><j-textarea>Username</j-textarea></caption>
+ * <j-textarea>Username</j-textarea>
+ * @example <caption>Textarea with icon: <br/><j-textarea icon="fa-user">Username</j-textarea></caption>
+ * <j-textarea icon="fa-user">Username</j-textarea>
  */
 
 /*global jui2 localStorage document Object jQuery HTMLElement*/
@@ -16,7 +16,7 @@
 
     proto.createdCallback = function () {
 
-        jui2.ui.base.proto.createdCallback.call(this, jui2.ui.textField);
+        jui2.ui.base.proto.createdCallback.call(this, jui2.ui.textArea);
 
         var $self = $(this),
             self = this,
@@ -26,7 +26,7 @@
         if (this.innerHTML.trim() == '')
             this.innerHTML = label
 
-        this.innerHTML = jui2.tmpl['textField']({
+        this.innerHTML = jui2.tmpl['textArea']({
             label: this.innerHTML,
             type: type
         });
@@ -46,7 +46,7 @@
          * @param {mixed} value can be empty
          * @returns {mixed}
          * @method val
-         * @memberof textField
+         * @memberof textArea
          * @instance
          * @example <caption>nopreview</caption>
          * var value = $('#myWidget').val() // will return widget's value to variable value
@@ -77,12 +77,12 @@
 
     proto.val = function (value) {
         if (value) {
-            if ($(this).children('input')[0])
-                $(this).children('input')[0].value = value;
-            return $(this).children('input')[0].value
+            if ($(this).children('textarea')[0])
+                $(this).children('textarea')[0].value = value;
+            return $(this).children('textarea')[0].value
         } else {
-            if ($(this).children('input')[0])
-                return $(this).children('input')[0].value;
+            if ($(this).children('textarea')[0])
+                return $(this).children('textarea')[0].value;
             else
                 return '';
         }
@@ -124,10 +124,10 @@
         }
         $(this).triggerHandler('afterdraw')
         if(this.deferredValue){
-            $(this).children('input')[0].value = value
+            $(this).children('textarea')[0].value = value
         }
         if(this.attributes['data-value']){
-            $(this).children('input')[0].value = this.attributes['data-value'].nodeValue
+            $(this).children('textarea')[0].value = this.attributes['data-value'].nodeValue
         }
     }
 
@@ -138,7 +138,7 @@
             jui2.attrChange[attrName](this, false, newVal);
     }
 
-    jui2.attrChange['j-textfield_no-label'] = function (el, oldVal, newVal) {
+    jui2.attrChange['j-textarea_no-label'] = function (el, oldVal, newVal) {
         if (newVal != null) {
             $(el).children('label').remove()
         }
@@ -147,8 +147,8 @@
                 }*/
     }
 
-    jui2.ui.textField = {
-        widget: document.registerElement('j-textfield', {
+    jui2.ui.textArea = {
+        widget: document.registerElement('j-textarea', {
             prototype: proto
         }),
         proto: proto

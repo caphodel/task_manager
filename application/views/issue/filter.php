@@ -10,9 +10,10 @@
             ['created_on', 'Created'],
             ['updated_on', 'Updated'],
             ['start_date', 'Start'],
+            ['due_date', 'Due date'],
             ['estimated_hours', 'Estimated time'],
             ['done_ratio', '% Done'],
-            ['watcher_id', 'Watcher']
+            ['watchers_id', 'Watcher']
         ],
         red_status_list = [
             ['o', 'open'],
@@ -163,7 +164,7 @@
         ['due_date', '<t+,>t+,t+,>t-,<t-,t-,t,w', 'Due date', 'text'],
         ['estimated_hours', '=,>=,<=,!*,*', 'Estimated hours', 'text'],
         ['done_ratio', '=,>=,<=,!*,*', '% done', 'text'],
-        ['watcher_id', '=,!', 'Watcher', , 'list', ':8080/api/user/list?orderby=["firstname","lastname"]', red_filter_me_cb]
+        ['watchers_id', '=,!', 'Watcher', 'list', ':8080/api/user/list?orderby=["firstname","lastname"]', red_filter_me_cb]
     ]
 
     red_issue_filter_field_select = function() {
@@ -219,7 +220,7 @@
                     return (record[1].indexOf(i[0])) > -1;
                 });
 
-                $('.red-issue-filter .red-card-content table').append('<tr><td><j-button class="red-issue-field" style="margin: 3px;"><i class="fa fa-close"></i></j-button><j-selectfield class="red-filter-field" id="red-issue-' + id + '"" src-array="red_issue_' + id + '_list">' + record[2] + '</j-selectfield></td><td><j-selectfield id="red-issue-' + id + '-value"></j-selectfield></td></tr>');
+                $('.red-issue-filter .red-card-content table').append('<tr><td><j-button class="red-issue-field" style="margin: 3px;"><i class="fa fa-close"></i></j-button><j-selectfield class="red-filter-field" id="red-issue-' + id + '"" src-array="red_issue_' + id + '_list">' + record[2] + '</j-selectfield></td><td><j-selectfield multiple-select="true" id="red-issue-' + id + '-value"></j-selectfield></td></tr>');
 
                 if (record[4][0] == '[') {
                     window['red_issue_' + id + '_value_list'] = record[4].split(',');
@@ -327,7 +328,7 @@
     }
 
 </script>
-<div class="red-issue-filter red-card">
+<div class="red-issue-filter red-card" style="margin-top: 0px;">
     <j-toolbar><span>Filter</span></j-toolbar>
     <div class="red-card-content">
         <table class="red-layout-table">

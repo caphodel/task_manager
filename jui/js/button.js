@@ -63,6 +63,18 @@
 		this.attrChangedCb(false, attrName, oldVal, newVal)
 	}
 
+    proto.setText = function(text){
+        $(this).contents().last()[0].textContent = ' '+text;
+    }
+
+    proto.setIcon = function(cls, style){
+        var el = $(this).children('i')
+        if(el.length==0)
+            $('<i class="fa '+cls+'" style="'+style+'"></i>').appendTo(this)
+        else
+            el.attr('class', 'fa '+cls);
+    }
+
    /**
  	* Fires when button clicked
  	* @event click

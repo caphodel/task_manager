@@ -1,0 +1,13 @@
+<label class="j-label">{{{label}}}</label>
+<div class="j-border1 j-input-field j-transition1 j-focus-highlight1" type="{{type}}">
+    <!--input></input-->
+</div>
+<div class="j-date-items j-pop">
+    <div class="j-date-items-header j-header" style="padding: 8px 8px">
+        <i class="fa fa-chevron-left"></i>
+        <span class="j-spacer" style="text-align: center;"></span>
+        <i class="fa fa-chevron-right"></i>
+    </div>
+    <div class="j-date-items-container" style="padding: 8px !important">
+    </div>
+</div>

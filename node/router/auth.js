@@ -35,6 +35,7 @@ router.post('/', function (req, res) {
                     login: result.login,
                     id: result.id,
                     admin: result.admin,
+                    fullname: result.firstname+' '+result.lastname
                 }, req.app.get('salt'), {
                     expiresIn: '24h'
                 })

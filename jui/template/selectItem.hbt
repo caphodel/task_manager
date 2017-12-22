@@ -1,5 +1,5 @@
 {{#each rows}}
 <div data-value="{{this.[0]}}">
-    <i class="fa {{this.[2]}}" style="width: 32px; text-align: center;"></i><div>{{{this.[1]}}}</div><i class="fa {{this.[3]}}" style="width: 32px; text-align: center;"></i>
+    <i class="fa {{this.[2]}}" style="width: 32px; text-align: center;"></i><div>{{{this.[1]}}}</div><!--i class="fa {{this.[3]}}" style="width: 32px; text-align: center;"></i-->
 </div>
 {{/each}}
