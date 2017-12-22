@@ -1,0 +1,4 @@
+<div class="j-modal j-mask" style="position: fixed; top: 0; left: 0; bottom: 0; right: 0; display: block;">
+	<div class="j-ui j-modal-dialog">
+	</div>
+</div>

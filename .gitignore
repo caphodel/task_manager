@@ -32,3 +32,5 @@ node/node_modules
 test/node_modules
 user_guide
 node_modules
+/node/info.log
+/node/error.log

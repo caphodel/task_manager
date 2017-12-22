@@ -164,6 +164,10 @@ this["jui2"]["tmpl"]["mask"] = Handlebars.template({"compiler":[6,">= 2.0.0-beta
     + "\"></div>";
 },"useData":true});
 
+this["jui2"]["tmpl"]["modal"] = Handlebars.template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
+    return "<div class=\"j-modal j-mask\" style=\"position: fixed; top: 0; left: 0; bottom: 0; right: 0; display: block;\">\r\n	<div class=\"j-ui j-modal-dialog\">\r\n	</div>\r\n</div>\r\n";
+},"useData":true});
+
 this["jui2"]["tmpl"]["pagination"] = Handlebars.template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
     return "<j-toolbar class=\"j-table-pagination\" style=\"align-items: baseline;\">\r\n    <j-button class=\"j-table-first\"><i class=\"fa fa-fast-backward\"></i></j-button>\r\n    <j-button class=\"j-table-prev\"><i class=\"fa fa-backward\"></i></j-button>\r\n    <j-textfield class=\"j-table-page\" no-label=\"true\" style=\"width: 60px;\"></j-textfield>\r\n    <j-button class=\"j-table-next\"><i class=\"fa fa-forward\"></i></j-button>\r\n    <j-button class=\"j-table-last\"><i class=\"fa fa-fast-forward\"></i></j-button>\r\n    <j-button class=\"j-table-refresh\"><i class=\"fa fa-repeat\"></i></j-button>\r\n    <j-spacer></j-spacer><span class=\"j-table-data-info\"></span>\r\n</j-toolbar>\r\n";
 },"useData":true});

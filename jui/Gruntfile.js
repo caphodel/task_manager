@@ -35,6 +35,7 @@ module.exports = function (grunt) {
 					'js/timeline.js',
 					'js/datefield.js',
 					'js/textarea.js',
+					'js/modal.js',
 					'js/collapsible.js'
 				],
 				dest : '../assets/js/<%= pkg.name %>.ui.js'
