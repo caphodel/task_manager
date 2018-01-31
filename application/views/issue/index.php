@@ -5,13 +5,13 @@
 
 <script>
     var red_issue_where = null
-
     function red_issue_query_generator(cf) {
         var search = location.search.substring(1);
-        if (search == "")
+        if (search == ""){
             return {
                 where: {}
             }
+		}
         else {
             var param = JSON.parse(decodeURIComponent('{"' + decodeURI(search).replace(/"/g, '\\"').replace(/&/g, '","').replace(/=/g, '":"') + '"}'))
             for (var i in param) {
@@ -179,19 +179,20 @@
         })*/
         var search = location.search.substring(1);
         var param = JSON.parse(decodeURIComponent('{"' + decodeURI(search).replace(/"/g, '\\"').replace(/&/g, '","').replace(/=/g, '":"') + '"}'))
-        $.ajax({
-            url: window.location.origin + ':8080/api/query/' + param.query_id,
-            type: 'GET',
-            dataType: 'jsonp',
-            success: function(data) {
-                var param = red_issue_query_to_param(data.filters);
+		if(param.query_id)
+			$.ajax({
+				url: window.location.origin + ':8080/api/query/' + param.query_id,
+				type: 'GET',
+				dataType: 'jsonp',
+				success: function(data) {
+					var param = red_issue_query_to_param(data.filters);
 
-            },
-            error: function() {},
-            beforeSend: function setHeader(xhr) {
-                xhr.setRequestHeader('x-access-token', Cookies.get('token'));
-            }
-        })
+				},
+				error: function() {},
+				beforeSend: function setHeader(xhr) {
+					xhr.setRequestHeader('x-access-token', Cookies.get('token'));
+				}
+			})
     } else {
         red_issue_where = {};
         $('#red-tbl-issue').attr('src-fn', 'red_issue')
@@ -205,17 +206,22 @@
         <tr>
             <td style="width: 75%">
                 <?php $this->view('issue/filter');?>
-
-                <j-panel>
+                <!--j-panel>
                     <div class="j-header">
                         Issues
                     </div>
-                    <j-table id="red-tbl-issue" paging="true" custom="red_issue_custom">
+                    <j-table2 id="red-tbl-issue" paging="true" custom="red_issue_custom">
                         [ ["#", "Tracker", "Status", "Priority", "Subject", "Assigned To", "Updated"] ]
-                    </j-table>
-                </j-panel>
+                    </j-table2>
+                </j-panel-->
+				<div class="red-card">
+					<j-toolbar><span>Issues</span></j-toolbar>
+                    <j-table2 id="red-tbl-issue" paging="true" custom="red_issue_custom" style="padding: 0px !important;">
+                        [ ["#", "Tracker", "Status", "Priority", "Subject", "Assigned To", "Updated"] ]
+                    </j-table2>
+				</div>
             </td>
-            <td style="min-width: 200px;">
+            <td class="red-right-content" style="min-width: 200px;">
                 <div class="red-info-container" style="/*position: absolute; top: 180px; right: 20px; min-width: 200px; max-width: 400px;*/">
                     <div class="red-issue-tools">
                         <j-toolbar><span>Tasks</span>

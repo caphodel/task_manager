@@ -225,7 +225,7 @@ this["jui2"]["tmpl"]["selectField"] = Handlebars.template({"compiler":[6,">= 2.0
     + ((stack1 = ((helper = (helper = helpers.label || (depth0 != null ? depth0.label : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"label","hash":{},"data":data}) : helper))) != null ? stack1 : "")
     + "</label>\r\n<div class=\"j-border1 j-input-field j-transition1 j-focus-highlight1\" type=\""
     + this.escapeExpression(((helper = (helper = helpers.type || (depth0 != null ? depth0.type : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"type","hash":{},"data":data}) : helper)))
-    + "\">\r\n    <!--input></input-->\r\n</div>\r\n<div class=\"j-select-items j-pop\">\r\n</div>\r\n";
+    + "\">\r\n    <!--input></input-->\r\n</div>\r\n<div class=\"j-select-items j-pop\" tabindex=\"1\">\r\n</div>\r\n";
 },"useData":true});
 
 this["jui2"]["tmpl"]["selectItem"] = Handlebars.template({"1":function(depth0,helpers,partials,data) {
@@ -268,6 +268,10 @@ this["jui2"]["tmpl"]["tableBase"] = Handlebars.template({"compiler":[6,">= 2.0.0
     return "<div class=\"j-table\">\r\n	<div class=\"j-table-head\">\r\n	</div>\r\n	<div class=\"j-table-body\">\r\n	</div>\r\n	<div class=\"j-table-head-pop j-pop j-ui\">\r\n		<div class=\"j-table-sort-asc\">\r\n			<i class=\"fa fa-long-arrow-up\" style=\"width: 48px; text-align: center;\"></i>\r\n			<div>Sort Ascending</div>\r\n			<i class=\"fa\" style=\"width: 48px; text-align: center;\"></i>\r\n		</div>\r\n		<div class=\"j-table-sort-desc\">\r\n			<i class=\"fa fa-long-arrow-down\" style=\"width: 48px; text-align: center;\"></i>\r\n			<div>Sort Descending</div>\r\n			<i class=\"fa\" style=\"width: 48px; text-align: center;\"></i>\r\n		</div>\r\n		<div class=\"j-menu-separator\">\r\n		</div>\r\n		<!--div>\r\n			<i class=\"fa fa-ellipsis-h\" style=\"width: 48px; text-align: center;\"></i>\r\n			<div>Columns</div>\r\n			<i class=\"fa fa-angle-right\" style=\"width: 48px; text-align: center;\"></i>\r\n\r\n			<div class=\"j-pop-children j-pop j-ui\">\r\n				<div>\r\n					<i class=\"fa\" style=\"width: 48px; text-align: center;\"></i>\r\n					<div>Project Number</div>\r\n					<i class=\"fa\" style=\"width: 48px; text-align: center;\"></i>\r\n				</div>\r\n				<div>\r\n					<i class=\"fa\" style=\"width: 48px; text-align: center;\"></i>\r\n					<div>Name</div>\r\n					<i class=\"fa\" style=\"width: 48px; text-align: center;\"></i>\r\n				</div>\r\n				<div>\r\n					<i class=\"fa\" style=\"width: 48px; text-align: center;\"></i>\r\n					<div>Description</div>\r\n					<i class=\"fa\" style=\"width: 48px; text-align: center;\"></i>\r\n				</div>\r\n			</div>\r\n		</div-->\r\n	</div>\r\n</div>\r\n";
 },"useData":true});
 
+this["jui2"]["tmpl"]["tableBase2"] = Handlebars.template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
+    return "<table>\r\n	<thead class=\"j-table-head\">\r\n	</thead>\r\n	<tbody class=\"j-table-body\">\r\n	</tbody>\r\n	<tfoot>\r\n	</tfoot>\r\n</table>";
+},"useData":true});
+
 this["jui2"]["tmpl"]["tableFilter"] = Handlebars.template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
     var helper, alias1=helpers.helperMissing, alias2="function", alias3=this.escapeExpression;
 
@@ -303,6 +307,20 @@ this["jui2"]["tmpl"]["tableHeader"] = Handlebars.template({"1":function(depth0,h
 },"useData":true});
 
 this["jui2"]["tmpl"]["tableHeader2"] = Handlebars.template({"1":function(depth0,helpers,partials,data) {
+    var stack1;
+
+  return "	<th class=\"\">\r\n		"
+    + ((stack1 = this.lambda(depth0, depth0)) != null ? stack1 : "")
+    + "\r\n	</th>\r\n";
+},"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
+    var stack1;
+
+  return "<tr class=\"j-table-head-row\" style=\"\">\r\n"
+    + ((stack1 = helpers.each.call(depth0,(depth0 != null ? depth0.columns : depth0),{"name":"each","hash":{},"fn":this.program(1, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
+    + "</tr>\r\n";
+},"useData":true});
+
+this["jui2"]["tmpl"]["tableHeader2tmp"] = Handlebars.template({"1":function(depth0,helpers,partials,data) {
     var stack1;
 
   return "		<th class=\"j-border-bot2 j-bg1 j-border-right1\"><div class=\"j-wrap-hide j-pad1 j-border-box\">"
@@ -358,6 +376,38 @@ this["jui2"]["tmpl"]["tableItems"] = Handlebars.template({"1":function(depth0,he
     var stack1;
 
   return "flex: 1 0 "
+    + this.escapeExpression(this.lambda(((stack1 = (depth0 != null ? depth0.width : depth0)) != null ? stack1['@index'] : stack1), depth0))
+    + "px;";
+},"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
+    var stack1;
+
+  return ((stack1 = helpers.each.call(depth0,(depth0 != null ? depth0.rows : depth0),{"name":"each","hash":{},"fn":this.program(1, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "");
+},"useData":true});
+
+this["jui2"]["tmpl"]["tableItems2"] = Handlebars.template({"1":function(depth0,helpers,partials,data) {
+    var stack1, helper, alias1=helpers.helperMissing, alias2="function", alias3=this.escapeExpression;
+
+  return "<tr class=\"j-table-body-row j-table-body-row-"
+    + alias3(((helper = (helper = helpers.index || (data && data.index)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"index","hash":{},"data":data}) : helper)))
+    + "\" data-index=\""
+    + alias3(((helper = (helper = helpers.index || (data && data.index)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"index","hash":{},"data":data}) : helper)))
+    + "\" >\r\n"
+    + ((stack1 = helpers.each.call(depth0,depth0,{"name":"each","hash":{},"fn":this.program(2, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
+    + "</tr>\r\n";
+},"2":function(depth0,helpers,partials,data) {
+    var stack1, helper;
+
+  return "	<td style=\""
+    + ((stack1 = helpers['if'].call(depth0,((stack1 = (depth0 != null ? depth0.width : depth0)) != null ? stack1['@index'] : stack1),{"name":"if","hash":{"includeZero":true},"fn":this.program(3, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
+    + "\" class=\"j-table-body-column j-table-body-column-"
+    + this.escapeExpression(((helper = (helper = helpers.index || (data && data.index)) != null ? helper : helpers.helperMissing),(typeof helper === "function" ? helper.call(depth0,{"name":"index","hash":{},"data":data}) : helper)))
+    + "\">"
+    + ((stack1 = this.lambda(depth0, depth0)) != null ? stack1 : "")
+    + "</td>\r\n";
+},"3":function(depth0,helpers,partials,data) {
+    var stack1;
+
+  return " "
     + this.escapeExpression(this.lambda(((stack1 = (depth0 != null ? depth0.width : depth0)) != null ? stack1['@index'] : stack1), depth0))
     + "px;";
 },"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {

@@ -86,7 +86,7 @@
             </td>
         </tr>
         <tr>
-            <td style="padding-right: 10px;">
+            <td class="red-right-content" style="padding-right: 10px;">
                 <div class="red-info-container">
                     <h1>Task Tracking</h1><br/>
                     <div class="red-project-task"></div>

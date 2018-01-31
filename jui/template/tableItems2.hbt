@@ -1,0 +1,7 @@
+{{#each rows}}
+<tr class="j-table-body-row j-table-body-row-{{@index}}" data-index="{{@index}}" >
+	{{#each this}}
+	<td style="{{#if width.[@index] includeZero=true}} {{width.[@index]}}px;{{/if}}" class="j-table-body-column j-table-body-column-{{@index}}">{{{this}}}</td>
+	{{/each}}
+</tr>
+{{/each}}

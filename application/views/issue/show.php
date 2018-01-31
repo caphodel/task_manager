@@ -68,7 +68,7 @@
 				</j-timeline>
 				<div id="red-issue-update-container"></div>
 			</td>
-			<td style="min-width: 200px;">
+			<td class="red-right-content" style="min-width: 200px;">
 				<div class="red-info-container" style="/*position: absolute; top: 180px; right: 20px; min-width: 200px; max-width: 400px;*/">
 					<div class="red-issue-watchers" red-permission="view_watcher|admin">
 						<j-toolbar><span>Watchers</span>

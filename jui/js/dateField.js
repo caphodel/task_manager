@@ -35,7 +35,7 @@
             disabled: false
         }
 
-        $self.addClass('j-ui-flex').children().eq(0).click(function () {
+        $self.addClass('j-ui-flex j-form-field').children().eq(0).click(function () {
             $(this).next().focus();
         })
 

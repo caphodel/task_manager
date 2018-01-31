@@ -243,3 +243,61 @@ a[red-issue="1"] {
   text-decoration: line-through;
   color: #858c93;
 }
+.red-grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.col-50 {
+  width: 46%;
+  margin: 10px;
+  flex: 1;
+  min-width: 46%;
+}
+@media only screen and (max-width: 640px) {
+  .red-grid {
+    flex-direction: column;
+  }
+  .col-50 {
+    margin: 0;
+    width: 100%;
+  }
+  body {
+    overflow-x: hidden;
+  }
+  .red-issue-journal-detail,
+  .red-column-detail {
+    display: block;
+    width: 100%;
+  }
+  .red-content-container {
+    width: 100%;
+    min-width: auto;
+  }
+  .red-layout-table {
+    table-layout: fixed;
+  }
+  .red-layout-table > tbody > tr > td:first-child {
+    width: 100% !important;
+  }
+  .red-right-content {
+    width: 100%;
+    position: absolute;
+    left: 100%;
+  }
+  .red-layout-table > tbody > tr > td:not(:last-child) {
+    padding-right: 0px;
+  }
+  .red-issue-related .red-card-content {
+    overflow: auto;
+  }
+  .red-card {
+    margin-top: 0px;
+    border: 1px solid #e1e4e8;
+    border-radius: 0px;
+    border-top: 0px;
+  }
+  .red-content-container {
+    padding: 0;
+  }
+}

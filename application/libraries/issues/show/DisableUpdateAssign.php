@@ -8,11 +8,7 @@ class DisableUpdateAssign {
         $this->CI = &get_instance();
     }
 
-    function gggg(){
-        print "Asdasdasd";
-    }
-
-    function view($html, $data){
+    function fn_view($html, $data){
         return $html = $html . file_get_contents(APPPATH."libraries/issues/show/DisableUpdateAssign.html");
     }
 }

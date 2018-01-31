@@ -2,5 +2,5 @@
 <div class="j-border1 j-input-field j-transition1 j-focus-highlight1" type="{{type}}">
     <!--input></input-->
 </div>
-<div class="j-select-items j-pop">
+<div class="j-select-items j-pop" tabindex="1">
 </div>

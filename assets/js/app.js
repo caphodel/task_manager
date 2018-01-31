@@ -226,6 +226,10 @@ $(function () {
                 top = $el.attr('top') != undefined ? $el.attr('top') : offset.t;
 
             if ($window.scrollTop()+60 > top && $el.css('position') == 'relative') {
+				if($('#'+$el.attr('id')+'clone').length == 0){
+					var $eltmp = $('<div>');
+					$eltmp.attr('id', $el.attr('id')+'clone').insertBefore($el).outerWidth($el.outerWidth(true)).outerHeight($el.outerHeight(true))
+				}
                 $el.attr('top', offset.t).css('position', 'fixed').css({
                     'position': 'fixed',
                     'top': '60px',
@@ -239,6 +243,7 @@ $(function () {
                     'left': '',
                     'z-index': ''
                 }).removeClass('red-fixed')
+				$('div#'+$el.attr('id')+'clone').remove()
             }
         })
         /*if ($window.scrollTop() > offset.top) {

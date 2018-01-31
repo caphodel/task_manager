@@ -194,6 +194,72 @@ j-table > .j-table {
 	text-align: center;
 }
 
+/*j-table2*/
+j-table2{
+	width: 100%;
+	overflow: auto;
+}
+j-table2 > table{
+	width: 100%;
+	border-collapse: separate;
+	border-spacing: 0px;
+}
+j-table2 > table > .j-table-head {
+	background: @windowBackground;
+	border-bottom: 2px solid @colorPrimaryDarker;
+}
+j-table2 > table > .j-table-head > tr > th:not(:last-child) {
+	border-right: 1px solid @colorPrimaryDark;
+}
+j-table2 > table > .j-table-head > tr:not(:last-child) > th {
+	border-bottom: 1px solid @colorPrimaryDark;
+}
+j-table2 > table > .j-table-head > tr:last-child > th {
+	border-bottom: 1px solid @colorPrimaryDarker;
+}
+j-table2 > table > .j-table-head > tr > th {
+	padding: 8px;
+	min-width: 43px;
+	box-sizing: border-box;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	position: relative;
+}
+j-table2 > table > .j-table-body > tr > td {
+	border-bottom: 1px solid @colorPrimaryDark;
+}
+
+j-table2 > table > .j-table-body > tr.selected-top-border {
+	border-color: @colorAccentDark !important;
+}
+j-table2 > table > .j-table-body > tr.selected {
+	background: @colorAccent !important;
+	border-color: @colorAccentDark !important;
+}
+
+j-table2 > table > .j-table-body > tr:active + tr {
+	border-top-width: 0;
+}
+j-table2 > table > .j-table-body > tr {
+	border-bottom: 1px solid @colorPrimaryDark;
+}
+j-table2 > table > .j-table-body > tr > td:not(:last-child) {
+	border-right: 1px solid rgba(0, 0, 0 ,0);
+}
+/*j-table2 > table > .j-table-body > tr:nth-child(odd) > td:not(:last-child) {
+	border-right: 1px solid @windowBackground;
+}*/
+j-table2 > table > .j-table-body > tr > td {
+	padding: 8px;
+}
+j-table2 > table > .j-table-body > tr:nth-child(even) {
+	background: @colorPrimary;
+}
+.j-table-pagination{
+	/*border-top: 1px solid @colorPrimaryDarker;*/
+}
+/*j-table2*/
+
 .j-pop {
 	padding: 8px 0;
 	background: @windowBackground;
@@ -423,6 +489,11 @@ j-datefield > .j-input-field > input {
 j-selectfield > .j-select-items,
 j-datefield > .j-select-items {
 	display: none;
+}
+
+.j-selectfield-multiple-toggle{
+	position: absolute;
+	right: 0;
 }
 
 j-tag {

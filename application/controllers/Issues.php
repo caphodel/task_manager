@@ -38,6 +38,7 @@ class Issues extends CI_Controller {
         }
         $data = array('identifier' => $parameter1);
 
+		/*plugin system*/
         $this->load->helper('directory');
 
         $libraries = directory_map(APPPATH."libraries/issues/show", TRUE);
@@ -58,16 +59,19 @@ class Issues extends CI_Controller {
         }
 
         $this->load->library($autoload);
+		/*end of plugin system*/
 
         //$data['script'] = array();
 
 		$view = $this->load->view('issue/show', $data, true);
 
+		/*plugin system*/
         foreach($libs as $library){
             if(method_exists($this->{$library},'view')){
                 $view = $this->{$library}->view($view, $data);
             }
         }
+		/*end of plugin system*/
 
         print $view;
 	}

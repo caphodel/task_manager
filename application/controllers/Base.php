@@ -11,7 +11,45 @@ class Base extends CI_Controller {
 			));
 		}
 		else{
-			$this->load->view('base/base_layout');
+
+			$data = array();
+
+			/*plugin system*/
+			$this->load->helper('directory');
+
+			$libraries = directory_map(APPPATH."libraries/base", 1, TRUE);
+
+			$autoload = array();
+
+			foreach($libraries as $library)
+			{
+				if( ! is_array($library))
+				{
+					//var_dump(pathinfo($library));
+					$pathinfo = pathinfo($library);
+					if(isset($pathinfo['extension']))
+						if($pathinfo['extension']=='php'){
+							$autoload[] = 'base/' . strtolower($pathinfo['filename']);
+							$libs[] = strtolower($pathinfo['filename']);
+						}
+					//$autoload[] = strtolower($library);
+				}
+			}
+
+			$this->load->library($autoload);
+			/*end of plugin system*/
+
+			$view = $this->load->view('base/base_layout', $data, true);
+
+			/*plugin system*/
+			foreach($libs as $library){
+				if(method_exists($this->{$library}, 'view')){
+					$view = $this->{$library}->view($view, $data);
+				}
+			}
+
+			print $view;
+			/*end of plugin system*/
 		}
 	}
 

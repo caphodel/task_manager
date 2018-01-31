@@ -254,8 +254,8 @@
         [90, 90],
         [100, 100]
     ];
-    $("#red-issue-update-done_ratio").attr('src-array', 'red_issue_update_done_ratio')
 
+    $("#red-issue-update-done_ratio").attr('src-array', 'red_issue_update_done_ratio')
 
     $('body').scrollTop(findPos($('#red-issue-update-container')[0]))
 

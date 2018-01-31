@@ -13,6 +13,7 @@ var projects = global.model['projects'],
     news = global.model['news'],
     custom_fields = global.model['custom_fields'],
     custom_fields_projects = global.model['custom_fields_projects'],
+    custom_fields_trackers = global.model['custom_fields_trackers'],
     watchers = global.model['watchers'],
     journals = global.model['journals'],
     journal_details = global.model['journal_details'],
@@ -93,6 +94,14 @@ custom_values.belongsTo(issues, {
     }
 });
 
+/*custom_fields.hasOne(custom_values, {
+    foreignKey: "custom_field_id"
+})
+
+custom_fields.belongsTo(custom_values, {
+    foreignKey: "id"
+});*/
+
 custom_fields.hasOne(custom_values, {
     foreignKey: "custom_field_id"
 })
@@ -100,6 +109,10 @@ custom_fields.hasOne(custom_values, {
 custom_values.belongsTo(custom_fields, {
     foreignKey: "custom_field_id"
 });
+/**************** set association custom_fields ****************/
+custom_fields.hasOne(custom_fields_trackers, {
+    foreignKey: "custom_field_id"
+})
 
 /**************** set association projects ****************/
 projects.hasMany(members, {
