@@ -31,6 +31,10 @@ a:hover {
   display: flex;
   color: #ffffff;
   background: #24292E;
+  box-sizing: border-box;
+  height: 54px;
+  padding-top: 12px;
+  padding-bottom: 12px;
 }
 .logo {
   font-family: 'Play', sans-serif;

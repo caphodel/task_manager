@@ -3137,7 +3137,8 @@ jui2.method = {
         }
 
         //adding header
-        this.addHeader(this.aaData.shift());
+		this.header = this.aaData.shift();
+        this.addHeader(this.header);
         this.setHeaderMenu();
 
         this.generateData(this.aaData);
@@ -3190,7 +3191,7 @@ jui2.method = {
                 return;
             }
 
-            var offset = parseInt($(window).scrollTop() + 60 - top);
+            var offset = parseInt($(window).scrollTop() + (jui2.top || top) - top);
 
             if (offset > 0) {
                 $follow.css('transform', 'translateY(' + (offset) + 'px)');
@@ -3264,6 +3265,11 @@ jui2.method = {
         $self.triggerHandler('afterdraw');
         $self.triggerHandler('j-table.afterdraw');
         $body.css('padding-top', $self[0].getHeaderContainer().height())
+
+		$.each($self[0].header, function(i, val){
+			if(val.trim()=="")
+				$body.children().find('td:nth-child('+(i+1)+')').hide()
+		})
     }
 
     proto.setColumnMaxWidth = function (el) {
@@ -3300,6 +3306,12 @@ jui2.method = {
         })
 
         $headerContainer.append($header);
+
+		var hiddenHeader = $header.children().filter(function(data){
+			return $(this).text().trim() == "";
+		})
+
+		hiddenHeader.hide();
 
         return $header;
     }

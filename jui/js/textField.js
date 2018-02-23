@@ -138,6 +138,111 @@
             jui2.attrChange[attrName](this, false, newVal);
     }
 
+	jui2.attrChange['j-textfield_add-tag'] = function(el, oldVal, newVal) {
+		if (newVal != null) {
+			var $el = $(el),
+				$pop = $('<div class="j-select-items j-pop" id="' + $el.prop('id') + '-pop" tabindex="1">')
+			$('#' + $el.prop('id') + '-pop').remove()
+			$('body').append($pop)
+			$el.items = $pop;
+			$el.children('.j-input-field').keypress(function(e) {
+				var key = e.keyCode || e.charCode;
+				if ($el.children('span').length == 0)
+					return false
+				else {
+					if (key == 8 || key == 46) {
+						if (key == 8 && $(this).val() == "") {
+							$el.children('span').remove()
+							return false;
+						}
+					}
+				}
+			}).click(function() {
+				if ($el.children('span').length == 0) {
+					$el.items.toggle()
+					$el.jui_popper.update()
+					$el.items.focus()
+				}
+			});
+			$el.jui_popper = new Popper($el.children('.j-input-field'), $pop, {
+				placement: 'bottom-start',
+				modifiers: {
+					flip: {
+						enabled: true
+					}
+				},
+				eventsEnabled: false
+			})
+			$el.items.html(jui2.tmpl['selectItem']({
+				rows: newVal.split(';').map(function(data) {
+					return [data, data]
+				})
+			}))
+			$el.children('.j-input-field').on('keypress', function(e) {
+				var key = e.keyCode || e.charCode;
+				if (key == 13) {
+					if ($el.children('span').length > 0) {
+						$('#'+$el.attr('tag-target')).append('<label clas="j-label">'+$el.children('span').text()+'</label>'+'<input value="'+$el.val()+'"></input>')
+						$el.val('')
+						$el.children('span').remove()
+						$el.attr('style', '')
+					}
+				}
+			})
+			$el.items.on('click', ' > div', function(e) {
+				var $val = $(this);
+				$('<span>' + $val.attr('data-value') + '</span>').insertBefore($el.children('.j-input-field'))
+				$el.items.hide()
+				$el.children('.j-input-field').css('border-left', '0').css('border-radius', '0 3px 3px 0')
+				$el.children('.j-input-field').focus()
+			})
+			$('body').on('keypress.' + $el.items.prop('id'), function(e) {
+				var key = e.keyCode || e.charCode;
+				if ($el.items.is(':visible')) {
+					if (key == 40) {
+						e.preventDefault()
+						if ($el.items.children('.active').length == 0)
+							$el.items.children().eq(0).addClass('active')
+						else {
+							if ($el.items.children('.active').next().length)
+								$el.items.children('.active').removeClass('active').next().addClass('active')
+						}
+					} else if (key == 38) {
+						e.preventDefault()
+						if ($el.items.children('.active').length == 0)
+							$el.items.children().eq(0).addClass('active')
+						else {
+							if ($el.items.children('.active').prev().length)
+								$el.items.children('.active').removeClass('active').prev().addClass('active')
+						}
+					} else if (key == 13) {
+						var $val = $el.items.children('.active');
+						$('<span>' + $val.attr('data-value') + '</span>').insertBefore($el.children('.j-input-field'))
+						$el.items.hide()
+						$el.children('.j-input-field').css('border-left', '0').css('border-radius', '0 3px 3px 0')
+						$el.children('.j-input-field').focus()
+					}
+				}
+			})
+			$('body').on('click.pop' + $el.prop('id'), function(e) {
+				if ($(e.target).parents('.j-pop').length == 0 && $(e.target).closest('#' + $el.prop('id')).length == 0) {
+					$el.items.hide()
+				}
+				if ($('#' + $el.prop('id')).length == 0) {
+					$('#' + $el.prop('id') + '-pop').remove()
+					$el.children('.j-input-field').off('keypress')
+					$('body').off('click.pop' + $el.prop('id'))
+					$('body').off('keypress.' + $el.items.prop('id'))
+				}
+			})
+		} else {
+			$('#' + $el.prop('id') + '-pop').remove()
+			$el.children('.j-input-field').off('keypress')
+			$('body').off('click.pop' + $el.prop('id'))
+			$('body').off('keypress.' + $el.items.prop('id'))
+		}
+	}
+
     jui2.attrChange['j-textfield_no-label'] = function (el, oldVal, newVal) {
         if (newVal != null) {
             $(el).children('label').remove()

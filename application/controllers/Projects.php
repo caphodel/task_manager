@@ -24,7 +24,6 @@ class Projects extends CI_Controller {
 
 	public function index($parameter1=null)
 	{
-        print $parameter1;
 		$this->load->view('project/index');
 	}
 
